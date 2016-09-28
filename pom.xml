@@ -43,6 +43,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jgit</groupId>
+			<artifactId>org.eclipse.jgit</artifactId>
+			<version>4.5.0.201609210915-r</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.mylyn.github</groupId>
+			<artifactId>org.eclipse.egit.github.core</artifactId>
+			<version>2.1.5</version>
+		</dependency>
 	</dependencies>
 
 	<build>
