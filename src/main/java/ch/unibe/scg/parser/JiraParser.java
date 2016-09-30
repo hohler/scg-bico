@@ -2,9 +2,6 @@ package ch.unibe.scg.parser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 
 import javax.xml.parsers.*;
 
@@ -12,7 +9,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class JiraParser implements Parser {
@@ -43,24 +39,32 @@ public class JiraParser implements Parser {
 	
 		Document doc;
 		try {
-			System.out.println(content);
-			InputSource is = new InputSource(new StringReader(content));
-			doc = builder.parse(is);
-			Element root = doc.getDocumentElement();
 			
-
-			NodeList list = root.getElementsByTagName("item");
-			Element element = (Element) list.item(0);
-			String type = element.getAttribute("type");
-			String priority = element.getAttribute("priority");
+			StringBuilder xmlStringBuilder = new StringBuilder();
+			xmlStringBuilder.append(content);
+			ByteArrayInputStream input =  new ByteArrayInputStream(
+			   xmlStringBuilder.toString().getBytes("UTF-8"));
+			
+			doc = builder.parse(input);
+			
+			doc.getDocumentElement().normalize();
+			
+			NodeList items = doc.getElementsByTagName("item");
+			Node node = items.item(0);
+			Element element = (Element) node;
+			
+			String key = element.getElementsByTagName("key").item(0).getTextContent();
+			String type = element.getElementsByTagName("type").item(0).getTextContent();
+			String priority = element.getElementsByTagName("priority").item(0).getTextContent();
 			
 			Issue issue = new Issue();
-			if(type == "Bug") issue.setType(Issue.TYPE_BUG);
-			if(type == "Feature") issue.setType(Issue.TYPE_FEATURE);
-			else issue.setType(Issue.TYPE_OTHER);
+			issue.setName(key);
+			if(type.equals("Bug")) issue.setType(Issue.Type.BUG);
+			else if(type.equals("Feature")) issue.setType(Issue.Type.FEATURE);
+			else issue.setType(Issue.Type.OTHER);
 			
-			if(priority == "Major") issue.setType(Issue.PRIORITY_HIGH);
-			else issue.setType(Issue.PRIORITY_LOW);
+			if(priority.equals("Major")) issue.setPriority(Issue.Priority.HIGH);
+			else issue.setPriority(Issue.Priority.LOW);
 			
 			return issue;
 		} catch (SAXException | IOException e) {
