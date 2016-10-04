@@ -10,6 +10,8 @@ import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
+import ch.unibe.scg.model.Commit;
+
 public class GitRepository implements IRepository {
 
 	private Repository repository;

@@ -12,6 +12,8 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.CommitService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
+import ch.unibe.scg.model.Commit;
+
 public class GithubRepository implements IRepository {
 
 	private String owner;
@@ -70,7 +72,7 @@ public class GithubRepository implements IRepository {
 			
 			if(files != null) {
 				for(CommitFile f : files) {
-					Commit.CommitFile file = commit.new CommitFile();
+					ch.unibe.scg.model.CommitFile file = new ch.unibe.scg.model.CommitFile();
 					file.setAdditions(f.getAdditions());
 					file.setDeletions(f.getDeletions());
 					file.setChanges(f.getChanges());

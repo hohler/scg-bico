@@ -1,4 +1,4 @@
-package ch.unibe.scg.parser;
+package ch.unibe.scg.model;
 
 public class Issue {
 

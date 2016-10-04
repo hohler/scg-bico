@@ -2,10 +2,11 @@ package ch.unibe.scg;
 
 import java.util.ArrayList;
 
-import ch.unibe.scg.parser.Issue;
+import ch.unibe.scg.model.Commit;
+import ch.unibe.scg.model.Issue;
+import ch.unibe.scg.model.Project;
 import ch.unibe.scg.parser.IssueParser;
 import ch.unibe.scg.parser.IssueTrackerParser;
-import ch.unibe.scg.repository.Commit;
 import ch.unibe.scg.repository.GitLoader;
 import ch.unibe.scg.repository.GithubRepository;
 
@@ -19,6 +20,11 @@ public class Playground {
 		ArrayList<Commit> result = g.getCommits();
 		System.out.println("commits: "+result.size());
 		*/
+		
+		Project project = new Project(Project.Type.GITHUB);
+		project.setUrl("https://github.com/apache/flume");
+		project.setName("flume");
+		
 		
 		IssueParser issueParser = new IssueParser("^(\\w+\\-\\d+).");
 		
@@ -38,6 +44,10 @@ public class Playground {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		project.addCommit(testCommit);
+		
+		//ProjectRepository repo = new ProjectRepository();
 		
 		
 	}

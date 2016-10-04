@@ -11,6 +11,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import ch.unibe.scg.model.Issue;
+
 public class JiraParser implements Parser {
 
 	DocumentBuilder builder;

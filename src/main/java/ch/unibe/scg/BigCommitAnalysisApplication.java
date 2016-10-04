@@ -8,5 +8,7 @@ public class BigCommitAnalysisApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BigCommitAnalysisApplication.class, args);
+		
+		
 	}
 }

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ch.unibe.scg.repository.Commit;
+import ch.unibe.scg.model.Commit;
 
 public class IssueParser {
 	private Pattern regex;
