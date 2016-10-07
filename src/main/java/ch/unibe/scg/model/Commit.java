@@ -8,6 +8,7 @@ public class Commit {
 	private int additions;
 	private int deletions;
 	private String message;
+	private CommitIssue commitIssue;
 	
 	private int type;
 	private String issue;
@@ -60,6 +61,14 @@ public class Commit {
 
 	public void setIssue(String issue) {
 		this.issue = issue;
+	}
+
+	public CommitIssue getCommitIssue() {
+		return commitIssue;
+	}
+
+	public void setCommitIssue(CommitIssue commitIssue) {
+		this.commitIssue = commitIssue;
 	}
 
 }

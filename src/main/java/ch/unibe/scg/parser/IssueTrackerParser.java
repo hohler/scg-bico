@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import ch.unibe.scg.model.Issue;
+import ch.unibe.scg.model.CommitIssue;
 
 public class IssueTrackerParser {
 
@@ -37,7 +37,8 @@ public class IssueTrackerParser {
 		return issue;
 	}
 	
-	public Issue parse() {
+	public CommitIssue parse() {
+		if(issue == null) return null;
 		String url = parser.formatUrl(urlPattern, issue);
 		String content = retrieveContent(url);
 		if(content == null) return null;

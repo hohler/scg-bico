@@ -1,8 +1,8 @@
 package ch.unibe.scg.parser;
 
-import ch.unibe.scg.model.Issue;
+import ch.unibe.scg.model.CommitIssue;
 
 public interface Parser {
 	public String formatUrl(String url, String issue);
-	public Issue parse(String content);
+	public CommitIssue parse(String content);
 }

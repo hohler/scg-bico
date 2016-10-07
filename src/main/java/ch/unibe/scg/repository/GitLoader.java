@@ -43,14 +43,14 @@ public class GitLoader {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				System.out.println("Could not pull from repo");
+				System.err.println("Could not pull from repo");
 				return false;
 			} catch (GitAPIException e) {
-				System.out.println("Could not pull from repo");
+				System.err.println("Could not pull from repo");
 			}
 		} else {
 			if(!repoDir.mkdirs()) {
-				System.out.println("Could not create repo dir");
+				System.err.println("Could not create repo dir");
 				return false;
 			}
 		}
@@ -68,7 +68,7 @@ public class GitLoader {
 		} catch (GitAPIException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("Could not clone repo");
+			System.err.println("Could not clone repo");
 			return false;
 		}
 	}

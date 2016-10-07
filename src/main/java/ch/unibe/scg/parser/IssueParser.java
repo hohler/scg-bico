@@ -21,7 +21,10 @@ public class IssueParser {
 	public void parse(Commit commit) {
 		Matcher m = regex.matcher(commit.getMessage());
 		if(m.find()) {
+			if(m.group(1) == null) System.err.println(commit.getMessage().split("\\r?\\n")[0]);
 			commit.setIssue( m.group(1) );
+		} else {
+			System.err.println(commit.getMessage().split("\\r?\\n")[0]);
 		}
 	}
 }

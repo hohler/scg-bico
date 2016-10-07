@@ -11,7 +11,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import ch.unibe.scg.model.Issue;
+import ch.unibe.scg.model.CommitIssue;
 
 public class JiraParser implements Parser {
 
@@ -36,7 +36,7 @@ public class JiraParser implements Parser {
 	}
 
 	@Override
-	public Issue parse(String content) {
+	public CommitIssue parse(String content) {
 		
 	
 		Document doc;
@@ -59,21 +59,38 @@ public class JiraParser implements Parser {
 			String type = element.getElementsByTagName("type").item(0).getTextContent();
 			String priority = element.getElementsByTagName("priority").item(0).getTextContent();
 			
-			Issue issue = new Issue();
+			CommitIssue issue = new CommitIssue();
 			issue.setName(key);
-			if(type.equals("Bug")) issue.setType(Issue.Type.BUG);
-			else if(type.equals("Feature")) issue.setType(Issue.Type.FEATURE);
-			else issue.setType(Issue.Type.OTHER);
 			
-			if(priority.equals("Major")) issue.setPriority(Issue.Priority.HIGH);
-			else issue.setPriority(Issue.Priority.LOW);
+			
+			switch(type) {
+			case "Access": issue.setType(CommitIssue.Type.ACCESS); break;
+			case "Bug": issue.setType(CommitIssue.Type.BUG); break;
+			case "Dependency upgrade": issue.setType(CommitIssue.Type.DEPENDENCY_UPGRADE); break; 
+			case "Documentation": issue.setType(CommitIssue.Type.DOCUMENTATION); break;
+			case "Improvement": issue.setType(CommitIssue.Type.IMPROVEMENT); break;
+			case "Request": issue.setType(CommitIssue.Type.REQUEST); break;
+			case "Task": issue.setType(CommitIssue.Type.TASK); break;
+			case "Test": issue.setType(CommitIssue.Type.TEST); break;
+			case "Wish": issue.setType(CommitIssue.Type.WISH); break;
+			default: issue.setType(CommitIssue.Type.OTHER); break;
+			}
+			
+			
+			switch(priority) {
+			case "Blocker": issue.setPriority(CommitIssue.Priority.BLOCKER); break;
+			case "Critical": issue.setPriority(CommitIssue.Priority.CRITICAL); break;
+			case "Major": issue.setPriority(CommitIssue.Priority.MAJOR); break;
+			case "Minor": issue.setPriority(CommitIssue.Priority.MINOR); break;
+			case "Trivial": issue.setPriority(CommitIssue.Priority.TRIVIAL); break;
+			default: issue.setPriority(CommitIssue.Priority.OTHER); break;
+			}
 			
 			return issue;
 		} catch (SAXException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
-		
+		}
 		return null;
 	}
 }

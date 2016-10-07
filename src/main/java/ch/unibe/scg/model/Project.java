@@ -17,6 +17,7 @@ public class Project {
 	private String name;
 	private String url;
 	private Type type;
+	private String branch;
 	
 	private ArrayList<Commit> commits;
 	
@@ -37,6 +38,7 @@ public class Project {
 	
 	public Project(Type type) {
 		this.type = type;
+		this.commits = new ArrayList<Commit>();
 	}
 	
 	public String getName() {
@@ -75,6 +77,18 @@ public class Project {
 		this.commits.remove(commit);
 	}
 	
+	public void addCommits(ArrayList<Commit> list) {
+		this.commits.addAll(list);
+	}
+	
+	public String getBranch() {
+		return branch;
+	}
+
+	public void setBranch(String branch) {
+		this.branch = branch;
+	}
+
 	public String toString() {
 		return String.format("Project[id=%d, name='%s', type='%s', url='%s']",
 				id, name, type, url);
