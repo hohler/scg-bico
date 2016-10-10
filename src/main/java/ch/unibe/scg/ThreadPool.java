@@ -12,7 +12,7 @@ import ch.unibe.scg.parser.IssueTrackerParser;
 
 public class ThreadPool {
 
-	private static final int NTHREADS = 10;
+	private static final int NTHREADS = 50;
 	
 	private ArrayList<Commit> commits;
 	private String urlPattern;
@@ -59,7 +59,7 @@ public class ThreadPool {
 			try {
 				itp = new IssueTrackerParser(urlPattern);
 				for(Commit c : list) {
-					itp.setIssue(c.getIssue());
+					itp.setIssue(c.getCommitIssue());
 					CommitIssue issue = itp.parse();
 					if(issue != null) {
 						c.setCommitIssue(issue);
@@ -70,8 +70,6 @@ public class ThreadPool {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
-}
-	
+	}
 }

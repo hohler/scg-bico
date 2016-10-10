@@ -1,6 +1,7 @@
 package ch.unibe.scg.parser;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -11,7 +12,7 @@ import ch.unibe.scg.model.CommitIssue;
 public class IssueTrackerParser {
 
 	private Parser parser;
-	private String issue;
+	private CommitIssue issue;
 	private String urlPattern;
 	
 	public IssueTrackerParser(String urlPattern) throws Exception {
@@ -29,21 +30,21 @@ public class IssueTrackerParser {
 		}
 	}
 	
-	public void setIssue(String issue) {
+	public void setIssue(CommitIssue issue) {
 		this.issue = issue;
 	}
 	
-	public String getIssue() {
+	public CommitIssue getIssue() {
 		return issue;
 	}
 	
 	public CommitIssue parse() {
 		if(issue == null) return null;
-		String url = parser.formatUrl(urlPattern, issue);
+		String url = parser.formatUrl(urlPattern, issue.getName());
 		String content = retrieveContent(url);
 		if(content == null) return null;
 		
-		return parser.parse(content);
+		return parser.parse(issue, content);
 	}
 	
 	private String retrieveContent(String url) {
@@ -62,10 +63,12 @@ public class IssueTrackerParser {
 	        return stringBuffer.toString();	   
 	        
 		} catch (MalformedURLException e1) {
+			System.err.println("Wrong url: "+url);
 			e1.printStackTrace();
+		} catch (FileNotFoundException e2) {
+			System.err.println("404 Error: "+url);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
 		}
 		return null;
 	}

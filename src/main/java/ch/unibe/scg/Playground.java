@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import ch.unibe.scg.model.Commit;
 import ch.unibe.scg.model.CommitIssue;
 import ch.unibe.scg.model.Project;
-import ch.unibe.scg.parser.IssueParser;
+import ch.unibe.scg.parser.IssueStringParser;
 import ch.unibe.scg.parser.IssueTrackerParser;
 import ch.unibe.scg.repository.GitLoader;
 import ch.unibe.scg.repository.GitRepository;
@@ -32,7 +32,7 @@ public class Playground {
 		
 		project.addCommits(commits);
 		
-		IssueParser issueParser = new IssueParser("^(\\w+\\-\\d+).");
+		IssueStringParser issueParser = new IssueStringParser("^(\\w+\\-\\d+).");
 		issueParser.parse(commits);
 		
 		ThreadPool tp = new ThreadPool(commits, "https://issues.apache.org/jira/si/jira.issueviews:issue-xml/%s/%s.xml");

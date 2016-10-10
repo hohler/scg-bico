@@ -11,7 +11,6 @@ public class Commit {
 	private CommitIssue commitIssue;
 	
 	private int type;
-	private String issue;
 	
 	public Commit() {
 		files = new ArrayList<CommitFile>();
@@ -54,21 +53,18 @@ public class Commit {
 	public void setType(int type) {
 		this.type = type;
 	}
-
-	public String getIssue() {
-		return issue;
-	}
-
-	public void setIssue(String issue) {
-		this.issue = issue;
-	}
-
+	
 	public CommitIssue getCommitIssue() {
 		return commitIssue;
 	}
 
 	public void setCommitIssue(CommitIssue commitIssue) {
 		this.commitIssue = commitIssue;
+	}
+	
+	public void initIssue(String issue) {
+		commitIssue = new CommitIssue(issue);
+		commitIssue.setCommit(this);
 	}
 
 }

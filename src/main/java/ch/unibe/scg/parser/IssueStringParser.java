@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 
 import ch.unibe.scg.model.Commit;
 
-public class IssueParser {
+public class IssueStringParser {
 	private Pattern regex;
-	public IssueParser(String regex) {
+	public IssueStringParser(String regex) {
 		this.regex = Pattern.compile(regex);
 	}
 	
@@ -22,9 +22,9 @@ public class IssueParser {
 		Matcher m = regex.matcher(commit.getMessage());
 		if(m.find()) {
 			if(m.group(1) == null) System.err.println(commit.getMessage().split("\\r?\\n")[0]);
-			commit.setIssue( m.group(1) );
+			commit.initIssue( m.group(1).toUpperCase() );
 		} else {
-			System.err.println(commit.getMessage().split("\\r?\\n")[0]);
+			System.err.println("Can't parse issue "+commit.getMessage().split("\\r?\\n")[0]);
 		}
 	}
 }

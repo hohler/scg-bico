@@ -36,7 +36,7 @@ public class JiraParser implements Parser {
 	}
 
 	@Override
-	public CommitIssue parse(String content) {
+	public CommitIssue parse(CommitIssue issue, String content) {
 		
 	
 		Document doc;
@@ -59,9 +59,7 @@ public class JiraParser implements Parser {
 			String type = element.getElementsByTagName("type").item(0).getTextContent();
 			String priority = element.getElementsByTagName("priority").item(0).getTextContent();
 			
-			CommitIssue issue = new CommitIssue();
-			issue.setName(key);
-			
+			//issue.setName(key);			
 			
 			switch(type) {
 			case "Access": issue.setType(CommitIssue.Type.ACCESS); break;

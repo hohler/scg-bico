@@ -38,8 +38,13 @@ public class CommitIssue {
 	private Type type;
 	private Priority priority;
 	private String name;
+	private Commit commit;
 	
 	public CommitIssue() {
+	}
+	
+	public CommitIssue(String name) {
+		this.name = name;
 	}
 	
 	public CommitIssue(String name, Type type, Priority priority) {
@@ -80,6 +85,14 @@ public class CommitIssue {
 		this.priority = priority;
 	}
 	
+	public Commit getCommit() {
+		return commit;
+	}
+
+	public void setCommit(Commit commit) {
+		this.commit = commit;
+	}
+
 	public String toString() {
 		return "Issue: "+name+" Type: "+type.getName()+" Priority: "+priority.getName();
 	}
