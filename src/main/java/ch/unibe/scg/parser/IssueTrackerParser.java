@@ -40,6 +40,7 @@ public class IssueTrackerParser {
 	
 	public CommitIssue parse() {
 		if(issue == null) return null;
+		if(issue.getName() == null) return null;
 		String url = parser.formatUrl(urlPattern, issue.getName());
 		String content = retrieveContent(url);
 		if(content == null) return null;

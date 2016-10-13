@@ -42,6 +42,8 @@ public class JiraParser implements Parser {
 		Document doc;
 		try {
 			
+			CommitIssue result = new CommitIssue(issue);
+			
 			StringBuilder xmlStringBuilder = new StringBuilder();
 			xmlStringBuilder.append(content);
 			ByteArrayInputStream input =  new ByteArrayInputStream(
@@ -55,36 +57,37 @@ public class JiraParser implements Parser {
 			Node node = items.item(0);
 			Element element = (Element) node;
 			
-			String key = element.getElementsByTagName("key").item(0).getTextContent();
+			//String key = element.getElementsByTagName("key").item(0).getTextContent();
 			String type = element.getElementsByTagName("type").item(0).getTextContent();
 			String priority = element.getElementsByTagName("priority").item(0).getTextContent();
 			
 			//issue.setName(key);			
 			
 			switch(type) {
-			case "Access": issue.setType(CommitIssue.Type.ACCESS); break;
-			case "Bug": issue.setType(CommitIssue.Type.BUG); break;
-			case "Dependency upgrade": issue.setType(CommitIssue.Type.DEPENDENCY_UPGRADE); break; 
-			case "Documentation": issue.setType(CommitIssue.Type.DOCUMENTATION); break;
-			case "Improvement": issue.setType(CommitIssue.Type.IMPROVEMENT); break;
-			case "Request": issue.setType(CommitIssue.Type.REQUEST); break;
-			case "Task": issue.setType(CommitIssue.Type.TASK); break;
-			case "Test": issue.setType(CommitIssue.Type.TEST); break;
-			case "Wish": issue.setType(CommitIssue.Type.WISH); break;
-			default: issue.setType(CommitIssue.Type.OTHER); break;
+			case "Access": result.setType(CommitIssue.Type.ACCESS); break;
+			case "Bug": result.setType(CommitIssue.Type.BUG); break;
+			case "Dependency upgrade": result.setType(CommitIssue.Type.DEPENDENCY_UPGRADE); break; 
+			case "Documentation": result.setType(CommitIssue.Type.DOCUMENTATION); break;
+			case "Improvement": result.setType(CommitIssue.Type.IMPROVEMENT); break;
+			case "Request": result.setType(CommitIssue.Type.REQUEST); break;
+			case "Task": result.setType(CommitIssue.Type.TASK); break;
+			case "Test": result.setType(CommitIssue.Type.TEST); break;
+			case "Wish": result.setType(CommitIssue.Type.WISH); break;
+			case "New Feature": result.setType(CommitIssue.Type.FEATURE); break;
+			default: result.setType(CommitIssue.Type.OTHER); break;
 			}
 			
 			
 			switch(priority) {
-			case "Blocker": issue.setPriority(CommitIssue.Priority.BLOCKER); break;
-			case "Critical": issue.setPriority(CommitIssue.Priority.CRITICAL); break;
-			case "Major": issue.setPriority(CommitIssue.Priority.MAJOR); break;
-			case "Minor": issue.setPriority(CommitIssue.Priority.MINOR); break;
-			case "Trivial": issue.setPriority(CommitIssue.Priority.TRIVIAL); break;
-			default: issue.setPriority(CommitIssue.Priority.OTHER); break;
+			case "Blocker": result.setPriority(CommitIssue.Priority.BLOCKER); break;
+			case "Critical": result.setPriority(CommitIssue.Priority.CRITICAL); break;
+			case "Major": result.setPriority(CommitIssue.Priority.MAJOR); break;
+			case "Minor": result.setPriority(CommitIssue.Priority.MINOR); break;
+			case "Trivial": result.setPriority(CommitIssue.Priority.TRIVIAL); break;
+			default: result.setPriority(CommitIssue.Priority.OTHER); break;
 			}
 			
-			return issue;
+			return result;
 		} catch (SAXException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

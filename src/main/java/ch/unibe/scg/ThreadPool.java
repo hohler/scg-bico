@@ -6,18 +6,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import ch.unibe.scg.model.Commit;
 import ch.unibe.scg.model.CommitIssue;
+import ch.unibe.scg.model.IssuedCommit;
 import ch.unibe.scg.parser.IssueTrackerParser;
 
 public class ThreadPool {
 
 	private static final int NTHREADS = 50;
 	
-	private ArrayList<Commit> commits;
+	private ArrayList<IssuedCommit> commits;
 	private String urlPattern;
 	
-	public ThreadPool(ArrayList<Commit> commits, String urlPattern) {
+	public ThreadPool(ArrayList<IssuedCommit> commits, String urlPattern) {
 		this.commits = commits;
 		this.urlPattern = urlPattern;
 	}
@@ -28,7 +28,7 @@ public class ThreadPool {
         for (int i = 0; i < commits.size(); i+=perThread) {
         	int end = i+perThread;
         	if(end > commits.size()) end = commits.size()-1;
-        	List<Commit> list = commits.subList(i, end);
+        	List<IssuedCommit> list = commits.subList(i, end);
             Runnable worker = new MyRunnable(list);
             executor.execute(worker);
         }
@@ -47,25 +47,24 @@ public class ThreadPool {
 	}
 
 	private class MyRunnable implements Runnable {
-        private List<Commit> list;
+        private List<IssuedCommit> list;
 
-        MyRunnable(List<Commit> list) {
+        MyRunnable(List<IssuedCommit> list) {
         	this.list = list;
         }
 
 	    @Override
 		public void run() {
-	    	IssueTrackerParser itp;
-			try {
-				itp = new IssueTrackerParser(urlPattern);
-				for(Commit c : list) {
-					itp.setIssue(c.getCommitIssue());
-					CommitIssue issue = itp.parse();
-					if(issue != null) {
-						c.setCommitIssue(issue);
-						System.out.println(issue);
-					}
-				}
+	    	try {
+	    		IssueTrackerParser itp = new IssueTrackerParser(urlPattern);
+	    		for(IssuedCommit c : list) {
+	    			itp.setIssue(c.getCommitIssue());
+	    			CommitIssue result = itp.parse();
+	    			if(result != null) {
+	    				c.setCommitIssue(result);
+	    				System.out.println(result);
+	    			}
+	    		}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -3,13 +3,10 @@ package ch.unibe.scg;
 import java.util.ArrayList;
 
 import ch.unibe.scg.model.Commit;
-import ch.unibe.scg.model.CommitIssue;
+import ch.unibe.scg.model.IssuedCommit;
 import ch.unibe.scg.model.Project;
 import ch.unibe.scg.parser.IssueStringParser;
-import ch.unibe.scg.parser.IssueTrackerParser;
-import ch.unibe.scg.repository.GitLoader;
 import ch.unibe.scg.repository.GitRepository;
-import ch.unibe.scg.repository.GithubRepository;
 
 public class Playground {
 	public static void main(String[] args) {
@@ -30,12 +27,20 @@ public class Playground {
 		GitRepository g = new GitRepository(project);
 		ArrayList<Commit> commits = g.getCommits();
 		
-		project.addCommits(commits);
+		ArrayList<IssuedCommit> issuedCommits = new ArrayList<IssuedCommit>();
+		//project.addCommits(commits);
 		
 		IssueStringParser issueParser = new IssueStringParser("^(\\w+\\-\\d+).");
-		issueParser.parse(commits);
+		for(Commit c : commits) {
+			String issueIdentifier = issueParser.parse(c.getMessage());
+			
+			IssuedCommit commit = new IssuedCommit(c);
+			commit.initIssue(issueIdentifier);
+			issuedCommits.add(commit);
+		}
+			
 		
-		ThreadPool tp = new ThreadPool(commits, "https://issues.apache.org/jira/si/jira.issueviews:issue-xml/%s/%s.xml");
+		ThreadPool tp = new ThreadPool(issuedCommits, "https://issues.apache.org/jira/si/jira.issueviews:issue-xml/%s/%s.xml");
 		tp.run();
 		
 		/*try {

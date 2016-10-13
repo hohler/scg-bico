@@ -4,11 +4,10 @@ import java.util.ArrayList;
 
 public class Commit {
 	
-	private ArrayList<CommitFile> files;
-	private int additions;
-	private int deletions;
-	private String message;
-	private CommitIssue commitIssue;
+	protected ArrayList<CommitFile> files;
+	protected int additions;
+	protected int deletions;
+	protected String message;
 	
 	private int type;
 	
@@ -52,19 +51,13 @@ public class Commit {
 
 	public void setType(int type) {
 		this.type = type;
+	}	
+	
+	public ArrayList<CommitFile> getFiles() {
+		return files;
 	}
 	
-	public CommitIssue getCommitIssue() {
-		return commitIssue;
+	public String toString() {
+		return message.split("\\r?\\n")[0];
 	}
-
-	public void setCommitIssue(CommitIssue commitIssue) {
-		this.commitIssue = commitIssue;
-	}
-	
-	public void initIssue(String issue) {
-		commitIssue = new CommitIssue(issue);
-		commitIssue.setCommit(this);
-	}
-
 }

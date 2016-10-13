@@ -28,6 +28,13 @@ public class GitRepository implements IRepository {
 		else System.err.println("Could not load git repository");
 	}
 	
+	public GitRepository(String url, String branch) {
+		GitLoader gitLoader = new GitLoader(url, branch);
+		boolean result = gitLoader.init();
+		if(result) init(gitLoader);
+		else System.err.println("Could not load git repository");
+	}
+	
 	public GitRepository(GitLoader gitLoader) {
 		init(gitLoader);
 	}

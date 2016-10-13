@@ -12,17 +12,12 @@ import ch.unibe.scg.model.Commit;
 import ch.unibe.scg.model.Project;
 import ch.unibe.scg.repository.Repository;
 
-public class CommitItemReader implements ItemReader<Commit> {
+public class RepositoryReader implements ItemReader<Commit> {
 
-	private Project project;
 	private ArrayList<Commit> commits;
 	private Iterator<Commit> iterator;
 	
-	public void setProject(Project project) {
-		this.project = project;
-	}
-	
-	public void init() {
+	public RepositoryReader(Project project) {
 		Repository g = new Repository(project);
 		commits = g.getCommits();
 		iterator = commits.iterator();

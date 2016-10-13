@@ -17,6 +17,10 @@ public class Repository implements IRepository {
 			repository = new GithubRepository(project.getUrl());
 		}
 	}
+	
+	public Repository(String url, String branch) {
+		repository = new GitRepository(url, branch);
+	}
 
 	@Override
 	public ArrayList<Commit> getCommits() {

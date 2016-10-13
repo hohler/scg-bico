@@ -18,13 +18,23 @@ public class IssueStringParser {
 		}
 	}
 	
-	public void parse(Commit commit) {
-		Matcher m = regex.matcher(commit.getMessage());
+	public String parse(Commit commit) {
+		return internalParse(commit.getMessage());
+		//commit.initIssue(s);
+	}
+	
+	public String parse(String commitMessage) {
+		return internalParse(commitMessage);
+	}
+	
+	private String internalParse(String commitMessage) {
+		Matcher m = regex.matcher(commitMessage.trim());
 		if(m.find()) {
-			if(m.group(1) == null) System.err.println(commit.getMessage().split("\\r?\\n")[0]);
-			commit.initIssue( m.group(1).toUpperCase() );
+			if(m.group(1) == null) System.err.println(commitMessage.split("\\r?\\n")[0]);
+			return m.group(1).toUpperCase();
 		} else {
-			System.err.println("Can't parse issue "+commit.getMessage().split("\\r?\\n")[0]);
+			System.err.println("Can't parse issue "+commitMessage.split("\\r?\\n")[0]);
 		}
+		return null;
 	}
 }

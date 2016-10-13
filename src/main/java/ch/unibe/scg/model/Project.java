@@ -6,7 +6,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Project {
@@ -96,13 +95,13 @@ public class Project {
 				id, name, type, url);
 	}
 	
-	public List<CommitIssue> getAllIssues() {
+	/*public List<CommitIssue> getAllIssues() {
 		List<CommitIssue> result = new ArrayList<CommitIssue>();
 		for(Commit c : commits) {
 			result.add(c.getCommitIssue());
 		}
 		return result;
-	}
+	}*/
 
 	public void setIssueTrackerUrlPattern(String string) {
 		issueTrackerUrlPattern = string;

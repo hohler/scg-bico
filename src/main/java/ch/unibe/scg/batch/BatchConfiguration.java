@@ -1,37 +1,40 @@
 package ch.unibe.scg.batch;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.listener.ExecutionContextPromotionListener;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 
-import ch.unibe.scg.batch.processor.CommitItemProcessor;
-import ch.unibe.scg.batch.processor.IssueItemProcessor;
-import ch.unibe.scg.batch.reader.CommitItemReader;
-import ch.unibe.scg.batch.reader.IssueItemReader;
-import ch.unibe.scg.batch.writer.CommitItemWriter;
-import ch.unibe.scg.batch.writer.IssueItemWriter;
+import ch.unibe.scg.batch.processor.RepositoryProcessor;
+import ch.unibe.scg.batch.processor.IssuedCommitProcessor;
+import ch.unibe.scg.batch.reader.RepositoryReader;
+import ch.unibe.scg.batch.reader.IssuedCommitReader;
+import ch.unibe.scg.batch.writer.RepositoryWriter;
+import ch.unibe.scg.batch.writer.IssuedCommitWriter;
 import ch.unibe.scg.model.Commit;
-import ch.unibe.scg.model.CommitIssue;
+import ch.unibe.scg.model.IssuedCommit;
 import ch.unibe.scg.model.Project;
 
 @Configuration
 @EnableBatchProcessing
 @EnableAutoConfiguration
 public class BatchConfiguration {
+	
+	//private final String URL = "https://github.com/apache/flume";
+	//private final String BRANCH = "trunk";
 
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;
@@ -39,56 +42,55 @@ public class BatchConfiguration {
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 	
-	@Autowired
-	private Project project;
-
-	public BatchConfiguration() {
+	@Bean
+	public Project project() {
 		Project project = new Project(Project.Type.GIT);
 		project.setUrl("https://github.com/apache/flume");
 		project.setName("flume");
 		project.setBranch("trunk");
 		project.setIssueTrackerUrlPattern("https://issues.apache.org/jira/si/jira.issueviews:issue-xml/%s/%s.xml");
 		System.err.println(project);
+		return project;
 	}
 	
-	@Bean
-	public ItemReader<Commit> commitReader() {
-		CommitItemReader reader = new CommitItemReader();
-		reader.setProject(project);
-		return reader;
-	}
-
-	@Bean
-	public ItemProcessor<Commit, Commit> commitProcessor() {
-		CommitItemProcessor processor = new CommitItemProcessor();
-		return processor;
-	}
-
-	@Bean
-	public ItemWriter<Commit> commitWriter() {
-		return new CommitItemWriter();
+	@Bean("promotionListener")
+	public ExecutionContextPromotionListener promotionListener() {
+		ExecutionContextPromotionListener listener = new ExecutionContextPromotionListener();
+		listener.setKeys( new String[] { "issuedCommits" } );
+		return listener;
 	}
 	
-	@Bean
-	public ItemReader<CommitIssue> issueReader() {
-		IssueItemReader reader = new IssueItemReader();
-		reader.setProject(project);
-		return reader;
+	@Bean("repositoryReader")
+	public ItemReader<Commit> repositoryReader(Project project) {
+		return new RepositoryReader(project);
 	}
 
-	@Bean
-	public ItemProcessor<CommitIssue, CommitIssue> issueProcessor() {
-		IssueItemProcessor processor = new IssueItemProcessor();
-		processor.setIssueTrackerUrlPattern(project.getIssueTrackerUrlPattern());
-		return processor;
+	@Bean("repositoryProcessor")
+	public ItemProcessor<Commit, IssuedCommit> repositoryProcessor() {
+		return new RepositoryProcessor();
 	}
 
-	@Bean
-	public ItemWriter<CommitIssue> issueWriter() {
-		return new IssueItemWriter();
+	@Bean("repositoryWriter")
+	public ItemWriter<IssuedCommit> repositoryWriter() {
+		return new RepositoryWriter();
 	}
 	
-	@Bean
+	@Bean("issuedCommitReader")
+	public ItemReader<IssuedCommit> issuedCommitReader() {
+		return new IssuedCommitReader();
+	}
+
+	@Bean("issuedCommitProcessor")
+	public ItemProcessor<IssuedCommit, IssuedCommit> issuedCommitProcessor(Project project) {
+		return new IssuedCommitProcessor(project);
+	}
+
+	@Bean("issuedCommitWriter")
+	public ItemWriter<IssuedCommit> issuedCommitWriter() {
+		return new IssuedCommitWriter();
+	}
+	
+	@Bean("issuedCommitTaskExecutor")
 	public TaskExecutor issueTaskExecutor() {
 		SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor();
 		executor.setConcurrencyLimit(20);
@@ -96,33 +98,40 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public Job job() throws Exception {
+	public Job job(@Qualifier("repositoryToCollectionOfCommits") Step step1, @Qualifier("getIssueInformationForEachCommit") Step step2) throws Exception {
 		return jobBuilderFactory.get("job1")
 				.incrementer(new RunIdIncrementer())
-				.start(processCommits())
-				.next(processIssues())
+				.start(step1)
+				.next(step2)
 				.build();
 	}
 
 	@Bean
-	public Step processCommits() {
-		return stepBuilderFactory.get("processCommits")
-				.<Commit, Commit> chunk(20)
-				.reader(commitReader())
-				.processor(commitProcessor())
-				.writer(commitWriter())
+	public Step repositoryToCollectionOfCommits(@Qualifier("repositoryReader") ItemReader<Commit> reader,
+			@Qualifier("repositoryWriter") ItemWriter<IssuedCommit> writer,
+			@Qualifier("repositoryProcessor") ItemProcessor<Commit, IssuedCommit> processor,
+			@Qualifier("promotionListener") ExecutionContextPromotionListener promotionListener) {
+		return stepBuilderFactory.get("repositoryToCollectionOfCommits")
+				.<Commit, IssuedCommit> chunk(100)
+				.reader(reader)
+				.processor(processor)
+				.writer(writer)
+				.listener(promotionListener)
 				.build();
 	}
 	
 	
 	@Bean
-	public Step processIssues() {
-		return stepBuilderFactory.get("processIssues")
-				.<CommitIssue, CommitIssue> chunk(20)
-				.reader(issueReader())
-				.processor(issueProcessor())
-				.writer(issueWriter())
-				.taskExecutor(issueTaskExecutor())
+	public Step getIssueInformationForEachCommit(@Qualifier("issuedCommitReader") ItemReader<IssuedCommit> reader,
+			@Qualifier("issuedCommitWriter") ItemWriter<IssuedCommit> writer,
+			@Qualifier("issuedCommitProcessor") ItemProcessor<IssuedCommit, IssuedCommit> processor,
+			@Qualifier("issuedCommitTaskExecutor") TaskExecutor executor) {
+		return stepBuilderFactory.get("getIssueInformationForEachCommit")
+				.<IssuedCommit, IssuedCommit> chunk(10)
+				.reader(reader)
+				.processor(processor)
+				.writer(writer)
+				.taskExecutor(executor)
 				.build();
 	}
 	
