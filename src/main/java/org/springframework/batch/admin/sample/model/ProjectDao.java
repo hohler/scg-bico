@@ -8,15 +8,17 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProjectDao {
+public class ProjectDao implements ProjectDaoInterface {
 
 	@PersistenceContext
 	private EntityManager em;
 
+	@Override
 	public void persist(Project project) {
 		em.persist(project);
 	}
 
+	@Override
 	public List<Project> findAll() {
 		return em.createQuery("SELECT p FROM Project p").getResultList();
 	}

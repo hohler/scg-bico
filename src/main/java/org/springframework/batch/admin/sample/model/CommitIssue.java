@@ -1,5 +1,11 @@
 package org.springframework.batch.admin.sample.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table
 public class CommitIssue {
 
 	public enum Priority {
@@ -43,8 +49,13 @@ public class CommitIssue {
 	    }
 	}
 	
+	@Id
+	private Long id;
+	
 	private Type type = Type.OTHER;
+	
 	private Priority priority = Priority.OTHER;
+	
 	private String name = "";
 	
 	public CommitIssue() {

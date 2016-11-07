@@ -2,8 +2,14 @@ package org.springframework.batch.admin.sample.model;
 
 import java.util.ArrayList;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+
+@Entity
 public class IssuedCommit extends Commit {
 	
+	@OneToOne(cascade = CascadeType.ALL)
 	protected CommitIssue commitIssue;
 	
 	public IssuedCommit() {

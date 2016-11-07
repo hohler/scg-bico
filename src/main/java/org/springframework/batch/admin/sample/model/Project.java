@@ -1,11 +1,16 @@
 package org.springframework.batch.admin.sample.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table
 public class Project {
 
 	@Id
@@ -17,7 +22,8 @@ public class Project {
 	private String branch;
 	private String issueTrackerUrlPattern;
 	
-	private ArrayList<Commit> commits;
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Commit> commits;
 	
 	public enum Type {
 		GITHUB("Github"), GIT("Git");
@@ -70,7 +76,7 @@ public class Project {
 		this.type = type;
 	}
 
-	public ArrayList<Commit> getCommits() {
+	public List<Commit> getCommits() {
 		return commits;
 	}
 
@@ -115,5 +121,8 @@ public class Project {
 		return issueTrackerUrlPattern;
 	}
 	
+	public Long getId() {
+		return id;
+	}
 	
 }

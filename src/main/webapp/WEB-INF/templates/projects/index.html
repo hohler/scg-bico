@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Projects : View all</title>
+</head>
+<body>
+	<h1 layout:fragment="header">Projects : View all</h1>
+	<div layout:fragment="content" class="container">
+	<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+		<div class="pull-right" style="margin-bottom:10px;">
+			<a href="form.html" class="btn btn-primary" th:href="@{/users/create}">Create Project</a>
+		</div>
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Options</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${projects.empty}">
+					<td colspan="4">No projects</td>
+				</tr>
+				<tr th:each="project : ${projects}">
+					<td th:text="${project.id}">id</td>
+					<td th:text="${project.name}">name</td>
+					<td th:text="${project.type}">Type</td>
+					<td><a href="view.html" th:href="@{'/projects/' + ${project.id}}"> Details </a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

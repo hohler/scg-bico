@@ -9,7 +9,13 @@
 
 <table>
 <tr>
+	<th>ID</th>
+	<th>Name</th>
+	<th>Type</th>
+</tr>
+<tr>
 	<c:forEach var="p" items="${projects}">
+	<td><c:out value="${p.id}" /></td>
 	<td><c:out value="${p.name}" /></td>
 	<td><c:out value="${p.type}" /></td>
 	</c:forEach>

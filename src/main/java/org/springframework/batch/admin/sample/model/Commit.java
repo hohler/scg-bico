@@ -1,12 +1,28 @@
 package org.springframework.batch.admin.sample.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "commits")
 public class Commit {
 	
-	protected ArrayList<CommitFile> files;
+	@Id
+	protected Long id;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	protected List<CommitFile> files;
+	
 	protected int additions;
+	
 	protected int deletions;
+	
 	protected String message;
 	
 	private int type;
@@ -53,7 +69,7 @@ public class Commit {
 		this.type = type;
 	}	
 	
-	public ArrayList<CommitFile> getFiles() {
+	public List<CommitFile> getFiles() {
 		return files;
 	}
 	

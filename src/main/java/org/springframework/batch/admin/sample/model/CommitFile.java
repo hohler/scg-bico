@@ -1,18 +1,34 @@
 package org.springframework.batch.admin.sample.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import org.eclipse.jgit.diff.DiffEntry;
 import org.springframework.batch.admin.sample.model.CommitFile;
 
+@Entity
+@Table
 public class CommitFile {
-	public int additions;
-	public int deletions;
-	public int changes;
-	public String fileName;
 	
-	public String oldPath;
-	public String newPath;
-	public String patch;
-	public ChangeType changeType;
+	@Id
+	private Long id;
+	
+	private int additions;
+	
+	private int deletions;
+	
+	private int changes;
+	
+	private String fileName;
+	
+	private String oldPath;
+	
+	private String newPath;
+	
+	private String patch;
+	
+	private ChangeType changeType;
 	
 	public static enum ChangeType {
 		/** Add a new file to the project */

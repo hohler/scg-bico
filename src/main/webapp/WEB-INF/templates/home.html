@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Home</title>
+</head>
+<body>
+	<h1 layout:fragment="header">Home</h1>
+	<div layout:fragment="content" class="container">
+		<div class="jumbotron">
+        <h1>LDAP</h1>
+        <p>This is just a rudimentary LDAP client for modifing "person" objects on <span th:text="${ldapBase}"></span></p>
+      	</div>
+   	</div>
+</body>
+</html>
