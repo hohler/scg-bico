@@ -58,8 +58,8 @@ public class JiraParser implements Parser {
 			Element element = (Element) node;
 			
 			//String key = element.getElementsByTagName("key").item(0).getTextContent();
-			String type = element.getElementsByTagName("type").item(0).getTextContent();
-			String priority = element.getElementsByTagName("priority").item(0).getTextContent();
+			String type = element.getElementsByTagName("type").item(0).getNodeValue();
+			String priority = element.getElementsByTagName("priority").item(0).getNodeValue();
 			
 			//issue.setName(key);			
 			
