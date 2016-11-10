@@ -6,8 +6,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
+@Repository
 public class ProjectDao implements ProjectDaoInterface {
 
 	@PersistenceContext
@@ -23,6 +24,20 @@ public class ProjectDao implements ProjectDaoInterface {
 		return em.createQuery("SELECT p FROM Project p").getResultList();
 	}
 	
+	@Override
+	public Project findById(Long id) {
+		return em.find(Project.class, id);
+	}
+	
+	@Override
+	public void delete(Project project) {
+		em.remove(project);
+	}
+	
+	@Override
+	public void update(Project project) {
+		em.merge(project);
+	}
 	/*public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}*/

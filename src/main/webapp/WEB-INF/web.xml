@@ -6,7 +6,9 @@
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:/org/springframework/batch/admin/web/resources/webapp-config.xml</param-value>
+		<!-- <param-value>classpath*:/org/springframework/batch/admin/web/resources/webapp-config.xml</param-value> -->
+		<!-- <param-value>/WEB-INF/spring.xml</param-value> -->
+		<param-value>/WEB-INF/applicationContext.xml</param-value>
 	</context-param>
 
 	<listener>
@@ -55,6 +57,7 @@
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
 			<param-value>classpath*:/org/springframework/batch/admin/web/resources/servlet-config.xml</param-value>
+			<!-- <param-value>/WEB-INF/batch-config.xml</param-value> -->
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>

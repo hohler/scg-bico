@@ -1,0 +1,39 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<title>Projects : View</title>
+</head>
+<body>
+	<h1 layout:fragment="header"><span th:text="${project.name}"></span> : Details</h1>
+	<div layout:fragment="content" class="container">
+		<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+		<dl>
+			<dt>ID</dt>
+			<dd id=id th:text="${project.id}">id</dd>
+			<br />
+			<dt>Name</dt>
+			<dd id="name" th:text="${project.name}">name</dd>
+			<br />
+			<dt>URL</dt>
+			<dd id="url" th:text="${project.url}">url</dd>
+			<br />
+			<dt>Type</dt>
+			<dd id="type" th:text="${project.type}">type</dd>
+			<br />
+			<dt>Issue Tracker URL Pattern</dt>
+			<dd id="issueTracker" th:text="${project.issueTrackerUrlPattern}">pattern</dd>
+			
+		</dl>
+		<div class="pull-left">
+			<a href="form.html" class="btn btn-primary"
+				th:href="@{'/projects/modify/' + ${project.id}}"> modify </a>
+			<a href="projects" class="btn btn-danger" th:href="@{'/projects/delete/' + ${project.id}}">
+				delete </a>
+			<a href="projects" class="btn btn-default" th:href="@{'/projects'}">
+				back </a>
+		</div>
+	</div>
+</body>
+</html>

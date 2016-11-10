@@ -1,6 +1,8 @@
 package org.springframework.batch.admin.sample.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -12,6 +14,7 @@ import org.springframework.batch.admin.sample.model.CommitFile;
 public class CommitFile {
 	
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
 	private int additions;
@@ -30,7 +33,7 @@ public class CommitFile {
 	
 	private ChangeType changeType;
 	
-	public static enum ChangeType {
+	public enum ChangeType {
 		/** Add a new file to the project */
 		ADD,
 		/** Modify an existing file in the project (content and/or mode) */

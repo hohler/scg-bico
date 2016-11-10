@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<title>Projects : Create</title>
+</head>
+<body>
+	<h1 layout:fragment="header">Projects : Create</h1>
+	<div layout:fragment="content" class="container">
+	
+	<form id="projectForm" th:action="@{/projects/create}" th:object="${project}" action="#" method="post">
+	<div th:include="fragments/projects/form :: form"></div>
+	
+			<div class="form-actions">
+				<input type="submit" class="btn btn-success" value="Save" />
+				<a th:href="@{'/projects}" class="btn btn-default">Back</a>
+			</div>
+	</form>
+</div>
+</body>
+</html>
+	

@@ -7,5 +7,11 @@ public interface ProjectDaoInterface {
 	void persist(Project project);
 
 	List<Project> findAll();
+	
+	Project findById(Long id);
+
+	void delete(Project project);
+
+	void update(Project project);
 
 }

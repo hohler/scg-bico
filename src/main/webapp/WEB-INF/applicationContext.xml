@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:tx="http://www.springframework.org/schema/tx"	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+			http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd"
+			>
+
+	<!-- Workaround for INT-1831 -->
+	<!-- <bean id="dummy" class="java.util.Date"/>
+
+ 	
+ 	<bean id="parameterUnpackerFilter" class="org.springframework.batch.admin.web.filter.ParameterUnpackerFilter">
+ 		<property name="prefix" value="unpack_"/>
+ 		<property name="putEmptyParamsInPath" value="true"/>
+ 	</bean> -->
+ 	
+ 	<!-- Scans the classpath for annotated components that will be auto-registered as Spring beans -->
+	<context:component-scan base-package="org.springframework.batch.admin.sample">
+		<context:exclude-filter type="regex" expression="org.springframework.batch.admin.sample.job.*" />  
+	</context:component-scan>
+
+	<!-- Activates various annotations to be detected in bean classes e.g: @Autowired -->
+	<context:annotation-config />
+	
+	<!--  <bean id="projectDao" class="org.springframework.batch.admin.sample.model.ProjectDao">
+		<property name="entityManager" ref="entityManagerFactory" />
+	</bean>
+	
+	<bean id="projectService" class="org.springframework.batch.admin.sample.model.ProjectService">
+		<property name="projectDao" ref="projectDao" />
+	</bean>-->
+
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+		<property name="url" value="jdbc:hsqldb:mem://projectDb" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+	</bean>
+	
+	<bean id="entityManagerFactory" 
+			class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+			p:packagesToScan="org.springframework.batch.admin.sample.model"
+            p:dataSource-ref="dataSource"
+			>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="generateDdl" value="false" />
+				<property name="showSql" value="true" />
+			</bean>
+		</property>
+		<property name="jpaProperties">
+	        <props>
+	            <prop key="hibernate.hbm2ddl.auto">update</prop>
+	            <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+	        </props>
+	    </property>
+	    <property name="dataSource" ref="dataSource" />
+
+	</bean>
+
+	<!-- Transactions -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" >
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	<!-- enable the configuration of transactional behavior based on annotations -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+ 	
+ 	<import resource="batch-config.xml" />
+
+	<!-- <import resource="classpath*:/org/springframework/batch/admin/web/resources/webapp-config.xml" /> -->
+ 	<!-- <import resource="classpath*:/META-INF/spring/batch/bootstrap/**/*.xml" /> -->
+ 	<!-- <import resource="classpath*:/META-INF/spring/batch/override/**/*.xml" /> -->
+</beans>
