@@ -35,6 +35,18 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+
+	<!-- Open Entity Manager in View filter -->
+	<filter>
+	    <filter-name>openEntityManagerInViewFilter</filter-name>
+	    <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>openEntityManagerInViewFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
 	<!-- Processes application requests -->
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
@@ -56,8 +68,9 @@
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath*:/org/springframework/batch/admin/web/resources/servlet-config.xml</param-value>
+			<!--  <param-value>classpath*:/org/springframework/batch/admin/web/resources/servlet-config.xml</param-value>-->
 			<!-- <param-value>/WEB-INF/batch-config.xml</param-value> -->
+			<param-value>/WEB-INF/spring/batch/servlet-config.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>

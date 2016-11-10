@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author Michael Minella
  */
-//@Configuration
+@Configuration
 public class JobConfiguration {
 
 	@Autowired

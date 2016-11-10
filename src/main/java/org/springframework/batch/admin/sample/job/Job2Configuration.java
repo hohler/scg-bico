@@ -31,6 +31,8 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 
+import groovy.lang.Singleton;
+
 import org.springframework.batch.admin.sample.processor.IssuedCommitProcessor;
 import org.springframework.batch.admin.sample.processor.RepositoryProcessor;
 import org.springframework.batch.admin.sample.reader.IssuedCommitReader;
@@ -68,6 +70,9 @@ public class Job2Configuration {
 	
 	@Autowired
 	private ProjectService projectService;
+	
+	@Autowired
+	private JobCreator jobCreator;
 	
 	public Job2Configuration() {
 		System.err.println("Job2Configuration initialized!");
@@ -139,49 +144,24 @@ public class Job2Configuration {
 		return executor;
 	}
 	
-	/*@PostConstruct
-	private void createJobs() throws DuplicateJobException {
+	/*@Bean
+	public JobCreator jobCreator() {
+		return new JobCreator();
+	}*/
+	
+
+	@PostConstruct
+	private void createJobs() {
 		
-		ProjectService projectService = appContext.getBean(ProjectService.class);
 		
-		for(Project project : projectService.listAll()) {			
+		for(Project project : projectService.listAll()) {
 		
-			Step step = stepBuilderFactory.get(project.getId().toString()+"_repositoryToCollectionOfCommits")
-					.<Commit, IssuedCommit> chunk(100)
-					.reader(repositoryReader(project))
-					.processor(repositoryProcessor())
-					.writer(repositoryWriter())
-					.listener(promotionListener())
-					.build();
-			
-			Step step2 = stepBuilderFactory.get(project.getId().toString()+"_getIssueInformationForEachCommit")
-					.<IssuedCommit, IssuedCommit> chunk(10)
-					.reader(issuedCommitReader())
-					.processor(issuedCommitProcessor(project))
-					.writer(issuedCommitWriter())
-					.taskExecutor(issueTaskExecutor())
-					.build();
-			
-			String jobName = project.getId().toString() + "_" + project.getName();
-			Job builder = jobBuilderFactory.get(jobName)
-					.incrementer(new RunIdIncrementer())
-					.start(step)
-					.next(step2)
-					.build();
-			
-			
-			try {
-				jobRegistry.getJob(jobName);
-			} catch (NoSuchJobException e) {
-				// TODO Auto-generated catch block
-				jobRegistry.register(new ReferenceJobFactory(builder));
-				//e.printStackTrace();
-			}
+			jobCreator.createJob(project);
 			
 			//ConfigurableListableBeanFactory beanFactory = (ConfigurableListableBeanFactory) appContext.getParentBeanFactory();
 			
 		}
-	}*/
+	}
 
 	@Bean
 	public Job job(Step repositoryToCollectionOfCommits, Step getIssueInformationForEachCommit) throws Exception {

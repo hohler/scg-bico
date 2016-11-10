@@ -43,6 +43,6 @@
 	
 	<beans:import resource="../root-context.xml" />
 
-	<task:annotation-driven />
+	<!-- <task:annotation-driven /> -->
 	
 </beans:beans>

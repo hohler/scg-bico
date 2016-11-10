@@ -20,14 +20,16 @@
  		<property name="prefix" value="unpack_"/>
  		<property name="putEmptyParamsInPath" value="true"/>
  	</bean> -->
- 	
- 	<!-- Scans the classpath for annotated components that will be auto-registered as Spring beans -->
-	<context:component-scan base-package="org.springframework.batch.admin.sample">
-		<context:exclude-filter type="regex" expression="org.springframework.batch.admin.sample.job.*" />  
-	</context:component-scan>
 
 	<!-- Activates various annotations to be detected in bean classes e.g: @Autowired -->
 	<context:annotation-config />
+	 	
+ 	<!-- Scans the classpath for annotated components that will be auto-registered as Spring beans -->
+	<context:component-scan base-package="org.springframework.batch.admin.sample">
+		<context:exclude-filter type="regex" expression="org.springframework.batch.admin.sample.controller.*" />  
+		<context:exclude-filter type="regex" expression="org.springframework.batch.admin.sample.job.*" />  
+	</context:component-scan>
+
 	
 	<!--  <bean id="projectDao" class="org.springframework.batch.admin.sample.model.ProjectDao">
 		<property name="entityManager" ref="entityManagerFactory" />
@@ -38,10 +40,14 @@
 	</bean>-->
 
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-		<property name="url" value="jdbc:hsqldb:mem://projectDb" />
-		<property name="username" value="sa" />
-		<property name="password" value="" />
+	<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<!-- <property name="driverClassName" value="org.hsqldb.jdbcDriver" /> -->
+		<property name="url" value="jdbc:mysql://localhost:3306/bico" />
+		<!-- <property name="url" value="jdbc:hsqldb:mem://projectDb" /> -->
+		<property name="username" value="bico" />
+		<!-- <property name="username" value="sa" /> -->
+		<property name="password" value="bico" />
+		<!-- <property name="password" value="" /> -->
 	</bean>
 	
 	<bean id="entityManagerFactory" 
@@ -53,12 +59,14 @@
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="generateDdl" value="false" />
 				<property name="showSql" value="true" />
+				<property name="database" value="MYSQL" />
 			</bean>
 		</property>
 		<property name="jpaProperties">
 	        <props>
 	            <prop key="hibernate.hbm2ddl.auto">update</prop>
-	            <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+	            <!-- <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop> -->
+	            <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
 	        </props>
 	    </property>
 	    <property name="dataSource" ref="dataSource" />
@@ -73,6 +81,8 @@
 	<tx:annotation-driven transaction-manager="transactionManager" />
  	
  	<import resource="batch-config.xml" />
+ 	
+ 	<bean id="jobCreator" class="org.springframework.batch.admin.sample.job.JobCreator" />
 
 	<!-- <import resource="classpath*:/org/springframework/batch/admin/web/resources/webapp-config.xml" /> -->
  	<!-- <import resource="classpath*:/META-INF/spring/batch/bootstrap/**/*.xml" /> -->

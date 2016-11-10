@@ -8,6 +8,7 @@
 			>
 
 
-	<import resource="classpath*:/org/springframework/batch/admin/web/resources/webapp-config.xml" />
+	<!-- <import resource="classpath*:/org/springframework/batch/admin/web/resources/webapp-config.xml" /> -->
+	<import resource="spring/batch/webapp-config.xml" />
 	<!-- <import resource="classpath*:/org/springframework/batch/admin/web/resources/servlet-config.xml" /> -->
 </beans>

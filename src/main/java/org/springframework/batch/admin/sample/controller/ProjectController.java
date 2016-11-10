@@ -4,10 +4,13 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.batch.admin.sample.job.Job2Configuration;
+import org.springframework.batch.admin.sample.job.JobCreator;
 import org.springframework.batch.admin.sample.model.Project;
 import org.springframework.batch.admin.sample.model.ProjectService;
 import org.springframework.batch.admin.sample.model.ProjectServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,6 +26,10 @@ public class ProjectController {
 
 	@Autowired
 	private ProjectService projectService;
+	
+	@Autowired
+	@Lazy
+	private JobCreator jobCreator;
 	
 	public ProjectController() {
 		// TODO Auto-generated constructor stub
@@ -56,6 +63,9 @@ public class ProjectController {
 			return new ModelAndView("projects/create_form", "formErrors", result.getAllErrors());
 		}
 		projectService.add(project);
+		
+		jobCreator.createJob(project);
+		
 		redirect.addFlashAttribute("globalMessage", "Successfully created a new project");
 		return new ModelAndView("redirect:/projects/{project.id}", "project.id", project.getId());
 	}

@@ -17,6 +17,7 @@ public class ProjectDao implements ProjectDaoInterface {
 	@Override
 	public void persist(Project project) {
 		em.persist(project);
+		em.flush();
 	}
 
 	@Override

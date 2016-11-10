@@ -2,6 +2,7 @@ package org.springframework.batch.admin.sample;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.dao.DataAccessException;
+import org.springframework.orm.jpa.vendor.Database;
 
 import java.util.Arrays;
 
