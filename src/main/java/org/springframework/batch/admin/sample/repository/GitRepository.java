@@ -20,8 +20,10 @@ import org.springframework.batch.admin.sample.model.Project;
 public class GitRepository implements IRepository {
 
 	private Repository repository;
+	private Project project;
 	
 	public GitRepository(Project project) {
+		this.project = project;
 		GitLoader gitLoader = new GitLoader(project.getUrl(), project.getBranch());
 		boolean result = gitLoader.init();
 		if(result) init(gitLoader);
@@ -60,14 +62,20 @@ public class GitRepository implements IRepository {
 		try {
 			Iterable<RevCommit> commits = git.log().call();
 			
+			Commit parent = null;
+			
 			for(RevCommit commit : commits) {
 				
 				// branch itself
 				if(commit.getParentCount() == 0) break;
 				
 				Commit c = new Commit();
+				c.setProject(project);
 				result.add(c);
 				c.setMessage(commit.getFullMessage());
+				c.setParentCommit(parent);
+				
+				parent = c;
 				
 				System.out.println("commit: "+commit.getShortMessage());
 

@@ -4,13 +4,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.eclipse.jgit.diff.DiffEntry;
 import org.springframework.batch.admin.sample.model.CommitFile;
 
 @Entity
-@Table
+@Table(name="commitfiles")
 public class CommitFile {
 	
 	@Id
@@ -32,6 +33,9 @@ public class CommitFile {
 	private String patch;
 	
 	private ChangeType changeType;
+	
+	@ManyToOne
+	private Commit commit;
 	
 	public enum ChangeType {
 		/** Add a new file to the project */

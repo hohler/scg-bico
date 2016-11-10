@@ -4,10 +4,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table
+@Table(name="commitissues")
 public class CommitIssue {
 
 	public enum Priority {
@@ -54,6 +55,9 @@ public class CommitIssue {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
+	
+	@OneToOne
+	private IssuedCommit commit;
 	
 	private Type type = Type.OTHER;
 	

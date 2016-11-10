@@ -7,8 +7,8 @@ import org.springframework.orm.jpa.vendor.Database;
 import java.util.Arrays;
 
 import org.springframework.batch.admin.sample.model.Project;
-import org.springframework.batch.admin.sample.model.ProjectDaoInterface;
-import org.springframework.batch.admin.sample.model.ProjectService;
+import org.springframework.batch.admin.sample.model.dao.ProjectDaoInterface;
+import org.springframework.batch.admin.sample.model.service.ProjectService;
 
 public class SpringOrmMain {
 	

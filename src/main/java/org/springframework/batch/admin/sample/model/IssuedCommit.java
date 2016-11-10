@@ -9,7 +9,7 @@ import javax.persistence.OneToOne;
 @Entity
 public class IssuedCommit extends Commit {
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "commit")
 	protected CommitIssue commitIssue;
 	
 	public IssuedCommit() {
@@ -18,10 +18,13 @@ public class IssuedCommit extends Commit {
 	
 	public IssuedCommit(Commit commit) {
 		super();
+		id = commit.getId();
+		project = commit.getProject();
 		files = new ArrayList<CommitFile>(commit.getFiles());
 		additions = commit.getAdditions();
 		deletions = commit.getDeletions();
 		message = commit.getMessage();
+		parentCommit = commit.getParentCommit();
 	}
 	
 	public CommitIssue getCommitIssue() {

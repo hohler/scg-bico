@@ -47,7 +47,7 @@ import javax.annotation.Resource;
 import org.springframework.batch.admin.sample.model.Commit;
 import org.springframework.batch.admin.sample.model.IssuedCommit;
 import org.springframework.batch.admin.sample.model.Project;
-import org.springframework.batch.admin.sample.model.ProjectService;
+import org.springframework.batch.admin.sample.model.service.ProjectService;
 
 @Configuration
 //@DependsOn("projectService")

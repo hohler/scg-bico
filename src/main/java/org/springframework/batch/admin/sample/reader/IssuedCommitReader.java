@@ -25,7 +25,7 @@ public class IssuedCommitReader implements ItemReader<IssuedCommit> {
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	@BeforeStep
     public void retrieveInterstepData(StepExecution stepExecution) {
         JobExecution jobExecution = stepExecution.getJobExecution();
@@ -37,5 +37,5 @@ public class IssuedCommitReader implements ItemReader<IssuedCommit> {
         } else {
         	issues = null;
         }
-    }
+    }*/
 }

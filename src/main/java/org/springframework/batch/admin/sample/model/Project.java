@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table
+@Table(name="projects")
 public class Project {
 
 	@Id
@@ -25,7 +25,7 @@ public class Project {
 	private String branch;
 	private String issueTrackerUrlPattern;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="project")
 	private List<Commit> commits;
 	
 	public enum Type {

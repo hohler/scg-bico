@@ -1,10 +1,11 @@
-package org.springframework.batch.admin.sample.model;
+package org.springframework.batch.admin.sample.model.dao;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.springframework.batch.admin.sample.model.Project;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 

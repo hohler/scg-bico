@@ -1,6 +1,8 @@
-package org.springframework.batch.admin.sample.model;
+package org.springframework.batch.admin.sample.model.dao;
 
 import java.util.List;
+
+import org.springframework.batch.admin.sample.model.Project;
 
 public interface ProjectDaoInterface {
 
