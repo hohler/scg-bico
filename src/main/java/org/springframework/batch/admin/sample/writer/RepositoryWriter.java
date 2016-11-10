@@ -2,24 +2,22 @@ package org.springframework.batch.admin.sample.writer;
 
 import java.util.List;
 
-import org.springframework.batch.admin.sample.model.IssuedCommit;
+import org.springframework.batch.admin.sample.model.Commit;
 import org.springframework.batch.admin.sample.model.service.CommitService;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.BeforeStep;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
-public class RepositoryWriter implements ItemWriter<IssuedCommit> {
+public class RepositoryWriter implements ItemWriter<Commit> {
 
 	//private StepExecution stepExecution;
 	
 	@Autowired
+	@Lazy
 	private CommitService commitService;
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public void write(List<? extends IssuedCommit> items) throws Exception {
+	public void write(List<? extends Commit> items) throws Exception {
 		
 		/*ExecutionContext stepContext = this.stepExecution.getExecutionContext();
         
@@ -31,7 +29,8 @@ public class RepositoryWriter implements ItemWriter<IssuedCommit> {
 			stepContext.put("issuedCommits",  list);
 		}*/
 		
-		for(IssuedCommit commit : items) {
+		System.out.println("commitservice:" + commitService);
+		for(Commit commit : items) {
 			commitService.add(commit);
 		}
 		

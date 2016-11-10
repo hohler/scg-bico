@@ -56,8 +56,8 @@ public class CommitIssue {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
-	@OneToOne
-	private IssuedCommit commit;
+	@OneToOne(mappedBy = "commitIssue")
+	private Commit commit;
 	
 	private Type type = Type.OTHER;
 	

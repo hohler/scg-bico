@@ -1,13 +1,12 @@
 package org.springframework.batch.admin.sample.job;
 
 import org.springframework.batch.admin.sample.model.Commit;
-import org.springframework.batch.admin.sample.model.IssuedCommit;
 import org.springframework.batch.admin.sample.model.Project;
-import org.springframework.batch.admin.sample.processor.IssuedCommitProcessor;
+import org.springframework.batch.admin.sample.processor.CommitProcessor;
 import org.springframework.batch.admin.sample.processor.RepositoryProcessor;
-import org.springframework.batch.admin.sample.reader.IssuedCommitReader;
+import org.springframework.batch.admin.sample.reader.CommitReader;
 import org.springframework.batch.admin.sample.reader.RepositoryReader;
-import org.springframework.batch.admin.sample.writer.IssuedCommitWriter;
+import org.springframework.batch.admin.sample.writer.CommitWriter;
 import org.springframework.batch.admin.sample.writer.RepositoryWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -52,7 +51,7 @@ public class JobCreator {
 	public void createJob(Project project) {
 		System.out.println(project);
 		Step step = stepBuilderFactory.get(project.getId().toString()+"_repositoryToCollectionOfCommits")
-				.<Commit, IssuedCommit> chunk(100)
+				.<Commit, Commit> chunk(100)
 				.reader(new RepositoryReader(project))
 				.processor(new RepositoryProcessor())
 				.writer(new RepositoryWriter())
@@ -60,10 +59,10 @@ public class JobCreator {
 				.build();
 		
 		Step step2 = stepBuilderFactory.get(project.getId().toString()+"_getIssueInformationForEachCommit")
-				.<IssuedCommit, IssuedCommit> chunk(10)
-				.reader(new IssuedCommitReader())
-				.processor(new IssuedCommitProcessor(project))
-				.writer(new IssuedCommitWriter())
+				.<Commit, Commit> chunk(10)
+				.reader(new CommitReader(project))
+				.processor(new CommitProcessor(project))
+				.writer(new CommitWriter())
 				.taskExecutor(issueTaskExecutor())
 				.build();
 		

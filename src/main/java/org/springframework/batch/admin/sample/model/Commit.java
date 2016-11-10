@@ -24,11 +24,14 @@ public class Commit {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "commit")
 	protected List<CommitFile> files;
 	
-	@OneToOne(cascade = CascadeType.DETACH)
+	@OneToOne(cascade = CascadeType.DETACH, optional=true)
 	protected Commit parentCommit;
 	
 	@OneToOne(mappedBy="parentCommit")
 	protected Commit childCommit;
+	
+	@OneToOne(cascade = CascadeType.ALL, optional=true)
+	protected CommitIssue commitIssue;
 	
 	@ManyToOne
 	protected Project project;
@@ -109,6 +112,17 @@ public class Commit {
 
 	public void setChildCommit(Commit childCommit) {
 		this.childCommit = childCommit;
+	}
+	
+	public CommitIssue getCommitIssue() {
+		return commitIssue;
+	}
+
+	public void setCommitIssue(CommitIssue commitIssue) {
+		this.commitIssue = commitIssue;
+	}
+	public void initIssue(String issue) {
+		commitIssue = new CommitIssue(issue);
 	}
 
 	public String toString() {

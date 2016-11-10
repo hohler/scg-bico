@@ -33,11 +33,11 @@ import org.springframework.core.task.TaskExecutor;
 
 import groovy.lang.Singleton;
 
-import org.springframework.batch.admin.sample.processor.IssuedCommitProcessor;
+import org.springframework.batch.admin.sample.processor.CommitProcessor;
 import org.springframework.batch.admin.sample.processor.RepositoryProcessor;
-import org.springframework.batch.admin.sample.reader.IssuedCommitReader;
+import org.springframework.batch.admin.sample.reader.CommitReader;
 import org.springframework.batch.admin.sample.reader.RepositoryReader;
-import org.springframework.batch.admin.sample.writer.IssuedCommitWriter;
+import org.springframework.batch.admin.sample.writer.CommitWriter;
 import org.springframework.batch.admin.sample.writer.RepositoryWriter;
 import org.springframework.batch.admin.service.JobService;
 
@@ -45,7 +45,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.springframework.batch.admin.sample.model.Commit;
-import org.springframework.batch.admin.sample.model.IssuedCommit;
 import org.springframework.batch.admin.sample.model.Project;
 import org.springframework.batch.admin.sample.model.service.ProjectService;
 
@@ -120,20 +119,20 @@ public class Job2Configuration {
 	
 	@Bean(name="issuedCommitReader")
 	//@JobScope
-	public IssuedCommitReader issuedCommitReader() {
-		return new IssuedCommitReader();
+	public CommitReader commitReader(Project project) {
+		return new CommitReader(project);
 	}
 
 	@Bean(name="issuedCommitProcessor")
 	//@StepScope
-	public IssuedCommitProcessor issuedCommitProcessor(Project project) {
-		return new IssuedCommitProcessor(project);
+	public CommitProcessor commitProcessor(Project project) {
+		return new CommitProcessor(project);
 	}
 
 	@Bean(name="issuedCommitWriter")
 	//@StepScope
-	public IssuedCommitWriter issuedCommitWriter() {
-		return new IssuedCommitWriter();
+	public CommitWriter issuedCommitWriter() {
+		return new CommitWriter();
 	}
 	
 	@Bean(name="issueTaskExecutor")
@@ -175,7 +174,7 @@ public class Job2Configuration {
 	@Bean
 	public Step repositoryToCollectionOfCommits() {
 		return stepBuilderFactory.get("repositoryToCollectionOfCommits")
-				.<Commit, IssuedCommit> chunk(100)
+				.<Commit, Commit> chunk(100)
 				.reader(repositoryReader(project()))
 				.processor(repositoryProcessor())
 				.writer(repositoryWriter())
@@ -187,9 +186,9 @@ public class Job2Configuration {
 	@Bean
 	public Step getIssueInformationForEachCommit() {
 		return stepBuilderFactory.get("getIssueInformationForEachCommit")
-				.<IssuedCommit, IssuedCommit> chunk(10)
-				.reader(issuedCommitReader())
-				.processor(issuedCommitProcessor(project()))
+				.<Commit, Commit> chunk(10)
+				.reader(commitReader(project()))
+				.processor(commitProcessor(project()))
 				.writer(issuedCommitWriter())
 				.taskExecutor(issueTaskExecutor())
 				.build();
