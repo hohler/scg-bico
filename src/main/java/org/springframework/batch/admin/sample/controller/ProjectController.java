@@ -70,15 +70,16 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "delete/{id}")
-	public ModelAndView delete(Long id, RedirectAttributes redirect) {
+	public ModelAndView delete(@PathVariable("id") Long id, RedirectAttributes redirect) {
 		Project project = projectService.findById(id);
+		jobCreator.removeJob(project);
 		projectService.delete(project);
 		redirect.addFlashAttribute("globalMessage", "Successfully deleted project");
 		return new ModelAndView("redirect:/projects");
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "modify/{id}")
-	public ModelAndView modifyForm(Long id) {
+	public ModelAndView modifyForm(@PathVariable("id") Long id) {
 		Project project = projectService.findById(id);
 		return new ModelAndView("projects/edit_form", "project", project);
 	}
