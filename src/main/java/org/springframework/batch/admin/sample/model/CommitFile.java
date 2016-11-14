@@ -1,11 +1,15 @@
 package org.springframework.batch.admin.sample.model;
 
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.eclipse.jgit.diff.DiffEntry;
 import org.springframework.batch.admin.sample.model.CommitFile;
@@ -24,17 +28,20 @@ public class CommitFile {
 	
 	private int changes;
 	
+	@Transient
 	private String fileName;
 	
 	private String oldPath;
 	
 	private String newPath;
 	
+	@Column(columnDefinition = "MEDIUMTEXT")
 	private String patch;
 	
 	private ChangeType changeType;
 	
 	@ManyToOne
+	@JoinColumn(name = "commit_id")
 	private Commit commit;
 	
 	public enum ChangeType {
@@ -156,5 +163,13 @@ public class CommitFile {
 			case RENAME: setChangeType(ChangeType.RENAME); break;
 			default: setChangeType(ChangeType.MODIFY); break;
 		}
+	}
+
+	public Commit getCommit() {
+		return commit;
+	}
+
+	public void setCommit(Commit commit) {
+		this.commit = commit;
 	}
 }

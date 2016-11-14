@@ -41,7 +41,9 @@ public class Project {
 		}
 	}
 	
-	protected Project() {}
+	protected Project() {
+		this.commits = new ArrayList<Commit>();
+	}
 	
 	public Project(Type type) {
 		this.type = type;
@@ -84,6 +86,7 @@ public class Project {
 	}
 
 	public void addCommit(Commit commit) {
+		commit.setProject(this);
 		this.commits.add(commit);
 	}
 	
@@ -92,6 +95,7 @@ public class Project {
 	}
 	
 	public void addCommits(ArrayList<Commit> list) {
+		list.forEach(c -> c.setProject(this));
 		this.commits.addAll(list);
 	}
 	
