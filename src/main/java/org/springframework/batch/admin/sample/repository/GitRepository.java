@@ -4,11 +4,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Stack;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.diff.Edit;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -61,19 +63,28 @@ public class GitRepository implements IRepository {
 		
 		try {
 			Iterable<RevCommit> commits = git.log().call();
+			Stack<RevCommit> commits_reversed = new Stack<>();
+			commits.forEach(commits_reversed::push);
+			
 			
 			Commit parent = null;
 			
-			for(RevCommit commit : commits) {
+			while(!commits_reversed.isEmpty()) {
+				RevCommit commit = commits_reversed.pop();
+			//for(RevCommit commit : commits_reversed) {
 				
 				// branch itself
-				if(commit.getParentCount() == 0) break;
+				if(commit.getParentCount() == 0) continue;
 				
 				Commit c = new Commit();
-				c.setProject(project);
+				//c.setProject(project);
 				result.add(c);
 				c.setMessage(commit.getFullMessage());
 				c.setParentCommit(parent);
+				c.setRef(commit.getName());
+				project.addCommit(c);
+				int commitAdditions = 0;
+				int commitDeletions = 0;
 				
 				parent = c;
 				
@@ -85,24 +96,39 @@ public class GitRepository implements IRepository {
 				
 			    try (DiffFormatter diffFormatter = new DiffFormatter(out)) {
 			        diffFormatter.setRepository(repository);
+			        diffFormatter.setDetectRenames(true);
 			        for (DiffEntry entry : diffFormatter.scan(parentCommit, commit)) {
 			            //diffFormatter.format(diffFormatter.toFileHeader(entry));
-			        	
 			            diffFormatter.format(entry);
 			            out.flush();
 			            String patch = out.toString();
 			            out.reset();
+			            
+			            //analyse patch
+			            int linesDeleted = 0;
+			            int linesAdded = 0;
+			            for (Edit edit : diffFormatter.toFileHeader(entry).toEditList()) {
+			                linesDeleted += edit.getEndA() - edit.getBeginA();
+			                linesAdded += edit.getEndB() - edit.getBeginB();
+			            }
+			            
+			            commitDeletions += linesDeleted;
+			            commitAdditions += linesAdded;
 			            
 			            CommitFile cf = new CommitFile();
 			            cf.setChangeType(entry.getChangeType());
 			            cf.setPatch(patch);
 			            cf.setOldPath(entry.getOldPath());
 			            cf.setNewPath(entry.getNewPath());
-			            
+			            cf.setAdditions(linesAdded);
+			            cf.setDeletions(linesDeleted);
 			            c.addFile(cf);
 			            
 			        }
-			    }	
+			    }
+			    
+			    c.setAdditions(commitAdditions);
+			    c.setDeletions(commitDeletions);
 			}
 			
 		} catch (GitAPIException e1) {
@@ -112,7 +138,6 @@ public class GitRepository implements IRepository {
 	    	System.err.println("Could not diff commits");
 			e.printStackTrace();
 		}
-		
 		
 		return result;
 	}

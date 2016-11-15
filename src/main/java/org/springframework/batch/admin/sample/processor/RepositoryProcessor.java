@@ -10,7 +10,7 @@ public class RepositoryProcessor implements ItemProcessor<Commit, Commit> {
 	public Commit process(final Commit input) throws Exception {
 		
 		if(input == null) throw new NullPointerException("Commit is null");
-		IssueStringParser issueParser = new IssueStringParser("^(\\w+\\-\\d+).");
+		IssueStringParser issueParser = new IssueStringParser("^(\\w+(\\-| )?\\d+).");
 		String issueIdentifier = issueParser.parse(input.getMessage());
 		
 		input.initIssue(issueIdentifier);

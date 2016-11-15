@@ -1,7 +1,11 @@
 package org.springframework.batch.admin.sample.job;
 
 import org.springframework.batch.admin.sample.model.Commit;
+import org.springframework.batch.admin.sample.model.CommitIssue;
 import org.springframework.batch.admin.sample.model.Project;
+import org.springframework.batch.admin.sample.model.service.CommitIssueService;
+import org.springframework.batch.admin.sample.model.service.CommitService;
+import org.springframework.batch.admin.sample.model.service.ProjectService;
 import org.springframework.batch.admin.sample.processor.CommitProcessor;
 import org.springframework.batch.admin.sample.processor.RepositoryProcessor;
 import org.springframework.batch.admin.sample.reader.CommitReader;
@@ -17,7 +21,6 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.support.ReferenceJobFactory;
 import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.listener.ExecutionContextPromotionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
@@ -32,15 +35,24 @@ public class JobCreator {
 	@Autowired
 	private JobRegistry jobRegistry;
 	
-	private ExecutionContextPromotionListener promotionListener() {
+	@Autowired
+	private CommitService commitService;
+	
+	@Autowired
+	private CommitIssueService commitIssueService;
+	
+	@Autowired
+	private ProjectService projectService;
+	
+	/*private ExecutionContextPromotionListener promotionListener() {
 		ExecutionContextPromotionListener listener = new ExecutionContextPromotionListener();
 		listener.setKeys( new String[] { "issuedCommits" } );
 		return listener;
-	}
+	}*/
 	
 	private TaskExecutor issueTaskExecutor() {
 		SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor();
-		executor.setConcurrencyLimit(20);
+		executor.setConcurrencyLimit(40);
 		return executor;
 	}
 	
@@ -48,25 +60,30 @@ public class JobCreator {
 		System.err.println("JobCreator initialized!");
 	}
 	
+	public void removeJob(Project project) {
+		String jobName = project.getId().toString() + "_" + project.getName();
+		jobRegistry.unregister(jobName);
+	}
+	
 	public void createJob(Project project) {
-		System.out.println(project);
-		Step step = stepBuilderFactory.get(project.getId().toString()+"_repositoryToCollectionOfCommits")
+		String jobName = project.getId().toString() + "_" + project.getName();
+		
+		Step step = stepBuilderFactory.get(jobName+"_repositoryToCollectionOfCommits")
 				.<Commit, Commit> chunk(100)
-				.reader(new RepositoryReader(project))
+				.reader(new RepositoryReader(project, projectService))
 				.processor(new RepositoryProcessor())
-				.writer(new RepositoryWriter())
-				.listener(promotionListener())
+				.writer(new RepositoryWriter(commitService))
+				//.listener(promotionListener())
 				.build();
 		
-		Step step2 = stepBuilderFactory.get(project.getId().toString()+"_getIssueInformationForEachCommit")
-				.<Commit, Commit> chunk(10)
+		Step step2 = stepBuilderFactory.get(jobName+"_getIssueInformationForEachCommit")
+				.<Commit, CommitIssue> chunk(50)
 				.reader(new CommitReader(project))
-				.processor(new CommitProcessor(project))
-				.writer(new CommitWriter())
+				.processor(new CommitProcessor(project.getIssueTrackerUrlPattern()))
+				.writer(new CommitWriter(commitIssueService))
 				.taskExecutor(issueTaskExecutor())
 				.build();
 		
-		String jobName = project.getId().toString() + "_" + project.getName();
 		Job builder = jobBuilderFactory.get(jobName)
 				.incrementer(new RunIdIncrementer())
 				.start(step)

@@ -36,13 +36,15 @@ public class JiraParser implements Parser {
 	}
 
 	@Override
-	public CommitIssue parse(CommitIssue issue, String content) {
+	public IssueInfoHolder parse(String content) {
 		
 	
 		Document doc;
 		try {
 			
-			CommitIssue result = new CommitIssue(issue);
+			//CommitIssue result = new CommitIssue(issue);
+			//CommitIssue result = issue;
+			IssueInfoHolder result = new IssueInfoHolder();
 			
 			StringBuilder xmlStringBuilder = new StringBuilder();
 			xmlStringBuilder.append(content);
@@ -55,36 +57,38 @@ public class JiraParser implements Parser {
 			
 			NodeList items = doc.getElementsByTagName("item");
 			Node node = items.item(0);
-			Element element = (Element) node;
+			Element element = (Element) node;	
 			
-			//String key = element.getElementsByTagName("key").item(0).getTextContent();
-			String type = element.getElementsByTagName("type").item(0).getNodeValue();
-			String priority = element.getElementsByTagName("priority").item(0).getNodeValue();
+			String key = element.getElementsByTagName("key").item(0).getTextContent();
+			String type = element.getElementsByTagName("type").item(0).getTextContent();
+			String priority = element.getElementsByTagName("priority").item(0).getTextContent();
 			
-			//issue.setName(key);			
+			//issue.setName(key);
+			System.out.println("["+key+"] type: "+type + " priority: " + priority);
 			
 			switch(type) {
-			case "Access": result.setType(CommitIssue.Type.ACCESS); break;
-			case "Bug": result.setType(CommitIssue.Type.BUG); break;
-			case "Dependency upgrade": result.setType(CommitIssue.Type.DEPENDENCY_UPGRADE); break; 
-			case "Documentation": result.setType(CommitIssue.Type.DOCUMENTATION); break;
-			case "Improvement": result.setType(CommitIssue.Type.IMPROVEMENT); break;
-			case "Request": result.setType(CommitIssue.Type.REQUEST); break;
-			case "Task": result.setType(CommitIssue.Type.TASK); break;
-			case "Test": result.setType(CommitIssue.Type.TEST); break;
-			case "Wish": result.setType(CommitIssue.Type.WISH); break;
-			case "New Feature": result.setType(CommitIssue.Type.FEATURE); break;
-			default: result.setType(CommitIssue.Type.OTHER); break;
+				case "Access": result.setType(CommitIssue.Type.ACCESS); break;
+				case "Bug": result.setType(CommitIssue.Type.BUG); break;
+				case "Dependency upgrade": result.setType(CommitIssue.Type.DEPENDENCY_UPGRADE); break; 
+				case "Documentation": result.setType(CommitIssue.Type.DOCUMENTATION); break;
+				case "Improvement": result.setType(CommitIssue.Type.IMPROVEMENT); break;
+				case "Request": result.setType(CommitIssue.Type.REQUEST); break;
+				case "Task": result.setType(CommitIssue.Type.TASK); break;
+				case "Test": result.setType(CommitIssue.Type.TEST); break;
+				case "Wish": result.setType(CommitIssue.Type.WISH); break;
+				case "New Feature": result.setType(CommitIssue.Type.FEATURE); break;
+				case "Sub-task": result.setType(CommitIssue.Type.SUBTASK); break;
+				default: result.setType(CommitIssue.Type.OTHER); break;
 			}
 			
 			
 			switch(priority) {
-			case "Blocker": result.setPriority(CommitIssue.Priority.BLOCKER); break;
-			case "Critical": result.setPriority(CommitIssue.Priority.CRITICAL); break;
-			case "Major": result.setPriority(CommitIssue.Priority.MAJOR); break;
-			case "Minor": result.setPriority(CommitIssue.Priority.MINOR); break;
-			case "Trivial": result.setPriority(CommitIssue.Priority.TRIVIAL); break;
-			default: result.setPriority(CommitIssue.Priority.OTHER); break;
+				case "Blocker": result.setPriority(CommitIssue.Priority.BLOCKER); break;
+				case "Critical": result.setPriority(CommitIssue.Priority.CRITICAL); break;
+				case "Major": result.setPriority(CommitIssue.Priority.MAJOR); break;
+				case "Minor": result.setPriority(CommitIssue.Priority.MINOR); break;
+				case "Trivial": result.setPriority(CommitIssue.Priority.TRIVIAL); break;
+				default: result.setPriority(CommitIssue.Priority.OTHER); break;
 			}
 			
 			return result;

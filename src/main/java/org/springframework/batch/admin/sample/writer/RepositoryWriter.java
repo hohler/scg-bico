@@ -5,17 +5,17 @@ import java.util.List;
 import org.springframework.batch.admin.sample.model.Commit;
 import org.springframework.batch.admin.sample.model.service.CommitService;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 
 public class RepositoryWriter implements ItemWriter<Commit> {
 
 	//private StepExecution stepExecution;
 	
-	@Autowired
-	@Lazy
 	private CommitService commitService;
 
+	public RepositoryWriter(CommitService commitService) {
+		this.commitService = commitService;
+	}
+	
 	@Override
 	public void write(List<? extends Commit> items) throws Exception {
 		
@@ -29,10 +29,14 @@ public class RepositoryWriter implements ItemWriter<Commit> {
 			stepContext.put("issuedCommits",  list);
 		}*/
 		
-		System.out.println("commitservice:" + commitService);
+		//System.out.println("commitservice:" + commitService);
 		for(Commit commit : items) {
 			commitService.add(commit);
 		}
+		
+		//save project
+		//projectService.update(items.get(0).getProject());
+		
 		
 		//commitService.addAll((List<Commit>)items);
 		

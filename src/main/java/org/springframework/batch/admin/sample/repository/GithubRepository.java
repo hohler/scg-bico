@@ -75,7 +75,6 @@ public class GithubRepository implements IRepository {
 					org.springframework.batch.admin.sample.model.CommitFile file = new org.springframework.batch.admin.sample.model.CommitFile();
 					file.setAdditions(f.getAdditions());
 					file.setDeletions(f.getDeletions());
-					file.setChanges(f.getChanges());
 					file.setFilename(f.getFilename());
 					file.setPatch(f.getPatch());
 					

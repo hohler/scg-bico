@@ -12,7 +12,7 @@ import org.springframework.batch.admin.sample.model.CommitIssue;
 public class IssueTrackerParser {
 
 	private Parser parser;
-	private CommitIssue issue;
+	//private CommitIssue issue;
 	private String urlPattern;
 	
 	public IssueTrackerParser(String urlPattern) throws Exception {
@@ -30,22 +30,22 @@ public class IssueTrackerParser {
 		}
 	}
 	
-	public void setIssue(CommitIssue issue) {
+	/*public void setIssue(CommitIssue issue) {
 		this.issue = issue;
 	}
 	
 	public CommitIssue getIssue() {
 		return issue;
-	}
+	}*/
 	
-	public CommitIssue parse() {
+	public IssueInfoHolder parse(CommitIssue issue) {
 		if(issue == null) return null;
 		if(issue.getName() == null) return null;
 		String url = parser.formatUrl(urlPattern, issue.getName());
 		String content = retrieveContent(url);
 		if(content == null) return null;
 		
-		return parser.parse(issue, content);
+		return parser.parse(content);
 	}
 	
 	private String retrieveContent(String url) {
