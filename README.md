@@ -1,21 +1,24 @@
 # Big Commit Analysis #
 
+## Environment of developer ##
+- Eclipse Java EE 4.6
+- Tomcat Server 9.0
+- MySQL Server 5.7
+
 ## Setup ##
 
 ### Outline ###
 
 1. Clone repo
 2. Import in Eclipse
-3. Make configuration changes
-3. Set up a local Tomcat Server Version >= 6 (with Eclipse)
-4. Build the project with Maven
+3. Update configuration
+4. Set up a local Tomcat Server Version >= 6 (Version <= 7 with Eclipse) and add it in the Run Configurations in Eclipse
 5. Deploy the project to the Tomcat server
+6. Example repositories
 
-## 1. Clone repo ##
+## 1. & 2. ##
 Trivial
-## 2. Import in Eclipse ##
-Trivial
-## 3. Make configuration changes ##
+## 3. Update configuration ##
 Adapt database parameters in file
 `/src/main/webapp/WEB-INF/applicationContext.xml`
 
@@ -32,3 +35,40 @@ Adapt path for cloning repositories in file
 `private static String REPOSITORY_PATH = "target/repositories/";`
 
 With Eclipse on Windows, this is equivalent to *C:\eclipse\target\repositories\*
+
+## 4. & 5. ##
+After deploying, navigate to [http://localhost:8080/scg-bico/](http://localhost:8080/scg-bico/)
+
+## 6. Example repositories ##
+
+**Apache Flume**
+
+Amount of commits: ~1'700
+
+URL: https://github.com/apache/flume.git
+
+Type: GIT
+
+Issue Tracker: https://issues.apache.org/jira/si/jira.issueviews:issue-xml/%s/%s.xml
+
+Duration of batch process with cloning:
+
+Duration of batch process without cloning: 3 minutes
+
+**Apache Lucene-Solr**
+
+Amount of commits: ~26'000
+
+URL: https://github.com/apache/lucene-solr.git
+
+Type: GIT
+
+Issue Tracker: https://issues.apache.org/jira/si/jira.issueviews:issue-xml/%s/%s.xml
+
+Duration of batch process with cloning: 15 minutes + x minutes
+
+Duration of batch process without cloning: 5 minutes
+
+MySQL specific configuration: some patches are too big. You have to set the max_allowed_packets higher in your MySQL Server configuration. e.g. `max_allowed_packet=10M`
+
+Location of configuration file on Windows: `C:\ProgramData\MySQL\MySQL Server 5.7\my.ini`

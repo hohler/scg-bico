@@ -138,6 +138,7 @@ public class Project {
 	}
 	
 	public void cleanForProcessing() {
+		commits.forEach(s -> s.setProject(null));
 		commits.clear();
 	}
 	
