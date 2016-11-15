@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.batch.admin.sample.model.Project;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -21,6 +20,7 @@ public class ProjectDao implements ProjectDaoInterface {
 		em.flush();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Project> findAll() {
 		return em.createQuery("SELECT p FROM Project p").getResultList();
@@ -40,8 +40,5 @@ public class ProjectDao implements ProjectDaoInterface {
 	public void update(Project project) {
 		em.merge(project);
 	}
-	/*public void setEntityManager(EntityManager em) {
-		this.em = em;
-	}*/
 
 }

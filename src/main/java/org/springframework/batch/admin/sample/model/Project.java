@@ -1,14 +1,17 @@
 package org.springframework.batch.admin.sample.model;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -25,8 +28,9 @@ public class Project {
 	private String branch;
 	private String issueTrackerUrlPattern;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="project")
-	private List<Commit> commits;
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="project", orphanRemoval = true)
+	@OrderBy("id")
+	private Set<Commit> commits;
 	
 	public enum Type {
 		GITHUB("Github"), GIT("Git");
@@ -42,18 +46,18 @@ public class Project {
 	}
 	
 	protected Project() {
-		this.commits = new ArrayList<Commit>();
+		this.commits = new HashSet<Commit>();
 	}
 	
 	public Project(Type type) {
 		this.type = type;
-		this.commits = new ArrayList<Commit>();
+		this.commits = new HashSet<Commit>();
 	}
 	
 	public Project(String name, Type type) {
 		this.name = name;
 		this.type = type;
-		this.commits = new ArrayList<Commit>();
+		this.commits = new HashSet<Commit>();
 	}
 	
 	
@@ -81,7 +85,7 @@ public class Project {
 		this.type = type;
 	}
 
-	public List<Commit> getCommits() {
+	public Set<Commit> getCommits() {
 		return commits;
 	}
 
@@ -92,6 +96,7 @@ public class Project {
 	
 	public void removeCommit(Commit commit) {
 		this.commits.remove(commit);
+		commit.setProject(null);
 	}
 	
 	public void addCommits(ArrayList<Commit> list) {
@@ -130,6 +135,10 @@ public class Project {
 	
 	public Long getId() {
 		return id;
+	}
+	
+	public void cleanForProcessing() {
+		commits.clear();
 	}
 	
 }

@@ -3,6 +3,7 @@ package org.springframework.batch.admin.sample.model.dao;
 import java.util.List;
 
 import org.springframework.batch.admin.sample.model.Commit;
+import org.springframework.batch.admin.sample.model.Project;
 
 public interface CommitDaoInterface {
 
@@ -15,5 +16,7 @@ public interface CommitDaoInterface {
 	void delete(Commit commit);
 
 	void update(Commit commit);
+
+	List<Commit> getProjectCommits(Project project);
 
 }

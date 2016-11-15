@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.batch.admin.sample.model.Commit;
+import org.springframework.batch.admin.sample.model.Project;
 import org.springframework.batch.admin.sample.model.dao.CommitDaoInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,11 @@ public class CommitService {
 	@Transactional
 	public void update(Commit commit) {
 		commitDao.update(commit);
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Commit> getProjectCommits(Project project) {
+		return commitDao.getProjectCommits(project);
 	}
 
 }

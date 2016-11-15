@@ -1,6 +1,7 @@
 package org.springframework.batch.admin.sample.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,15 +18,19 @@ public class CommitIssue {
 		MAJOR,
 		MINOR,
 		TRIVIAL,
-		OTHER;
+		OTHER,
+		NA;
 		
-		public String getName() {
-			String name = toString();
+		private String formatName() {
+			String name = name();
 			return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+		}
+		public String getName() {
+			return formatName();
 	    }
 		
 		public String toString() {
-			return this.getName();
+			return formatName();
 		}
 	}
 	
@@ -40,15 +45,23 @@ public class CommitIssue {
 		TEST,
 		FEATURE,
 		WISH,
-		OTHER;
+		OTHER,
+		SUBTASK,
+		NA;
 		
+		private String formatName() {
+			String name = name();
+			return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+		}
 	    public String getName() {
-	    	String name = toString();
-	    	return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+	    	//String name = toString();
+	    	//return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+	    	return formatName();
 	    }
 	    
 	    public String toString() {
-	    	return this.getName();
+	    	//return this.getName();
+	    	return formatName();
 	    }
 	}
 	
@@ -56,12 +69,12 @@ public class CommitIssue {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
-	@OneToOne(mappedBy = "commitIssue")
+	@OneToOne(mappedBy = "commitIssue", fetch = FetchType.LAZY, cascade=javax.persistence.CascadeType.REFRESH)
 	private Commit commit;
 	
-	private Type type = Type.OTHER;
+	private Type type = Type.NA;
 	
-	private Priority priority = Priority.OTHER;
+	private Priority priority = Priority.NA;
 	
 	private String name = "";
 	
@@ -117,6 +130,6 @@ public class CommitIssue {
 	}
 	
 	public String toString() {
-		return "Issue: "+name+" Type: "+type+" Priority: "+priority;
+		return "Issue[id="+id+", name="+name+", type="+type+", priority="+priority+"]";
 	}
 }

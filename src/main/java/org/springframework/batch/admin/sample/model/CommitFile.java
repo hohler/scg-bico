@@ -26,8 +26,6 @@ public class CommitFile {
 	
 	private int deletions;
 	
-	private int changes;
-	
 	@Transient
 	private String fileName;
 	
@@ -92,12 +90,8 @@ public class CommitFile {
 		this.patch = patch;
 	}
 
-	public void setChanges(int changes) {
-		this.changes = changes;			
-	}
-	
 	public int getChanges() {
-		return changes;
+		return additions + deletions;
 	}
 
 	/**
@@ -171,5 +165,18 @@ public class CommitFile {
 
 	public void setCommit(Commit commit) {
 		this.commit = commit;
+	}
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String toString() {
+		return String.format("CommitFile[id=%d, newPath='%s', additions='%d', deletions='%d', changes='%d']",
+				id, newPath, additions, deletions, getChanges());
 	}
 }

@@ -1,17 +1,20 @@
 package org.springframework.batch.admin.sample.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -22,37 +25,44 @@ public class Commit {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	protected Long id;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "commit")
-	protected List<CommitFile> files;
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "commit", orphanRemoval = true)
+	@OrderBy("id")
+	protected Set<CommitFile> files;
 	
-	@OneToOne(cascade = CascadeType.DETACH, optional=true)
+	@OneToOne(cascade = CascadeType.DETACH, optional=true, fetch = FetchType.LAZY)
 	protected Commit parentCommit;
 	
-	@OneToOne(mappedBy="parentCommit")
-	protected Commit childCommit;
+	/*@OneToOne(mappedBy="parentCommit", fetch = FetchType.LAZY)
+	protected Commit childCommit;*/
 	
-	@OneToOne(cascade = CascadeType.ALL, optional=true)
+	@OneToOne(cascade = CascadeType.ALL, optional=true, fetch = FetchType.LAZY)
 	protected CommitIssue commitIssue;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	protected Project project;
 	
 	protected int additions;
 	
 	protected int deletions;
 	
+	protected String ref;
+	
 	@Column(columnDefinition = "TEXT")
 	protected String message;
 	
 	public Commit() {
-		files = new ArrayList<CommitFile>();
+		files = new HashSet<CommitFile>();
 	
 	}
 
 	public void addFile(CommitFile file) {
 		file.setCommit(this);
 		files.add(file);
-		
+	}
+	
+	public void removeFile(CommitFile file) {
+		files.remove(file);
+		file.setCommit(null);
 	}
 	
 	public String getMessage() {
@@ -79,7 +89,7 @@ public class Commit {
 		this.deletions = deletions;
 	}
 	
-	public List<CommitFile> getFiles() {
+	public Set<CommitFile> getFiles() {
 		return files;
 	}
 	
@@ -109,16 +119,24 @@ public class Commit {
 		this.id = id;
 	}
 
-	public Commit getChildCommit() {
+	/*public Commit getChildCommit() {
 		return childCommit;
 	}
 
 	public void setChildCommit(Commit childCommit) {
 		this.childCommit = childCommit;
-	}
+	}*/
 	
 	public CommitIssue getCommitIssue() {
 		return commitIssue;
+	}
+
+	public String getRef() {
+		return ref;
+	}
+
+	public void setRef(String ref) {
+		this.ref = ref;
 	}
 
 	public void setCommitIssue(CommitIssue commitIssue) {
@@ -128,7 +146,12 @@ public class Commit {
 		commitIssue = new CommitIssue(issue);
 	}
 
-	public String toString() {
+	public String firstLineOfMessage() {
 		return message.split("\\r?\\n")[0];
+	}
+	
+	public String toString() {
+		return String.format("Commit[id=%d, name='%s', additions='%d', deletions='%d']",
+				id, firstLineOfMessage(), additions, deletions);
 	}
 }
