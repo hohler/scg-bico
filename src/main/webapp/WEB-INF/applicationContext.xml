@@ -25,9 +25,9 @@
 	<context:annotation-config />
 	 	
  	<!-- Scans the classpath for annotated components that will be auto-registered as Spring beans -->
-	<context:component-scan base-package="org.springframework.batch.admin.sample">
-		<context:exclude-filter type="regex" expression="org.springframework.batch.admin.sample.controller.*" />  
-		<context:exclude-filter type="regex" expression="org.springframework.batch.admin.sample.job.*" />  
+	<context:component-scan base-package="ch.unibe.scg.bico">
+		<context:exclude-filter type="regex" expression="ch.unibe.scg.bico.controller.*" />  
+		<context:exclude-filter type="regex" expression="ch.unibe.scg.bico.job.*" />  
 	</context:component-scan>
 
 	
@@ -50,7 +50,7 @@
 	
 	<bean id="entityManagerFactory" 
 			class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
-			p:packagesToScan="org.springframework.batch.admin.sample.model"
+			p:packagesToScan="ch.unibe.scg.bico.model"
             p:dataSource-ref="dataSource"
 			>
 		<property name="jpaVendorAdapter">
@@ -83,7 +83,7 @@
  	
  	<import resource="batch-config.xml" />
  	
- 	<bean id="jobCreator" class="org.springframework.batch.admin.sample.job.JobCreator" />
+ 	<bean id="jobCreator" class="ch.unibe.scg.bico.job.JobCreator" />
 
 	<!-- <import resource="classpath*:/org/springframework/batch/admin/web/resources/webapp-config.xml" /> -->
  	<!-- <import resource="classpath*:/META-INF/spring/batch/bootstrap/**/*.xml" /> -->

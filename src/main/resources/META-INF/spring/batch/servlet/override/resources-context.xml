@@ -10,7 +10,7 @@
 		>
 
 	<!--  <context:annotation-config /> -->
-
+	<context:component-scan base-package="ch.unibe.scg.bico.job" />
 
 	<bean id="resourceService" 
 	      class="org.springframework.batch.admin.web.resources.DefaultResourceService">
