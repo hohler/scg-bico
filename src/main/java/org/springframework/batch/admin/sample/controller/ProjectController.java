@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.batch.admin.sample.job.Job2Configuration;
 import org.springframework.batch.admin.sample.job.JobCreator;
 import org.springframework.batch.admin.sample.model.Project;
 import org.springframework.batch.admin.sample.model.service.ProjectService;
@@ -31,7 +30,6 @@ public class ProjectController {
 	private JobCreator jobCreator;
 	
 	public ProjectController() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
