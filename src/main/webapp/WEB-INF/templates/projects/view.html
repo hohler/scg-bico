@@ -26,6 +26,31 @@
 			<dd id="issueTracker" th:text="${project.issueTrackerUrlPattern}">pattern</dd>
 			
 		</dl>
+		
+		<dl>
+			<dt>Commits</dt>
+			<table class="table table-bordered table-striped">
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Priority</th>
+				<th>Type</th>
+				<th>Additions</th>
+				<th>Deletions</th>
+				<th>FirstLineOfMessage</th>
+			</tr>
+			<tr th:each="commit : ${project.commits}">
+				<td><a th:text="${commit.id}" href="projects" th:href="@{'/projects/' + ${project.id} + '/commits/' + ${commit.id}}">id</a></td>
+				<td th:text="${commit.commitIssue.name}">name</td>
+				<td th:text="${commit.commitIssue.priority}">priority</td>
+				<td th:text="${commit.commitIssue.type}">type</td>
+				<td th:text="${commit.additions}">additions</td>
+				<td th:text="${commit.deletions}">deletions</td>
+				<td th:text="${commit.firstLineOfMessage()}">firstLineOfMessage</td>
+			</tr>
+			</table>
+		</dl>
+		
 		<div class="pull-left">
 			<a href="form.html" class="btn btn-primary"
 				th:href="@{'/projects/modify/' + ${project.id}}"> modify </a>

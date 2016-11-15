@@ -1,0 +1,70 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<title>Commit : View</title>
+</head>
+<body>
+	<h1 layout:fragment="header"><span th:text="${commit.firstLineOfMessage()}"></span> : Details</h1>
+	<div layout:fragment="content" class="container">
+		<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+		<dl>
+			<dt>ID</dt>
+			<dd id=id th:text="${commit.id}">id</dd>
+			<br />
+			<dt>Name</dt>
+			<dd id="name" th:text="${commit.firstLineOfMessage()}">name</dd>
+			<br />
+			<dt>Additions</dt>
+			<dd id="url" th:text="${commit.additions}">additions</dd>
+			<br />
+			<dt>Deletions</dt>
+			<dd id="type" th:text="${commit.deletions}">deletions</dd>
+			<br />
+			<dt>Ref</dt>
+			<dd id="ref" th:text="${commit.ref}">ref</dd>
+			<br />
+			<dt>Parent commit</dt>
+			<dd id="parentCommit">
+				<a href="projects" th:href="@{'/projects/' + ${project.id} + '/commits/' + ${parentCommit.id}}">parent commit</a>
+			</dd>
+			<br />
+			<dt>Message</dt>
+			<dd id="message" th:text="${commit.message}">message</dd>
+			
+		</dl>
+		
+		<dl>
+			<dt>Files</dt>
+			<table class="table table-bordered table-striped">
+			<tr>
+				<th>ID</th>
+				<th>ChangeType</th>
+				<th>newPath</th>
+				<th>oldPath</th>
+				<th>Additions</th>
+				<th>Deletions</th>
+			</tr>
+			<tr th:each="file : ${commit.files}">
+				<td th:text="${file.id}">id</td>
+				<td th:text="${file.changeType}">changeType</td>
+				<td th:text="${file.newPath}">newpath</td>
+				<td th:text="${file.oldPath}">oldpath</td>
+				<td th:text="${file.additions}">additions</td>
+				<td th:text="${file.deletions}">deletions</td>
+			</tr>
+			</table>
+		</dl>
+		
+		<!-- <div class="pull-left">
+			<a href="form.html" class="btn btn-primary"
+				th:href="@{'/projects/modify/' + ${project.id}}"> modify </a>
+			<a href="projects" class="btn btn-danger" th:href="@{'/projects/delete/' + ${project.id}}">
+				delete </a>
+			<a href="projects" class="btn btn-default" th:href="@{'/projects'}">
+				back </a>
+		</div> -->
+	</div>
+</body>
+</html>
