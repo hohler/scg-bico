@@ -4,6 +4,7 @@
 - Eclipse Java EE 4.6
 - Tomcat Server 9.0
 - MySQL Server 5.7
+- Java Version 1.8
 
 ## Setup ##
 
