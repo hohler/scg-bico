@@ -7,6 +7,10 @@
 
 ## Setup ##
 
+You need a MySQL and a Tomcat Server.
+
+See the Lucene-Solr example down below for additional MySQL configuration.
+
 ### Outline ###
 
 1. Clone repo
@@ -39,7 +43,7 @@ With Eclipse on Windows, this is equivalent to *C:\eclipse\target\repositories\*
 ## 4. & 5. ##
 After deploying, navigate to [http://localhost:8080/scg-bico/](http://localhost:8080/scg-bico/)
 
-## 6. Example repositories ##
+## 6. Example repositories and tips ##
 
 **Apache Flume**
 
@@ -65,9 +69,10 @@ Type: GIT
 
 Issue Tracker: https://issues.apache.org/jira/si/jira.issueviews:issue-xml/%s/%s.xml
 
-Duration of batch process with cloning: 15 minutes + x minutes
-
-Duration of batch process without cloning: 5 minutes
+Time measurements:
+- cloning repo: 20 minutes???
+- reading commits: 15 minutes
+- get infos from issue tracker: 40 minutes
 
 MySQL specific configuration: some patches are too big. You have to set the max_allowed_packets higher in your MySQL Server configuration. e.g. `max_allowed_packet=10M`
 
