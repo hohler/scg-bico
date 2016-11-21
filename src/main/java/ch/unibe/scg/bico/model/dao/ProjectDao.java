@@ -35,11 +35,13 @@ public class ProjectDao implements ProjectDaoInterface {
 	@Override
 	public void delete(Project project) {
 		em.remove(project);
+		em.flush();
 	}
 	
 	@Override
 	public void update(Project project) {
 		em.merge(project);
+		em.flush();
 	}
 
 }
