@@ -83,13 +83,18 @@ public class ProjectController {
 		return new ModelAndView("projects/edit_form", "project", project);
 	}
 	
-	@RequestMapping(method = RequestMethod.POST, value = "modify/{id}")
+	@RequestMapping(method = RequestMethod.POST, value = "modify/{id}")	
 	public ModelAndView modifyFormUpdate(@Valid Project project, BindingResult result,
-			RedirectAttributes redirect) {
+			RedirectAttributes redirect, @PathVariable("id") Long id) {
 		if(result.hasErrors()) {
-			return new ModelAndView("projects/edit_form", "formErrors", result.getAllErrors());
+			//return new ModelAndView("projects/edit_form", "formErrors", result.getAllErrors());
+			return new ModelAndView("projects/edit_form", "project", project);
 		}
+		//Project oldProject = projectService.findById(id);
+		//jobCreator.removeJob(id, oldProject.getName());
 		projectService.update(project);
+		System.out.println(project);
+		//jobCreator.createJob(project);
 		redirect.addFlashAttribute("globalMessage", "Successfully updated project");
 		return new ModelAndView("redirect:/projects/{project.id}", "project.id", project.getId());
 	}
