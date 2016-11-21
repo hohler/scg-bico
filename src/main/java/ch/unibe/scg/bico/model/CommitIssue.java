@@ -47,6 +47,8 @@ public class CommitIssue {
 		WISH,
 		OTHER,
 		SUBTASK,
+		DEPRECATION,
+		REFACTOR,
 		NA;
 		
 		private String formatName() {
