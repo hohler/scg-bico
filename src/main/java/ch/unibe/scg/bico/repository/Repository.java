@@ -10,12 +10,13 @@ public class Repository implements IRepository {
 	public IRepository repository;
 	
 	public Repository(Project project) {
-		if(project.getType() == Project.Type.GIT) {
+		/*if(project.getType() == Project.Type.GIT) {
 			repository = new GitRepository(project);
 		} else
 		if(project.getType() == Project.Type.GITHUB) {
 			repository = new GithubRepository(project.getUrl());
-		}
+		}*/
+		repository = new GitRepository(project);
 	}
 	
 	public Repository(String url, String branch) {

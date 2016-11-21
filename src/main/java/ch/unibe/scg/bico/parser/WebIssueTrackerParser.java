@@ -9,13 +9,13 @@ import java.net.URL;
 
 import ch.unibe.scg.bico.model.CommitIssue;
 
-public class IssueTrackerParser {
+public class WebIssueTrackerParser {
 
 	private Parser parser;
 	//private CommitIssue issue;
 	private String urlPattern;
 	
-	public IssueTrackerParser(String urlPattern) throws Exception {
+	public WebIssueTrackerParser(String urlPattern) throws Exception {
 		this.urlPattern = urlPattern;
 		
 		if(urlPattern.contains("jira")) {

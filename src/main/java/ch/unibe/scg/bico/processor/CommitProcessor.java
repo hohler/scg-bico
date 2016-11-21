@@ -4,16 +4,21 @@ import org.springframework.batch.item.ItemProcessor;
 
 import ch.unibe.scg.bico.model.Commit;
 import ch.unibe.scg.bico.model.CommitIssue;
+import ch.unibe.scg.bico.model.Project;
 import ch.unibe.scg.bico.parser.IssueInfoHolder;
-import ch.unibe.scg.bico.parser.IssueTrackerParser;
+import ch.unibe.scg.bico.parser.WebIssueTrackerParser;
+import ch.unibe.scg.bico.repository.GitHubAPI;
 
 public class CommitProcessor implements ItemProcessor<Commit, CommitIssue> {
 	
 	private String urlPattern;
+	private Project.Type issueTrackerType;
+	private GitHubAPI gitHubApi;
 	
-	public CommitProcessor(String urlPattern) {
+	public CommitProcessor(Project.Type type, String urlPattern) {
 		//if(project == null) throw new NullPointerException("project is null!");
 		//urlPattern = project.getIssueTrackerUrlPattern();
+		this.issueTrackerType = type;
 		this.urlPattern = urlPattern;
 		if(urlPattern == null) throw new NullPointerException("urlPattern is null");
 	}
@@ -24,23 +29,29 @@ public class CommitProcessor implements ItemProcessor<Commit, CommitIssue> {
 		CommitIssue issue = input.getCommitIssue();
 		System.out.println("commit process: " + issue.getName());
 		//System.out.println(input.toString());
-		IssueTrackerParser itp;
 		try {
-			itp = new IssueTrackerParser(urlPattern);
-			//itp.setIssue(input.getCommitIssue());
-			//CommitIssue result = itp.parse();
-			IssueInfoHolder result = itp.parse(issue);
-			//if(result != null) input.setCommitIssue(result);
+			IssueInfoHolder result = null;
+			if(issueTrackerType == Project.Type.GITHUB)	{
+				result = gitHubApi.parseIssue(issue.getName());
+			} else
+			if(issueTrackerType == Project.Type.JIRA) {
+				WebIssueTrackerParser itp = new WebIssueTrackerParser(urlPattern);
+				result = itp.parse(issue);
+			}
 			if(result != null) {
+				issue.setName(result.getName());
 				issue.setPriority(result.getPriority());
 				issue.setType(result.getType());
 			}
-			//else input.setCommitIssue(input.getCommitIssue());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return issue;
+	}
+	
+	public void setGitHubApi(GitHubAPI api) {
+		this.gitHubApi = api;
 	}
 
 	/*public void setProject(Project project) {

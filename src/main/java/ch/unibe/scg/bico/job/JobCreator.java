@@ -23,6 +23,7 @@ import ch.unibe.scg.bico.processor.CommitProcessor;
 import ch.unibe.scg.bico.processor.RepositoryProcessor;
 import ch.unibe.scg.bico.reader.CommitReader;
 import ch.unibe.scg.bico.reader.RepositoryReader;
+import ch.unibe.scg.bico.repository.GitHubAPI;
 import ch.unibe.scg.bico.writer.CommitWriter;
 import ch.unibe.scg.bico.writer.RepositoryWriter;
 
@@ -53,7 +54,7 @@ public class JobCreator {
 	
 	private TaskExecutor issueTaskExecutor() {
 		SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor();
-		executor.setConcurrencyLimit(40);
+		executor.setConcurrencyLimit(100);
 		return executor;
 	}
 	
@@ -66,21 +67,33 @@ public class JobCreator {
 		jobRegistry.unregister(jobName);
 	}
 	
+	public void removeJob(Long id, String name) {
+		String jobName = id.toString() + "_" + name;
+		jobRegistry.unregister(jobName);
+	}
+	
 	public void createJob(Project project) {
 		String jobName = project.getId().toString() + "_" + project.getName();
 		
 		Step step = stepBuilderFactory.get(jobName+"_repositoryToCollectionOfCommits")
 				.<Commit, Commit> chunk(100)
 				.reader(new RepositoryReader(project, projectService))
-				.processor(new RepositoryProcessor())
+				.processor(new RepositoryProcessor(project.getType()))
 				.writer(new RepositoryWriter(commitService))
 				//.listener(promotionListener())
 				.build();
 		
+		
+		CommitProcessor commitProcessor = new CommitProcessor(project.getType(), project.getIssueTrackerUrlPattern());
+		if(project.getType() == Project.Type.GITHUB) {
+			GitHubAPI github = new GitHubAPI(project.getIssueTrackerUrlPattern());
+			commitProcessor.setGitHubApi(github);
+		}
+		
 		Step step2 = stepBuilderFactory.get(jobName+"_getIssueInformationForEachCommit")
 				.<Commit, CommitIssue> chunk(50)
 				.reader(new CommitReader(project))
-				.processor(new CommitProcessor(project.getIssueTrackerUrlPattern()))
+				.processor(commitProcessor)
 				.writer(new CommitWriter(commitIssueService))
 				.taskExecutor(issueTaskExecutor())
 				.build();
