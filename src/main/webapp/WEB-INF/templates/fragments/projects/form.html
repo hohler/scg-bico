@@ -15,7 +15,7 @@
 			
 			<label for="name">Name</label>
 			
-			<input id="name" th:field="*{name}" th:disabled="*{name}" />
+			<input id="name" th:field="*{name}" />
 			
 			<br /><br />
 			
@@ -25,16 +25,22 @@
 			
 			<br /><br />
 			
-			<label for="type">Type</label>
+			<label for="branch">Branch name</label>
+			
+			<input id="branch" th:field="*{branch}" />
+			
+			<br /><br />
+			
+			<label for="type">Issue Tracker Type</label>
 			
 			<select id="type" th:field="*{type}">
-				<option value="GIT">GIT</option>
+			<option value="JIRA">Jira</option>
 				<option value="GITHUB">Github</option>
 			</select>
 			
 			<br /><br />
 			
-			<label for="issueTrackerUrlPattern">issue Tracker Url Pattern</label>
+			<label for="issueTrackerUrlPattern">issue Tracker Url (if necessary with placeholder)</label>
 			
 			<input id="issueTrackerUrlPattern" th:field="*{issueTrackerUrlPattern}" /> (%s is the issue number)
 			

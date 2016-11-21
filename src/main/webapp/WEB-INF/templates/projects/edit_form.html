@@ -9,7 +9,7 @@
 	<h1 layout:fragment="header"><span th:text="${project.name}"></span> : Edit</h1>
 	<div layout:fragment="content" class="container">
 	<form id="userForm" th:action="@{'/projects/modify/' + ${project.id}}" th:object="${project}" action="#" method="post">
-	
+	<input id="id" th:field="*{id}" type="hidden" />
 	<div th:include="fragments/projects/form :: form"></div>
 	
 	<div class="form-actions">
