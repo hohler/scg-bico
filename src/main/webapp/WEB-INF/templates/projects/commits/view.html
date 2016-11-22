@@ -3,41 +3,67 @@
 	layout:decorate="layout">
 <head>
 <title>Commit : View</title>
+
+<link href="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html.min.css"
+          th:href="@{/webjars/diff2html/2.0.10/dist/diff2html.min.css}"
+          rel="stylesheet" media="screen" />
+          
+<script src="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html.min.js"
+            th:src="@{/webjars/diff2html/2.0.10/dist/diff2html.min.js}"></script>
+       
+<script src="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html-ui.min.js"
+            th:src="@{/webjars/diff2html/2.0.10/dist/diff2html-ui.min.js}"></script>
+            
 </head>
 <body>
-	<h1 layout:fragment="header"><span th:text="${commit.firstLineOfMessage()}"></span> : Details</h1>
+	<h1 layout:fragment="header"><span th:text="${commit.firstLineOfMessage()}"></span></h1>
 	<div layout:fragment="content" class="container">
+	<script>
+		var patches = [];
+	</script>
+	
 		<div class="alert alert-success" th:if="${globalMessage}"
 			th:text="${globalMessage}">Some Success message</div>
-		<dl>
-			<dt>ID</dt>
-			<dd id=id th:text="${commit.id}">id</dd>
-			<br />
-			<dt>Name</dt>
-			<dd id="name" th:text="${commit.firstLineOfMessage()}">name</dd>
-			<br />
-			<dt>Additions</dt>
-			<dd id="url" th:text="${commit.additions}">additions</dd>
-			<br />
-			<dt>Deletions</dt>
-			<dd id="type" th:text="${commit.deletions}">deletions</dd>
-			<br />
-			<dt>Ref</dt>
-			<dd id="ref" th:text="${commit.ref}">ref</dd>
-			<br />
-			<dt>Parent commit</dt>
-			<dd id="parentCommit">
-				<a href="projects" th:href="@{'/projects/' + ${commit.project.id} + '/commits/' + ${commit.parentCommit.id}}">parent commit</a>
-			</dd>
-			<br />
-			<dt>Message</dt>
-			<dd id="message" th:text="${commit.message}">message</dd>
 			
-		</dl>
+		<table class="table table-bordered">
+			<tr>
+				<th>ID</th>
+				<td th:text="${commit.id}">id</td>
+			</tr>
+			<tr>
+				<th>Name</th>
+				<td th:text="${commit.firstLineOfMessage()}">name</td>
+			</tr>
+			<tr>
+				<th>Changes</th>
+				<td th:text="${commit.getChanges()}">changes</td>
+			</tr>
+			<tr>
+				<th>Additions</th>
+				<td th:text="${commit.additions}">additions</td>
+			</tr>
+			<tr>
+				<th>Deletions</th>
+				<td th:text="${commit.deletions}">deletions</td>
+			</tr>
+			<tr>
+				<th>Ref</th>
+				<td th:text="${commit.ref}">ref</td>
+			</tr>
+			<tr>
+				<th>Parent commit</th>
+				<td><a href="projects" th:href="@{'/projects/' + ${commit.project.id} + '/commits/' + ${commit.parentCommit.id}}">parent commit</a></td>
+			</tr>
+			<tr>
+				<th colspan="2">Message</th>
+			</tr>
+			<tr>
+				<td colspan="2" th:text="${commit.message}">message</td>
+			</tr>
+		</table>
 		
-		<dl>
-			<dt>Files</dt>
-			<table class="table table-bordered table-striped">
+		<h2>File list</h2>
+		<table class="table table-bordered table-striped table-condensed">
 			<tr>
 				<th>ID</th>
 				<th>ChangeType</th>
@@ -45,19 +71,41 @@
 				<th>oldPath</th>
 				<th>Additions</th>
 				<th>Deletions</th>
-				<th>Details</th>
+				<th>Changes</th>
 			</tr>
 			<tr th:each="file : ${commit.files}">
-				<td th:text="${file.id}">id</td>
+				<td><a href="projects" th:href="@{'/projects/' + ${commit.project.id} + '/commits/' + ${commit.id} + '/files/' + ${file.id}}" th:text="${file.id}">id</a></td>
 				<td th:text="${file.changeType}">changeType</td>
 				<td th:text="${file.newPath}">newpath</td>
 				<td th:text="${file.oldPath}">oldpath</td>
 				<td th:text="${file.additions}">additions</td>
 				<td th:text="${file.deletions}">deletions</td>
-				<td><a href="projects" th:href="@{'/projects/' + ${commit.project.id} + '/commits/' + ${commit.id} + '/files/' + ${file.id}}">Details</a></td>
+				<td th:text="${file.getChanges()}">changes</td>
+				<script th:inline="javascript">
+					p = [[${file.patch}]];
+					patches.push(p);
+				</script>
 			</tr>
 			</table>
-		</dl>
+		
+		<div id="patch_input"></div>
+		
+		<script th:inline="javascript">
+		var patch = "";
+		for(i = 0; i < patches.length; i++) {
+			patch += patches[i];
+		}
+		
+		var diff2htmlUi = new Diff2HtmlUI({diff: patch});
+		diff2htmlUi.draw('#patch_input', {
+			inputFormat: 'diff',
+			showFiles: true,
+			outputFormat: 'line-by-line',
+			matching: 'lines'
+		});
+		diff2htmlUi.fileListCloseable('#patch_input', false);
+
+		</script>
 		
 		<!-- <div class="pull-left">
 			<a href="form.html" class="btn btn-primary"

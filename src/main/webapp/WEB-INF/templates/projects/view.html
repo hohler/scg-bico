@@ -1,4 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org"
+	xmlns:dt="http://www.thymeleaf.org/dandelion/datatables"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
 	layout:decorate="layout">
 <head>
@@ -29,7 +30,7 @@
 		
 		<dl>
 			<dt>Commits</dt>
-			<table class="table table-bordered table-striped">
+			<table class="table table-bordered table-striped table-condensed" dt:table="true">
 			<tr>
 				<th>ID</th>
 				<th>Name</th>

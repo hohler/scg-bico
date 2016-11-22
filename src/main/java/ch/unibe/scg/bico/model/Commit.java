@@ -150,6 +150,10 @@ public class Commit {
 		return message.split("\\r?\\n")[0];
 	}
 	
+	public int getChanges() {
+		return additions + deletions;
+	}
+	
 	public String toString() {
 		return String.format("Commit[id=%d, name='%s', additions='%d', deletions='%d']",
 				id, firstLineOfMessage(), additions, deletions);

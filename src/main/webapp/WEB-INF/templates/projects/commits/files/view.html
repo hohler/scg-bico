@@ -3,41 +3,81 @@
 	layout:decorate="layout">
 <head>
 <title>CommitFile : View</title>
+
+<link href="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html.min.css"
+          th:href="@{/webjars/diff2html/2.0.10/dist/diff2html.min.css}"
+          rel="stylesheet" media="screen" />
+          
+<script src="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html.min.js"
+            th:src="@{/webjars/diff2html/2.0.10/dist/diff2html.min.js}"></script>
+       
+<script src="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html-ui.min.js"
+            th:src="@{/webjars/diff2html/2.0.10/dist/diff2html-ui.min.js}"></script>
+
 </head>
 <body>
-	<h1 layout:fragment="header"><span th:text="${commitFile.newPath}"></span> : Details</h1>
+	<h1 layout:fragment="header"><span th:text="${commitFile.newPath}"></span></h1>
 	<div layout:fragment="content" class="container">
+	
 		<div class="alert alert-success" th:if="${globalMessage}"
 			th:text="${globalMessage}">Some Success message</div>
-		<dl>
-			<dt>ID</dt>
-			<dd id=id th:text="${commitFile.id}">id</dd>
-			<br />
-			<dt>ChangeType</dt>
-			<dd id="type" th:text="${commitFile.changeType}">ChangeType</dd>
-			<br />
-			<dt>newPath</dt>
-			<dd id="name" th:text="${commitFile.newPath}">name</dd>
-			<br />
-			<dt>oldPath</dt>
-			<dd id="name" th:text="${commitFile.oldPath}">name</dd>
-			<br />
-			<dt>Changes</dt>
-			<dd id="type" th:text="${commitFile.getChanges()}">changes</dd>
-			<br />
-			<dt>Additions</dt>
-			<dd id="url" th:text="${commitFile.additions}">additions</dd>
-			<br />
-			<dt>Deletions</dt>
-			<dd id="type" th:text="${commitFile.deletions}">deletions</dd>
-			<br />			
-		</dl>
 		
-		<dl>
-			<dt>Patch</dt>
-			<pre id="patch" th:utext="${#strings.replace(commitFile.patch, T(ch.unibe.scg.bico.mvc.StringUtils).LF, '&lt;br /&gt;')}">patch</pre>
-		</dl>
+		<table class="table table-bordered">
+			<tr>
+				<th>ID</th>
+				<td th:text="${commitFile.id}">id</td>
+			</tr>
+			<tr>
+				<th>ChangeType</th>
+				<td th:text="${commitFile.changeType}">changeType</td>
+			</tr>
+			<tr>
+				<th>newPath</th>
+				<td th:text="${commitFile.newPath}">newPath</td>
+			</tr>
+			<tr>
+				<th>oldPath</th>
+				<td th:text="${commitFile.oldPath}">oldPath</td>
+			</tr>
+			<tr>
+				<th>Changes</th>
+				<td th:text="${commitFile.getChanges()}">changes</td>
+			</tr>
+			<tr>
+				<th>Additions</th>
+				<td th:text="${commitFile.additions}">additions</td>
+			</tr>
+			<tr>
+				<th>Deletions</th>
+				<td th:text="${commitFile.deletions}">deletions</td>
+			</tr>
+			<tr>
+				<th>Parent commit</th>
+				<td><a href="projects" th:href="@{'/projects/' + ${commitFile.commit.project.id} + '/commits/' + ${commitFile.commit.id}}">parent commit</a></td>
+			</tr>
+		</table>
+
+		<div id="patch_input"></div>
 		
+		<script th:inline="javascript">
+		var patch = [[${commitFile.patch}]];
+		var result = Diff2Html.getPrettyHtml(patch, {
+
+		  // the format of the input data: 'diff' or 'json', default is 'diff'
+		  inputFormat: 'diff',
+
+		  // the format of the output data: 'line-by-line' or 'side-by-side'
+		  outputFormat: 'line-by-line', 
+
+		  // show a file list before the diff: true or false,
+		  showFiles: false,
+		  
+		  rawTemplates: ["icon-file-added", "icon-file-changed", "icon-file-deleted", "icon-file-renamed"]
+
+		});
+		$("#patch_input").append(result);
+		</script>
+	
 		<!-- <div class="pull-left">
 			<a href="form.html" class="btn btn-primary"
 				th:href="@{'/projects/modify/' + ${project.id}}"> modify </a>
