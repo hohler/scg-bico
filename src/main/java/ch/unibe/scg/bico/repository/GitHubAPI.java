@@ -177,6 +177,7 @@ public class GitHubAPI {
 	}
 	
 	public IssueInfoHolder parseIssue(String issueNumber) {
+		if(issueNumber == null) return null;
 		Issue issue = getIssue(Integer.parseInt(issueNumber));
 		
 		IssueInfoHolder holder = new IssueInfoHolder();
