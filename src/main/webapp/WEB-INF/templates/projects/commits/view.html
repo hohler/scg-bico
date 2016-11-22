@@ -67,8 +67,7 @@
 			<tr>
 				<th>ID</th>
 				<th>ChangeType</th>
-				<th>newPath</th>
-				<th>oldPath</th>
+				<th>Path</th>
 				<th>Additions</th>
 				<th>Deletions</th>
 				<th>Changes</th>
@@ -76,8 +75,12 @@
 			<tr th:each="file : ${commit.files}">
 				<td><a href="projects" th:href="@{'/projects/' + ${commit.project.id} + '/commits/' + ${commit.id} + '/files/' + ${file.id}}" th:text="${file.id}">id</a></td>
 				<td th:text="${file.changeType}">changeType</td>
-				<td th:text="${file.newPath}">newpath</td>
-				<td th:text="${file.oldPath}">oldpath</td>
+				<td>
+					<span th:if="(${file.newPath} eq ${file.oldPath})" th:text="${file.newPath}">onlyone</span>
+					<span th:if="(${file.getChangeType().toString()} eq 'ADD')" th:text="${file.newPath}">newfile</span>
+					<span th:if="(${file.getChangeType().toString()} eq 'DELETE')" th:text="${file.oldPath}">deletedfile</span>
+					<span th:if="(${file.getChangeType().toString()} eq 'RENAME' or ${file.getChangeType().toString()} eq 'COPY')" th:utext="'new: ' + ${file.newPath} + '&lt;br /&gt;old: ' + ${file.oldPath}">both</span>
+				</td>
 				<td th:text="${file.additions}">additions</td>
 				<td th:text="${file.deletions}">deletions</td>
 				<td th:text="${file.getChanges()}">changes</td>

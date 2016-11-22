@@ -10,47 +10,51 @@
 	<div layout:fragment="content" class="container">
 		<div class="alert alert-success" th:if="${globalMessage}"
 			th:text="${globalMessage}">Some Success message</div>
-		<dl>
-			<dt>ID</dt>
-			<dd id=id th:text="${project.id}">id</dd>
-			<br />
-			<dt>Name</dt>
-			<dd id="name" th:text="${project.name}">name</dd>
-			<br />
-			<dt>URL</dt>
-			<dd id="url" th:text="${project.url}">url</dd>
-			<br />
-			<dt>Type</dt>
-			<dd id="type" th:text="${project.type}">type</dd>
-			<br />
-			<dt>Issue Tracker URL Pattern</dt>
-			<dd id="issueTracker" th:text="${project.issueTrackerUrlPattern}">pattern</dd>
 			
-		</dl>
-		
-		<dl>
-			<dt>Commits</dt>
-			<table class="table table-bordered table-striped table-condensed" dt:table="true">
+		<table class="table table-bordered">
 			<tr>
 				<th>ID</th>
+				<td th:text="${project.id}">id</td>
+			</tr>
+			<tr>
 				<th>Name</th>
-				<th>Priority</th>
-				<th>Type</th>
-				<th>Additions</th>
-				<th>Deletions</th>
-				<th>FirstLineOfMessage</th>
+				<td th:text="${project.name}">name</td>
 			</tr>
-			<tr th:each="commit : ${project.commits}">
-				<td><a th:text="${commit.id}" href="projects" th:href="@{'/projects/' + ${project.id} + '/commits/' + ${commit.id}}">id</a></td>
-				<td th:text="${commit.commitIssue.name}">name</td>
-				<td th:text="${commit.commitIssue.priority}">priority</td>
-				<td th:text="${commit.commitIssue.type}">type</td>
-				<td th:text="${commit.additions}">additions</td>
-				<td th:text="${commit.deletions}">deletions</td>
-				<td th:text="${commit.firstLineOfMessage()}">firstLineOfMessage</td>
+			<tr>
+				<th>GIT URL</th>
+				<td th:text="${project.url}">url</td>
 			</tr>
-			</table>
-		</dl>
+			<tr>
+				<th>Issue Tracker Type</th>
+				<td th:text="${project.type}">type</td>
+			</tr>
+			<tr>
+				<th>Issue Tracker URL (with pattern)</th>
+				<td th:text="${project.issueTrackerUrlPattern}">trackerurl</td>
+			</tr>
+		</table>
+		
+		<h2>Commits</h2>
+		<table class="table table-bordered table-striped table-condensed" dt:table="true">
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Priority</th>
+			<th>Type</th>
+			<th>Additions</th>
+			<th>Deletions</th>
+			<th>FirstLineOfMessage</th>
+		</tr>
+		<tr th:each="commit : ${project.commits}">
+			<td><a th:text="${commit.id}" href="projects" th:href="@{'/projects/' + ${project.id} + '/commits/' + ${commit.id}}">id</a></td>
+			<td th:text="${commit.commitIssue.name}">name</td>
+			<td th:text="${commit.commitIssue.priority}">priority</td>
+			<td th:text="${commit.commitIssue.type}">type</td>
+			<td th:text="${commit.additions}">additions</td>
+			<td th:text="${commit.deletions}">deletions</td>
+			<td th:text="${commit.firstLineOfMessage()}">firstLineOfMessage</td>
+		</tr>
+		</table>
 		
 		<div class="pull-left">
 			<!-- <a href="form.html" class="btn btn-primary"
