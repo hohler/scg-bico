@@ -1,39 +1,50 @@
 package ch.unibe.scg.bico.reader;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import org.springframework.batch.item.ItemReader;
 
 import ch.unibe.scg.bico.model.Commit;
+import ch.unibe.scg.bico.model.CommitIssue;
 import ch.unibe.scg.bico.model.Project;
+import ch.unibe.scg.bico.model.service.CommitIssueService;
 
-public class CommitReader implements ItemReader<Commit> {
+public class CommitReader implements ItemReader<CommitIssue> {
 
-	private Set<Commit> commits;
-	private Iterator<Commit> iterator;
+	private List<CommitIssue> commitIssues;
+	private Iterator<CommitIssue> iterator;
 	private Project project;
+	private CommitIssueService commitIssueService;
 
-	public CommitReader(Project project) {
+	public CommitReader(Project project, CommitIssueService commitIssueService) {
 		this.project = project;
+		this.commitIssueService = commitIssueService;
 	}
 
-	private void init() {
+	private synchronized void init() {
+		if(commitIssues != null) return;
 		//Hibernate.initialize(project.getCommits());
 		//commits = project.getCommits();
 		//commits = commitService.getProjectCommits(project);
-		commits = project.getCommits(); 
-		iterator = commits.iterator();
+		//commitIssues = new HashSet<>();
+		/*for(Commit c : project.getCommits()) {
+			commitIssues.addAll(c.getCommitIssues());
+		}*/
+		commitIssues = commitIssueService.findAllByProject(project);
+		//commits = project.getCommits(); 
+		iterator = commitIssues.iterator();
 		
 	}
 
 	@Override
-	public Commit read() {
-		if (commits == null)
+	public CommitIssue read() {
+		if (commitIssues == null)
 			init();
-		if (commits == null)
-			throw new NullPointerException("commit list is null");
+		if (commitIssues.isEmpty())
+			throw new NullPointerException("commit list is empty");
 		if (iterator == null)
 			throw new NullPointerException("commit iterator is null");
 		if (iterator.hasNext())

@@ -1,5 +1,6 @@
 package ch.unibe.scg.bico.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,5 +37,21 @@ public class IssueStringParser {
 			System.err.println("Can't parse issue "+commitMessage.split("\\r?\\n")[0]);
 		}
 		return null;
+	}
+	
+	public List<String> parseAll(String commitMessage) {
+		Matcher m = regex.matcher(commitMessage.trim());
+		List<String> result = new ArrayList<String>();
+		while(m.find()) {
+			if(m.group() == null) System.err.println("general error: "+commitMessage.split("\\r?\\n")[0]);
+			/*for(int i = 1; i <= m.groupCount(); i++) {
+				if(m.group(i) != null) result.add(m.group(i));
+			}*/
+			result.add(m.group());
+		}
+		if(result.size() == 0) {
+			System.err.println("Can't parse issue "+commitMessage.split("\\r?\\n")[0]);
+		}
+		return result;
 	}
 }

@@ -35,8 +35,8 @@ public class Commit {
 	/*@OneToOne(mappedBy="parentCommit", fetch = FetchType.LAZY)
 	protected Commit childCommit;*/
 	
-	@OneToOne(cascade = CascadeType.ALL, optional=true, fetch = FetchType.LAZY)
-	protected CommitIssue commitIssue;
+	@OneToMany(mappedBy = "commit", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	protected Set<CommitIssue> commitIssues;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	protected Project project;
@@ -52,7 +52,7 @@ public class Commit {
 	
 	public Commit() {
 		files = new HashSet<CommitFile>();
-	
+		commitIssues = new HashSet<CommitIssue>();
 	}
 
 	public void addFile(CommitFile file) {
@@ -115,10 +115,6 @@ public class Commit {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	/*public Commit getChildCommit() {
 		return childCommit;
 	}
@@ -127,8 +123,8 @@ public class Commit {
 		this.childCommit = childCommit;
 	}*/
 	
-	public CommitIssue getCommitIssue() {
-		return commitIssue;
+	public Set<CommitIssue> getCommitIssues() {
+		return commitIssues;
 	}
 
 	public String getRef() {
@@ -139,11 +135,28 @@ public class Commit {
 		this.ref = ref;
 	}
 
-	public void setCommitIssue(CommitIssue commitIssue) {
+	/*public void setCommitIssue(CommitIssue commitIssue) {
 		this.commitIssue = commitIssue;
 	}
 	public void initIssue(String issue) {
 		commitIssue = new CommitIssue(issue);
+	}*/
+	
+	public void initIssue(String issue) {
+		if(issue == null) return;
+		CommitIssue i = new CommitIssue(issue);
+		i.setCommit(this);
+		this.addCommitIssue(i);
+	}
+	
+	public void addCommitIssue(CommitIssue commitIssue) {
+		commitIssue.setCommit(this);
+		this.commitIssues.add(commitIssue);
+	}
+	
+	public void removeCommitIssue(CommitIssue commitIssue) {
+		commitIssue.setCommit(null);
+		this.commitIssues.remove(commitIssue);
 	}
 
 	public String firstLineOfMessage() {

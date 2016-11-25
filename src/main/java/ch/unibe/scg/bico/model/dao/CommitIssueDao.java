@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import ch.unibe.scg.bico.model.CommitIssue;
+import ch.unibe.scg.bico.model.Project;
 
 @Repository
 public class CommitIssueDao implements CommitIssueDaoInterface {
@@ -18,7 +19,7 @@ public class CommitIssueDao implements CommitIssueDaoInterface {
 	@Override
 	public void persist(CommitIssue commitIssue) {
 		em.persist(commitIssue);
-		em.flush();
+		//em.flush();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -34,14 +35,20 @@ public class CommitIssueDao implements CommitIssueDaoInterface {
 	
 	@Override
 	public void delete(CommitIssue commitIssue) {
-		em.remove(commitIssue);
-		em.flush();
+		if(!em.contains(commitIssue)) {
+			CommitIssue c  = em.merge(commitIssue);
+			em.remove(c);
+		} else {
+			em.remove(commitIssue);
+		}
+		//em.remove( em.contains(commitIssue) ? commitIssue : em.merge(commitIssue));
+		//em.flush();
 	}
 	
 	@Override
 	public void update(CommitIssue commitIssue) {
 		em.merge(commitIssue);
-		em.flush();
+		//em.flush();
 	}
 
 	@Override
@@ -49,6 +56,13 @@ public class CommitIssueDao implements CommitIssueDaoInterface {
 		for(CommitIssue ci : commitIssues) {
 			em.merge(ci);
 		}
-		em.flush();
+		//em.flush();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CommitIssue> findAllByProject(Project project) {
+		return em.createQuery("SELECT c from CommitIssue c LEFT JOIN c.commit i WHERE i.project = :project")
+				.setParameter("project", project).getResultList();
 	}
 }

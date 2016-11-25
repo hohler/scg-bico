@@ -172,10 +172,6 @@ public class CommitFile {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public String toString() {
 		return String.format("CommitFile[id=%d, newPath='%s', additions='%d', deletions='%d', changes='%d']",
 				id, newPath, additions, deletions, getChanges());

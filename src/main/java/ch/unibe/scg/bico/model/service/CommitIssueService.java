@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ch.unibe.scg.bico.model.CommitIssue;
+import ch.unibe.scg.bico.model.Project;
 import ch.unibe.scg.bico.model.dao.CommitIssueDaoInterface;
 
 
@@ -59,5 +60,10 @@ public class CommitIssueService {
 	@Transactional
 	public void updateAll(List<? extends CommitIssue> commitIssues) {
 		commitIssueDao.updateAll(commitIssues);
+	}
+	
+	@Transactional
+	public List<CommitIssue> findAllByProject(Project project) {
+		return commitIssueDao.findAllByProject(project);
 	}
 }

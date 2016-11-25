@@ -3,6 +3,7 @@ package ch.unibe.scg.bico.model.dao;
 import java.util.List;
 
 import ch.unibe.scg.bico.model.CommitIssue;
+import ch.unibe.scg.bico.model.Project;
 
 public interface CommitIssueDaoInterface {
 
@@ -17,5 +18,7 @@ public interface CommitIssueDaoInterface {
 	void update(CommitIssue commitIssue);
 	
 	void updateAll(List<? extends CommitIssue> commitIssues);
+
+	List<CommitIssue> findAllByProject(Project project);
 
 }

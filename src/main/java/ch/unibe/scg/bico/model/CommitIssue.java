@@ -5,6 +5,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -71,7 +72,7 @@ public class CommitIssue {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
-	@OneToOne(mappedBy = "commitIssue", fetch = FetchType.LAZY, cascade=javax.persistence.CascadeType.REFRESH)
+	@ManyToOne(fetch = FetchType.LAZY, cascade=javax.persistence.CascadeType.REFRESH)
 	private Commit commit;
 	
 	private Type type = Type.NA;
@@ -131,6 +132,18 @@ public class CommitIssue {
 		this.priority = priority;
 	}
 	
+	public Commit getCommit() {
+		return commit;
+	}
+
+	public void setCommit(Commit commit) {
+		this.commit = commit;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
 	public String toString() {
 		return "Issue[id="+id+", name="+name+", type="+type+", priority="+priority+"]";
 	}

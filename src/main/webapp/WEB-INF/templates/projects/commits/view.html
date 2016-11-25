@@ -51,6 +51,10 @@
 				<td th:text="${commit.ref}">ref</td>
 			</tr>
 			<tr>
+				<th>Number of issues assigned to this commit</th>
+				<td th:text="${commit.getCommitIssues().size()}">count</td>
+			</tr>
+			<tr>
 				<th>Parent commit</th>
 				<td><a href="projects" th:href="@{'/projects/' + ${commit.project.id} + '/commits/' + ${commit.parentCommit.id}}">parent commit</a></td>
 			</tr>
@@ -61,6 +65,22 @@
 				<td colspan="2" th:text="${commit.message}">message</td>
 			</tr>
 		</table>
+		
+		<h2>Issue list</h2>
+		<table class="table table-bordered table-striped table-condensed">
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Type</th>
+				<th>Priority</th>
+			</tr>
+			<tr th:each="issue : ${commit.commitIssues}">
+				<td th:text="${issue.id}">id</td>
+				<td th:text="${issue.name}">name</td>
+				<td th:text="${issue.type}">type</td>
+				<td th:text="${issue.priority}">priority</td>
+			</tr>
+			</table>
 		
 		<h2>File list</h2>
 		<table class="table table-bordered table-striped table-condensed">

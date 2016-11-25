@@ -91,8 +91,8 @@ public class JobCreator {
 		}
 		
 		Step step2 = stepBuilderFactory.get(jobName+"_getIssueInformationForEachCommit")
-				.<Commit, CommitIssue> chunk(50)
-				.reader(new CommitReader(project))
+				.<CommitIssue, CommitIssue> chunk(50)
+				.reader(new CommitReader(project, commitIssueService))
 				.processor(commitProcessor)
 				.writer(new CommitWriter(commitIssueService))
 				.taskExecutor(issueTaskExecutor())

@@ -38,18 +38,14 @@
 		<table class="table table-bordered table-striped table-condensed" dt:table="true">
 		<tr>
 			<th>ID</th>
-			<th>Name</th>
-			<th>Priority</th>
-			<th>Type</th>
+			<th>Issues</th>
 			<th>Additions</th>
 			<th>Deletions</th>
 			<th>FirstLineOfMessage</th>
 		</tr>
 		<tr th:each="commit : ${project.commits}">
 			<td><a th:text="${commit.id}" href="projects" th:href="@{'/projects/' + ${project.id} + '/commits/' + ${commit.id}}">id</a></td>
-			<td th:text="${commit.commitIssue.name}">name</td>
-			<td th:text="${commit.commitIssue.priority}">priority</td>
-			<td th:text="${commit.commitIssue.type}">type</td>
+			<td th:text="${commit.getCommitIssues().size()}">issues</td>
 			<td th:text="${commit.additions}">additions</td>
 			<td th:text="${commit.deletions}">deletions</td>
 			<td th:text="${commit.firstLineOfMessage()}">firstLineOfMessage</td>
