@@ -1,0 +1,67 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:dt="http://www.thymeleaf.org/dandelion/datatables"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<title>Project : Analysis</title>
+</head>
+<body>
+	<h1 layout:fragment="header"><span th:text="${project.name}"></span> : Analysis</h1>
+	<div layout:fragment="content" class="container">
+		<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+			
+		<table class="table table-bordered">
+			<tr>
+				<th>ID</th>
+				<td><a th:text="${project.id}" href="projects" th:href="@{'/projects/' + ${project.id}}">id</a></td>
+			</tr>
+			<tr>
+				<th>Name</th>
+				<td th:text="${project.name}">name</td>
+			</tr>
+		</table>
+		
+		<h2>Analysis</h2>
+		
+		<div th:each="type : ${results}">
+			<h3>Issue type: <span th:text="${type.key}"></span> (<span th:text="${type.value.getResultsSize()}">x</span> results)</h3>
+			<table class="table table-bordered table-striped table-condensed" dt:table="true">
+			<tr>
+				<th style="width:30%;">Average files changed</th>
+				<td th:text="${type.value.getAvgFilesChanged()}">num</td>
+			</tr>
+			<tr>
+				<th>Highest Number of files changed</th>
+				<td th:text="${type.value.getHighestFilesChanged()}">num</td>
+			</tr>
+			<tr>
+				<th>Average additions per file</th>
+				<td th:text="${type.value.getAvgAdditionsPerFile()}">num</td>
+			</tr>
+			<tr>
+				<th>Highest additions per file</th>
+				<td th:text="${type.value.getHighestAdditionsPerFile()}">num</td>
+			</tr>
+			<tr>
+				<th>Average deletions per file</th>
+				<td th:text="${type.value.getAvgDeletionsPerFile()}">num</td>
+			</tr>
+			<tr>
+				<th>Highest deletions per file</th>
+				<td th:text="${type.value.getHighestDeletionsPerFile()}">num</td>
+			</tr>
+			</table>
+		</div>
+		
+		<div class="pull-left">
+			<!-- <a href="form.html" class="btn btn-primary"
+				th:href="@{'/projects/modify/' + ${project.id}}"> modify </a>-->
+			<!-- <a href="projects" class="btn btn-danger" th:href="@{'/projects/delete/' + ${project.id}}">
+				delete </a>-->
+			<a href="projects" class="btn btn-default" th:href="@{'/projects/' + ${project.id}}">
+				back </a>
+		</div>
+	</div>
+</body>
+</html>
