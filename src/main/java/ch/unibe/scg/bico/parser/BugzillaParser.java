@@ -66,14 +66,21 @@ public class BugzillaParser implements Parser {
 			Element element = (Element) node;	
 			
 			String key = element.getElementsByTagName("bug_id").item(0).getTextContent();
-			String type = element.getElementsByTagName("whiteboard").item(0).getTextContent();
-			String priority = element.getElementsByTagName("bug_severity").item(0).getTextContent();
+			
+			String type = null;
+			Node typeNode = element.getElementsByTagName("whiteboard").item(0);
+			if(typeNode != null) type = element.getElementsByTagName("whiteboard").item(0).getTextContent();
+		
+			String priority = null;
+			Node priorityNode = element.getElementsByTagName("bug_severity").item(0);
+			if(priorityNode != null) priority = priorityNode.getTextContent();
+			
 			String desc = element.getElementsByTagName("short_desc").item(0).getTextContent();
 			
 			result.setName(key);
 			
 			//issue.setName(key);
-			System.out.println("["+key+"] type: "+type + " priority: " + priority);
+			System.out.println("["+key+"] type: "+type + " priority: " + priority + " desc: " + desc);
 			
 			SwitchSubstring.of(desc.toLowerCase())
 				//Priorities
@@ -83,7 +90,7 @@ public class BugzillaParser implements Parser {
 				.when("minor").then(() -> priorities.put(name, CommitIssue.Priority.MINOR))
 				.when("trivial").then(() -> priorities.put(name, CommitIssue.Priority.TRIVIAL))*/
 				//Types
-				.when("bug", "bugfix").then(() -> result.setType(CommitIssue.Type.BUG))
+				.when("bug", "bugfix", "fix").then(() -> result.setType(CommitIssue.Type.BUG))
 				.when("deprecation").then(() -> result.setType(CommitIssue.Type.DEPRECATION))
 				.when("refactor", "refactoring", "change").then(() -> result.setType(CommitIssue.Type.REFACTOR))
 				.when("docs", "documentation", "doc").then(() -> result.setType(CommitIssue.Type.DOCUMENTATION))
@@ -95,8 +102,8 @@ public class BugzillaParser implements Parser {
 				.when("request").then(() -> result.setType(CommitIssue.Type.REQUEST))
 				.when("subtask").then(() -> result.setType(CommitIssue.Type.SUBTASK))
 				.when("task").then(() -> result.setType(CommitIssue.Type.TASK))
-				.when("wish").then(() -> result.setType(CommitIssue.Type.WISH));
-				//.orElse(() -> result.setType(CommitIssue.Type.NA));
+				.when("wish").then(() -> result.setType(CommitIssue.Type.WISH))
+				.orElse(() -> result.setType(CommitIssue.Type.NA));
 				
 		
 			
@@ -123,8 +130,8 @@ public class BugzillaParser implements Parser {
 				case "minor":
 				case "normal": result.setPriority(CommitIssue.Priority.MINOR); break;
 				case "trivial": result.setPriority(CommitIssue.Priority.TRIVIAL); break;
-				case "enhancement": result.setType(CommitIssue.Type.IMPROVEMENT); break; // actually a type, not a priority!
-				default: result.setPriority(CommitIssue.Priority.OTHER); break;
+				case "enhancement": result.setType(CommitIssue.Type.IMPROVEMENT); result.setPriority(CommitIssue.Priority.MINOR); break; // enhancement actually a type, not a priority!
+				default: result.setPriority(CommitIssue.Priority.NA); break;
 			}
 			
 			return result;
