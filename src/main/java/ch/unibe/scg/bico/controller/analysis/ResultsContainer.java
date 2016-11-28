@@ -50,6 +50,15 @@ public class ResultsContainer {
 		return result;
 	}
 	
+	public int getLowestFilesChanged() {
+		int result = Integer.MAX_VALUE;
+		for(ResultHolder r : results) {
+			if(result > r.filesChanged) result = r.filesChanged;
+		}
+		if(result == Integer.MAX_VALUE) result = 0;
+		return result;
+	}
+	
 	public double getAvgAdditionsPerFile() {
 		double result = 0;
 		for(ResultHolder r : results) {
@@ -88,6 +97,17 @@ public class ResultsContainer {
 		return result;
 	}
 	
+	public int getLowestDeletionsPerFile() {
+		int result = Integer.MAX_VALUE;
+		for(ResultHolder r : results) {
+			for(FileHolder f : r.fileList) {
+				if(result > f.deletions) result = f.deletions;
+			}
+		}
+		if(result == Integer.MAX_VALUE) result = 0;
+		return result;
+	}
+	
 	public int getHighestAdditionsPerFile() {
 		int result = 0;
 		for(ResultHolder r : results) {
@@ -95,6 +115,17 @@ public class ResultsContainer {
 				if(result < f.additions) result = f.additions;
 			}
 		}
+		return result;
+	}
+	
+	public int getLowestAdditionsPerFile() {
+		int result = Integer.MAX_VALUE;
+		for(ResultHolder r : results) {
+			for(FileHolder f : r.fileList) {
+				if(result > f.additions) result = f.additions;
+			}
+		}
+		if(result == Integer.MAX_VALUE) result = 0;
 		return result;
 	}
 	

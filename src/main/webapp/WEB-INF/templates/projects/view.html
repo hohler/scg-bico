@@ -32,9 +32,13 @@
 				<th>Issue Tracker URL (with pattern)</th>
 				<td th:text="${project.issueTrackerUrlPattern}">trackerurl</td>
 			</tr>
+			<tr>
+				<th>Analysis</th>
+				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/analyze'}">Analyze</a></td>
+			</tr>
 		</table>
 		
-		<h2>Commits</h2>
+		<h2>Commits (<span th:text="${project.commits.size()}"></span>)</h2>
 		<table class="table table-bordered table-striped table-condensed" dt:table="true">
 		<tr>
 			<th>ID</th>

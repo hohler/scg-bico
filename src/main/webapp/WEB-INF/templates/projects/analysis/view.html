@@ -29,27 +29,39 @@
 			<table class="table table-bordered table-striped table-condensed" dt:table="true">
 			<tr>
 				<th style="width:30%;">Average files changed</th>
-				<td th:text="${type.value.getAvgFilesChanged()}">num</td>
+				<td th:text="${#numbers.formatDecimal(type.value.getAvgFilesChanged(), 0, 3)}">num</td>
 			</tr>
 			<tr>
 				<th>Highest Number of files changed</th>
 				<td th:text="${type.value.getHighestFilesChanged()}">num</td>
 			</tr>
 			<tr>
+				<th>Lowest Number of files changed</th>
+				<td th:text="${type.value.getLowestFilesChanged()}">num</td>
+			</tr>
+			<tr>
 				<th>Average additions per file</th>
-				<td th:text="${type.value.getAvgAdditionsPerFile()}">num</td>
+				<td th:text="${#numbers.formatDecimal(type.value.getAvgAdditionsPerFile(), 0, 3)}">num</td>
 			</tr>
 			<tr>
 				<th>Highest additions per file</th>
 				<td th:text="${type.value.getHighestAdditionsPerFile()}">num</td>
 			</tr>
 			<tr>
+				<th>Lowest additions per file</th>
+				<td th:text="${type.value.getLowestAdditionsPerFile()}">num</td>
+			</tr>
+			<tr>
 				<th>Average deletions per file</th>
-				<td th:text="${type.value.getAvgDeletionsPerFile()}">num</td>
+				<td th:text="${#numbers.formatDecimal(type.value.getAvgDeletionsPerFile(), 0, 3)}">num</td>
 			</tr>
 			<tr>
 				<th>Highest deletions per file</th>
 				<td th:text="${type.value.getHighestDeletionsPerFile()}">num</td>
+			</tr>
+			<tr>
+				<th>Lowest deletions per file</th>
+				<td th:text="${type.value.getLowestDeletionsPerFile()}">num</td>
 			</tr>
 			</table>
 		</div>
