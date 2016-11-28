@@ -10,7 +10,7 @@ import ch.unibe.scg.bico.model.Commit;
 public class IssueStringParser {
 	private Pattern regex;
 	public IssueStringParser(String regex) {
-		this.regex = Pattern.compile(regex);
+		this.regex = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 	}
 	
 	public void parse(List<Commit> list) {

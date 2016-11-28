@@ -35,7 +35,7 @@ public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> 
 				result = gitHubApi.parseIssue(input.getName());
 			} else
 			if(issueTrackerType == Project.Type.JIRA) {
-				WebIssueTrackerParser itp = new WebIssueTrackerParser(urlPattern);
+				WebIssueTrackerParser itp = new WebIssueTrackerParser(urlPattern, issueTrackerType);
 				result = itp.parse(input);
 			}
 			if(result != null) {

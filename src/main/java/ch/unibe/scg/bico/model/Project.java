@@ -22,7 +22,7 @@ public class Project {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
-	private String name;	
+	private String name;
 	private String url;
 	private Type type;
 	private String branch;
@@ -33,7 +33,7 @@ public class Project {
 	private Set<Commit> commits;
 	
 	public enum Type {
-		GITHUB("Github"), GIT("Git"), JIRA("Jira");
+		GITHUB("Github"), GIT("Git"), JIRA("Jira"), BUGZILLA("Bugzilla");
 		
 		private final String name;
 		

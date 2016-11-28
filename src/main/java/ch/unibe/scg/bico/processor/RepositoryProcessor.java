@@ -1,5 +1,6 @@
 package ch.unibe.scg.bico.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.batch.item.ItemProcessor;
@@ -20,21 +21,26 @@ public class RepositoryProcessor implements ItemProcessor<Commit, Commit> {
 		
 		if(input == null) throw new NullPointerException("Commit is null");
 		
+		List<String> identifiers = new ArrayList<>();
+		
 		//if type == Jira
 		if(type == Project.Type.JIRA) {
-			String identifier;
-			IssueStringParser issueParser = new IssueStringParser("^\\[*(\\w+(\\-| )?\\d+)\\]*");
-			identifier = issueParser.parse(input.getMessage());
-			if(identifier != null) input.initIssue(identifier.replaceAll(" ", "-"));
+			//String identifier;
+			IssueStringParser issueParser = new IssueStringParser("\\[*(\\w+-\\d+)\\]*"); //^\\[*(\\w+(\\-| )?\\d+)\\]*
+			identifiers = issueParser.parseAll(input.getMessage());
 		} else
 		if(type == Project.Type.GITHUB) {
-			IssueStringParser issueParser = new IssueStringParser("\\(#(\\d+)\\)");
-			List<String> identifiers = issueParser.parseAll(input.getMessage());
-			for(String i : identifiers) {
-				input.initIssue(i);
-			}
+			IssueStringParser issueParser = new IssueStringParser("\\(?#(\\d+)\\)?");
+			identifiers = issueParser.parseAll(input.getMessage());
+		} else
+		if(type == Project.Type.BUGZILLA) {
+			IssueStringParser issueParser = new IssueStringParser("bug\\s(\\d+)");
+			identifiers = issueParser.parseAll(input.getMessage());
 		}
 		
+		for(String i : identifiers) {
+			input.initIssue(i);
+		}
 		
 		return input;
 	}

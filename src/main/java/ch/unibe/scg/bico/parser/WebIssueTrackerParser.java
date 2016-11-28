@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import ch.unibe.scg.bico.model.CommitIssue;
+import ch.unibe.scg.bico.model.Project;
 
 public class WebIssueTrackerParser {
 
@@ -15,16 +16,23 @@ public class WebIssueTrackerParser {
 	//private CommitIssue issue;
 	private String urlPattern;
 	
-	public WebIssueTrackerParser(String urlPattern) throws Exception {
+	public WebIssueTrackerParser(String urlPattern, Project.Type trackerType) throws Exception {
 		this.urlPattern = urlPattern;
 		
-		if(urlPattern.contains("jira")) {
+		if(urlPattern.contains("jira") && trackerType == Project.Type.JIRA) {
 			
 			if(!urlPattern.contains(".xml")) {
 				throw new Exception("The Jira parser only works with xml format");
 			}
 			
 			parser = new JiraParser();
+		} else
+		if(urlPattern.contains("bugzilla") && trackerType == Project.Type.BUGZILLA) {
+			if(!urlPattern.contains(".xml")) {
+				throw new Exception("The Jira parser only works with xml format");
+			}
+			
+			parser = new BugzillaParser();
 		} else {
 			throw new Exception("This issue tracker is not known!");
 		}
