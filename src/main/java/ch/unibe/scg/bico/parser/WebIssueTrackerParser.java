@@ -19,7 +19,7 @@ public class WebIssueTrackerParser {
 	public WebIssueTrackerParser(String urlPattern, Project.Type trackerType) throws Exception {
 		this.urlPattern = urlPattern;
 		
-		if(urlPattern.contains("jira") && trackerType == Project.Type.JIRA) {
+		if(trackerType == Project.Type.JIRA && urlPattern.contains("jira")) {
 			
 			if(!urlPattern.contains(".xml")) {
 				throw new Exception("The Jira parser only works with xml format");
@@ -27,9 +27,9 @@ public class WebIssueTrackerParser {
 			
 			parser = new JiraParser();
 		} else
-		if(urlPattern.contains("bugzilla") && trackerType == Project.Type.BUGZILLA) {
-			if(!urlPattern.contains(".xml")) {
-				throw new Exception("The Jira parser only works with xml format");
+		if(trackerType == Project.Type.BUGZILLA && urlPattern.contains("bugzilla")) {
+			if(!urlPattern.contains("xml")) {
+				throw new Exception("The bugzilla parser only works with xml format");
 			}
 			
 			parser = new BugzillaParser();
@@ -50,6 +50,15 @@ public class WebIssueTrackerParser {
 		if(issue == null) return null;
 		if(issue.getName() == null) return null;
 		String url = parser.formatUrl(urlPattern, issue.getName());
+		String content = retrieveContent(url);
+		if(content == null) return null;
+		
+		return parser.parse(content);
+	}
+	
+	public IssueInfoHolder parse(String issue) {
+		if(issue == null) return null;
+		String url = parser.formatUrl(urlPattern, issue);
 		String content = retrieveContent(url);
 		if(content == null) return null;
 		

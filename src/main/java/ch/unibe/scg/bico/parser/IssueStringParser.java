@@ -47,7 +47,7 @@ public class IssueStringParser {
 			/*for(int i = 1; i <= m.groupCount(); i++) {
 				if(m.group(i) != null) result.add(m.group(i));
 			}*/
-			result.add(m.group());
+			result.add(m.group(1));
 		}
 		if(result.size() == 0) {
 			System.err.println("Can't parse issue "+commitMessage.split("\\r?\\n")[0]);
