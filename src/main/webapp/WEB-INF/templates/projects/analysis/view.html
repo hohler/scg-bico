@@ -28,16 +28,24 @@
 			<h3>Issue type: <span th:text="${type.key}"></span> (<span th:text="${type.value.getResultsSize()}">x</span> results)</h3>
 			<table class="table table-bordered table-striped table-condensed" dt:table="true">
 			<tr>
-				<th style="width:30%;">Average files changed</th>
+				<th style="width:30%;">Average files changed per commit</th>
 				<td th:text="${#numbers.formatDecimal(type.value.getAvgFilesChanged(), 0, 3)}">num</td>
 			</tr>
 			<tr>
-				<th>Highest Number of files changed</th>
+				<th>Highest Number of files changed per commit</th>
 				<td th:text="${type.value.getHighestFilesChanged()}">num</td>
 			</tr>
 			<tr>
-				<th>Lowest Number of files changed</th>
+				<th>Lowest Number of files changed per commit</th>
 				<td th:text="${type.value.getLowestFilesChanged()}">num</td>
+			</tr>
+			<tr>
+				<th>Average additions per commit</th>
+				<td th:text="${#numbers.formatDecimal(type.value.getAvgAdditionsPerCommit(), 0, 3)}">num</td>
+			</tr>
+			<tr>
+				<th>Average deletions per commit</th>
+				<td th:text="${#numbers.formatDecimal(type.value.getAvgDeletionsPerCommit(), 0, 3)}">num</td>
 			</tr>
 			<tr>
 				<th>Average additions per file</th>

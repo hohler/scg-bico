@@ -73,6 +73,15 @@ public class ResultsContainer {
 		return result;
 	}
 	
+	public double getAvgAdditionsPerCommit() {
+		double result = 0;
+		for(ResultHolder r : results) {
+			result += r.additions;
+		}
+		if(result != 0) result /= (double) results.size();
+		return result;
+	}
+	
 	public double getAvgDeletionsPerFile() {
 		double result = 0;
 		for(ResultHolder r : results) {
@@ -82,6 +91,17 @@ public class ResultsContainer {
 			}
 			if(tmp != 0) tmp /= (double) r.fileList.size();
 			result += tmp;
+		}
+		if(result != 0) result /= (double) results.size();
+		return result;
+	}
+	
+	public double getAvgDeletionsPerCommit() {
+		double result = 0;
+		for(ResultHolder r : results) {
+			for(FileHolder f : r.fileList) {
+				result += f.deletions;
+			}
 		}
 		if(result != 0) result /= (double) results.size();
 		return result;
