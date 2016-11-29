@@ -1,8 +1,10 @@
 package ch.unibe.scg.bico.controller.analysis;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import ch.unibe.scg.bico.Tools;
 import ch.unibe.scg.bico.model.CommitFile;
 import ch.unibe.scg.bico.model.CommitIssue;
 
@@ -33,14 +35,20 @@ public class ResultsContainer {
 		return type;
 	}
 	
-	public double getAvgFilesChanged() {
+	public int getMedianFilesChanged() {
+		int[] data = results.stream().mapToInt(i -> i.filesChanged).toArray();
+		Arrays.sort(data);
+		return Tools.median(data);
+	}
+	
+	/*public double getAvgFilesChanged() {
 		double result = 0;
 		for(ResultHolder r : results) {
 			result += r.filesChanged;
 		}
 		if(result != 0) result /= (double) results.size();
 		return result;
-	}
+	}*/
 	
 	public int getHighestFilesChanged() {
 		int result = 0;
@@ -59,7 +67,17 @@ public class ResultsContainer {
 		return result;
 	}
 	
-	public double getAvgAdditionsPerFile() {
+	public int getMedianAdditionsInFiles() {
+		int[] result = new int[0];
+		for(ResultHolder r : results) {
+			int[] data = r.fileList.stream().mapToInt(i -> i.additions).toArray();
+			Arrays.sort(data);
+			result = (result.length > 0) ? Tools.merge(result, data) : data;
+		}
+		return Tools.median(result);
+	}
+	
+	/*public double getAvgAdditionsPerFile() {
 		double result = 0;
 		for(ResultHolder r : results) {
 			double tmp = 0;
@@ -71,18 +89,34 @@ public class ResultsContainer {
 		}
 		if(result != 0) result /= (double) results.size();
 		return result;
+	}*/
+	
+	public int getMedianAdditions() {
+		int[] data = results.stream().mapToInt(i -> i.additions).toArray();
+		Arrays.sort(data);
+		return Tools.median(data);
 	}
 	
-	public double getAvgAdditionsPerCommit() {
+	/*public double getAvgAdditionsPerCommit() {
 		double result = 0;
 		for(ResultHolder r : results) {
 			result += r.additions;
 		}
 		if(result != 0) result /= (double) results.size();
 		return result;
+	}*/
+	
+	public int getMedianDeletionsInFiles() {
+		int[] result = new int[0];
+		for(ResultHolder r : results) {
+			int[] data = r.fileList.stream().mapToInt(i -> i.deletions).toArray();
+			Arrays.sort(data);
+			result = (result.length > 0) ? Tools.merge(result, data) : data;
+		}
+		return Tools.median(result);
 	}
 	
-	public double getAvgDeletionsPerFile() {
+	/*public double getAvgDeletionsPerFile() {
 		double result = 0;
 		for(ResultHolder r : results) {
 			double tmp = 0;
@@ -94,9 +128,15 @@ public class ResultsContainer {
 		}
 		if(result != 0) result /= (double) results.size();
 		return result;
+	}*/
+	
+	public int getMedianDeletions() {
+		int[] data = results.stream().mapToInt(i -> i.deletions).toArray();
+		Arrays.sort(data);
+		return Tools.median(data);
 	}
 	
-	public double getAvgDeletionsPerCommit() {
+	/*public double getAvgDeletionsPerCommit() {
 		double result = 0;
 		for(ResultHolder r : results) {
 			for(FileHolder f : r.fileList) {
@@ -105,7 +145,7 @@ public class ResultsContainer {
 		}
 		if(result != 0) result /= (double) results.size();
 		return result;
-	}
+	}*/
 	
 	public int getHighestDeletionsPerFile() {
 		int result = 0;
