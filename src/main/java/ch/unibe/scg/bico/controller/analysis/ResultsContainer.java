@@ -189,6 +189,14 @@ public class ResultsContainer {
 		return result;
 	}
 	
+	public int[] getAdditionsPerCommit() {
+		return results.stream().mapToInt(i -> i.additions).toArray();
+	}
+	
+	public int[] getDeletionsPerCommit() {
+		return results.stream().mapToInt(i -> i.deletions).toArray();
+	}
+	
 	
 	public class ResultHolder {
 		private Long commitId;

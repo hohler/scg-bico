@@ -1,6 +1,8 @@
 package ch.unibe.scg.bico.controller;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,18 +31,19 @@ public class AnalysisController {
 	public ModelAndView view(Model model, @PathVariable("pid") Long pid) {
 		Project project = projectService.findById(pid);
 		
-		Set<CommitIssue.Type> typeSet = new HashSet<>();
+		List<CommitIssue.Type> typeSet = new ArrayList<>();
 		typeSet.add(CommitIssue.Type.BUG);
 		typeSet.add(CommitIssue.Type.FEATURE);
 		typeSet.add(CommitIssue.Type.IMPROVEMENT);
 		typeSet.add(CommitIssue.Type.REFACTOR);
 		typeSet.add(CommitIssue.Type.DOCUMENTATION);
 		
-		CommitAnalyzer ca = new CommitAnalyzer(project, typeSet);
+		CommitAnalyzer ca = new CommitAnalyzer(project, new HashSet<CommitIssue.Type>(typeSet));
 		ca.load();
 		ca.analyze();
 		Map<CommitIssue.Type, ResultsContainer> results = ca.getTypeResults();
 
+		model.addAttribute("types", typeSet);
 		model.addAttribute("results", results);
 		model.addAttribute("project", project);
 		
