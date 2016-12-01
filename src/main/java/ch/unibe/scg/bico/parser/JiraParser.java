@@ -32,7 +32,7 @@ public class JiraParser implements Parser {
 
 	@Override
 	public String formatUrl(String url, String issue) {
-		return String.format(url+"?field=type&field=priority",  issue, issue);
+		return String.format(url+"?field=type&field=priority&field=title",  issue, issue);
 	}
 
 	@Override
@@ -63,6 +63,8 @@ public class JiraParser implements Parser {
 			String type = element.getElementsByTagName("type").item(0).getTextContent();
 			String priority = element.getElementsByTagName("priority").item(0).getTextContent();
 			
+			String title = element.getElementsByTagName("title").item(0).getTextContent();
+			
 			result.setName(key);
 			
 			//issue.setName(key);
@@ -81,6 +83,12 @@ public class JiraParser implements Parser {
 				case "New Feature": result.setType(CommitIssue.Type.FEATURE); break;
 				case "Sub-task": result.setType(CommitIssue.Type.SUBTASK); break;
 				default: result.setType(CommitIssue.Type.OTHER); break;
+			}
+			
+			// special case for refactoring
+			if(result.getType() != CommitIssue.Type.REFACTOR) {
+				SwitchSubstring.of(title.toLowerCase())
+				.when("refactor", "refactoring", "refactored").then(() -> result.setType(CommitIssue.Type.REFACTOR));
 			}
 			
 			
