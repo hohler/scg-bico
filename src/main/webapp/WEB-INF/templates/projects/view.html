@@ -10,7 +10,14 @@
 	<div layout:fragment="content" class="container">
 		<div class="alert alert-success" th:if="${globalMessage}"
 			th:text="${globalMessage}">Some Success message</div>
-			
+		
+		<div class="pull-right" style="margin-bottom:10px;">
+			<a href="projects" class="btn btn-danger" th:href="@{'/projects/delete/' + ${project.id}}">
+				delete </a>
+			<a href="projects" class="btn btn-default" th:href="@{'/projects'}">
+				back </a>
+		</div>
+		
 		<table class="table table-bordered table-striped">
 			<tr>
 				<th>ID</th>
@@ -55,15 +62,7 @@
 			<td th:text="${commit.firstLineOfMessage()}">firstLineOfMessage</td>
 		</tr>
 		</table>
-		
-		<div class="pull-left">
-			<!-- <a href="form.html" class="btn btn-primary"
-				th:href="@{'/projects/modify/' + ${project.id}}"> modify </a>-->
-			<a href="projects" class="btn btn-danger" th:href="@{'/projects/delete/' + ${project.id}}">
-				delete </a>
-			<a href="projects" class="btn btn-default" th:href="@{'/projects'}">
-				back </a>
-		</div>
+
 	</div>
 </body>
 </html>
