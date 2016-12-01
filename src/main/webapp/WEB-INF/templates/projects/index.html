@@ -30,7 +30,11 @@
 					<td th:text="${project.id}">id</td>
 					<td th:text="${project.name}">name</td>
 					<td th:text="${project.type}">Type</td>
-					<td><a href="view.html" th:href="@{'/projects/' + ${project.id}}">Details</a> | <a href="view.html" th:href="@{'/projects/' + ${project.id} + '/analyze'}">Analyze</a>  | <a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name}}">Batch Job</a></td>
+					<td><a href="view.html" th:href="@{'/projects/' + ${project.id}}">Details</a> |&nbsp;
+						<a href="view.html" th:href="@{'/projects/' + ${project.id} + '/analyze'}">Analyze</a> |&nbsp;
+						<a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name}}">Batch Job</a> |&nbsp;
+						<a href="projects" th:href="@{'/projects/' + ${project.id} + '/issues'}">Issues</a>
+						</td>
 				</tr>
 			</tbody>
 		</table>

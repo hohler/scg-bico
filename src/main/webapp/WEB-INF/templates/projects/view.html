@@ -41,7 +41,10 @@
 			</tr>
 			<tr>
 				<th>Options</th>
-				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/analyze'}">Analyze</a> | <a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name}}">Batch Job</a></td>
+				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/analyze'}">Analyze</a> |&nbsp;
+					<a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name}}">Batch Job</a> |&nbsp;
+					<a href="projects" th:href="@{'/projects/' + ${project.id} + '/issues'}">Issues</a>
+					</td>
 			</tr>
 		</table>
 		

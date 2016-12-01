@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<title>Project : Issues</title>
+</head>
+<body>
+	<h1 layout:fragment="header"><span th:text="${project.name}">project</span> : Issues</h1>
+	<div layout:fragment="content" class="container">
+	<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+		<div class="pull-right" style="margin-bottom:10px;">
+			<a href="form.html" class="btn btn-default" th:href="@{'/projects/' + ${project.id}}">back</a>
+		</div>
+		
+		<div>
+		 <!-- Nav tabs -->
+		  <ul class="nav nav-tabs" id="issueTabs" data-tabs="tabs">
+		    <li th:each="type : ${issuesMapped}">
+		    	<a th:href="${'#' + type.key.toString()}" th:text="${type.key.toString() + '(' + type.value.size() + ')'}" data-toggle="tab">text</a>
+	    	</li>
+		  </ul>
+
+	  	<!-- Tab panes -->
+	  	
+	  	<div class="tab-content">
+	  	
+			<div class="tab-pane" th:each="type : ${issuesMapped}" th:id="${type.key}">
+				<h3 th:text="${type.key.toString()}"></h3>
+				<table class="table table-bordered table-striped" th:unless="${type.value.isEmpty()}">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Priority</th>
+							<th>Commit</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="issue : ${type.value}">
+							<td th:text="${issue.id}">id</td>
+							<td th:text="${issue.name}">name</td>
+							<td th:text="${issue.type}">Type</td>
+							<td th:text="${issue.priority}">Type</td>
+							<td><a th:href="@{'/projects/' + ${project.id} + '/commits/' + ${issue.commit.id}}" th:text="${issue.commit.id}">commit</a></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="alert alert-info" role="alert" th:if="${type.value.isEmpty()}">No issues in this category</div>
+			</div>
+		</div>
+			<script>
+				$(document).ready(function() {
+					$('#issueTabs a:first').tab('show');
+				});
+			</script>
+		</div>
+</body>
+</html>
