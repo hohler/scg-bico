@@ -7,15 +7,51 @@
 
 <script src="http://cdn.jsdelivr.net/webjars/d3js/4.2.1/d3.min.js"
             th:src="@{/webjars/d3js/4.2.1/d3.min.js}"></script>
+            
+<script src="http://cdn.jsdelivr.net/webjars/d3-tip/0.7.0/index.js"
+            th:src="@{/webjars/d3-tip/0.7.0/index.js}"></script>
 
 <style>
 	.bar rect {
 	  fill: steelblue;
 	}
 	
+	.bar rect:hover {
+	  fill: skyblue6;
+	}
+	
 	.bar text {
 	  fill: #fff;
 	  font: 10px sans-serif;
+	}
+	
+	.d3-tip {
+	  line-height: 1;
+	  font-weight: bold;
+	  padding: 12px;
+	  background: rgba(0, 0, 0, 0.8);
+	  color: #fff;
+	  border-radius: 2px;
+	}
+	
+	/* Creates a small triangle extender for the tooltip */
+	.d3-tip:after {
+	  box-sizing: border-box;
+	  display: inline;
+	  font-size: 10px;
+	  width: 100%;
+	  line-height: 1;
+	  color: rgba(0, 0, 0, 0.8);
+	  content: "\25BC";
+	  position: absolute;
+	  text-align: center;
+	}
+	
+	/* Style northward tooltips differently */
+	.d3-tip.n:after {
+	  margin: -1px 0 0 0;
+	  top: 100%;
+	  left: 0;
 	}
 </style>
 </head>
@@ -25,13 +61,13 @@
 	
 	
 	<script>
-		function createHistogram(data, svgId) {
+		function createHistogram(data, svgId, buckets, x_ticks, x_title) {
 			
 			
 			var max = Number(d3.max(data)) + 1;
 			//max = 500;
 
-			var formatCount = d3.format(",.0f");
+			//var formatCount = d3.format(",.0f");
 
 			var svg = d3.select(svgId),
 			    margin = {top: 10, right: 30, bottom: 60, left: 50},
@@ -41,22 +77,33 @@
 
 			var x = d3.scaleLinear()
 				.domain([0, max])
-			    .rangeRound([0, width]);
+			    .range([0, width]);
 
 			var bins = d3.histogram()
 			    .domain(x.domain())
-			    .thresholds(x.ticks(50))
+			    .thresholds(x.ticks(buckets))
 			    (data);
 
 			var y = d3.scaleLinear()
 			    .domain([0, d3.max(bins, function(d) { return d.length; })])
 			    .range([height, 0]);
+			
+			var tip = d3.tip()
+			  .attr('class', 'd3-tip')
+			  .offset([-10, 0])
+			  .html(function(d) {
+			    return "<strong>Commits:</strong> <span style='color:red'>" + d.length + "</span><br /><strong>Additions:</strong> <span style='color:red'>" + d.x0 + "-" + d.x1 + "</span>";
+			  });
+			
+			svg.call(tip);
 
 			var bar = g.selectAll(".bar")
 			  .data(bins)
 			  .enter().append("g")
 			    .attr("class", "bar")
-			    .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; });
+			    .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+			    .on('mouseover', tip.show)
+    			.on('mouseout', tip.hide);
 
 			bar.append("rect")
 			    .attr("x", 1)
@@ -68,22 +115,36 @@
 			    .attr("y", 6)
 			    .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)
 			    .attr("text-anchor", "middle")
-			    .text(function(d) { return formatCount(d.length); });
+			    .text(function(d) { return d.length; });
 
 			g.append("g")
 			    .attr("class", "axis axis--x")
 			    .attr("transform", "translate(0," + height + ")")
-			    .call(d3.axisBottom(x).ticks(16));
+			    .call(d3.axisBottom(x).ticks(x_ticks).tickFormat(function(e){
+			        if(Math.floor(e) != e)
+			        {
+			            return;
+			        }
+
+			        return e;
+			    }));
 
 			g.append("g")
 				.attr("class", "axis axis--Y")
-				.call(d3.axisLeft(y));
+				.call(d3.axisLeft(y).tickFormat(function(e){
+			        if(Math.floor(e) != e)
+			        {
+			            return;
+			        }
+
+			        return e;
+			    }));
 				
 			svg.append("text")
 				.attr("text-anchor", "middle")
 				.attr("class", "black")
 				.attr("transform", "translate("+ ((width+margin.left+margin.right)/2) +","+(height+50)+")") 
-				.text("Lines of additions per commit");
+				.text(x_title);
 
 			svg.append("text")
 				.attr("text-anchor", "middle")
@@ -99,7 +160,7 @@
 		<div class="alert alert-success" th:if="${globalMessage}"
 			th:text="${globalMessage}">Some Success message</div>
 			
-		<table class="table table-bordered">
+		<table class="table table-bordered table-striped">
 			<tr>
 				<th>ID</th>
 				<td><a th:text="${project.id}" href="projects" th:href="@{'/projects/' + ${project.id}}">id</a></td>
@@ -129,57 +190,128 @@
 			<div th:if="${type.value.getResultsSize() > 0}">
 			<table class="table table-bordered table-striped table-condensed" dt:table="true">
 			<tr>
-				<th style="width:30%;">Median files changed (over commits)</th>
+				<th style="width:30%;">Number of issues</th>
+				<td th:text="${type.value.getResultsSize()}">results</td>
+				
+				<th>Highest additions per commit</th>
+				<td th:text="${type.value.getHighestAdditionsPerCommit()}">num</td>
+			</tr>
+			<tr>
+			
+				<th style="width:30%;">Median files changed (commits)</th>
 				<td th:text="${type.value.getMedianFilesChanged()}">num</td>
+				
+				<th>Lowest additions per commit</th>
+				<td th:text="${type.value.getLowestAdditionsPerCommit()}">num</td>				
 			</tr>
 			<tr>
-				<th>Highest Number of files changed per commit</th>
-				<td th:text="${type.value.getHighestFilesChanged()}">num</td>
-			</tr>
-			<tr>
-				<th>Lowest Number of files changed per commit</th>
-				<td th:text="${type.value.getLowestFilesChanged()}">num</td>
-			</tr>
-			<tr>
-				<th>Median additions (over commits)</th>
+			
+				<th>Median additions (commits)</th>
 				<td th:text="${type.value.getMedianAdditions()}">num</td>
+
+				<th>Highest deletions per commit</th>
+				<td th:text="${type.value.getHighestDeletionsPerCommit()}">num</td>
 			</tr>
 			<tr>
-				<th>Median deletions (over commits)</th>
+			
+				<th>Median deletions (commits)</th>
 				<td th:text="${type.value.getMedianDeletions()}">num</td>
+
+				<th>Lowest deletions per commit</th>
+				<td th:text="${type.value.getLowestDeletionsPerCommit()}">num</td>
 			</tr>
 			<tr>
-				<th>Median additions (over files)</th>
+				<th>Median additions (files)</th>
 				<td th:text="${type.value.getMedianAdditionsInFiles()}">num</td>
-			</tr>
-			<tr>
+				
 				<th>Highest additions per file</th>
 				<td th:text="${type.value.getHighestAdditionsPerFile()}">num</td>
 			</tr>
 			<tr>
+				<th>Median deletions (files)</th>
+				<td th:text="${type.value.getMedianDeletionsInFiles()}">num</td>
+				
 				<th>Lowest additions per file</th>
 				<td th:text="${type.value.getLowestAdditionsPerFile()}">num</td>
 			</tr>
 			<tr>
-				<th>Median deletions (over files)</th>
-				<td th:text="${type.value.getMedianDeletionsInFiles()}">num</td>
-			</tr>
-			<tr>
+				<th>Highest Number of files changed per commit</th>
+				<td th:text="${type.value.getHighestFilesChanged()}">num</td>
+				
 				<th>Highest deletions per file</th>
 				<td th:text="${type.value.getHighestDeletionsPerFile()}">num</td>
 			</tr>
 			<tr>
+				<th>Lowest Number of files changed per commit</th>
+				<td th:text="${type.value.getLowestFilesChanged()}">num</td>
+
 				<th>Lowest deletions per file</th>
 				<td th:text="${type.value.getLowestDeletionsPerFile()}">num</td>
 			</tr>
 			</table>
-			<h3>Grahps</h3>
+			
+			<h3>Additions per commit</h3>
 		
-			<svg th:id="'svg_' + ${type.key}" width="960" height="500"></svg>
+			<svg th:id="'svg_' + ${type.key}" width="1100" height="500"></svg>
 			<script th:inline="javascript">
 				var data = [[${type.value.getAdditionsPerCommit()}]];
+				
+				var average = 0;
+
+				for(var i = 0; i < data.length; i++) {
+				  average += data[i];
+				}
+
+				average /= data.length;
+				var slice = 0;
+				for(var i = data.length; i>=data.length-20; i--) {
+					if(data[i] > average && slice < 10) slice++;
+				}
+				
+				console.log("slice: " + slice);
+				
+				if(data.length > 50) data = data.slice(0, data.length - slice); // remove two highest numbers
+				
 				var category = [[${type.key}]];
-				createHistogram(data, "#svg_" + category);
+				
+				//var buckets = data[data.length];
+				//var x_ticks = data[data.length];
+				//if(data[data.length] >= 50)
+//				if(data[data.length-1] >= 25)
+				var buckets = data[data.length-1];
+				var x_ticks = data[data.length-1];
+				if(data[data.length-1] >= 50) buckets = 50; x_ticks = 25;
+				buckets = 50; x_ticks = 25;
+				createHistogram(data, "#svg_" + category, buckets, x_ticks, "Additions per commit");
+			</script>
+			
+			<h3>Files changed per commit</h3>
+		
+			<svg th:id="'svg2_' + ${type.key}" width="1100" height="500"></svg>
+			<script th:inline="javascript">
+				var data = [[${type.value.getFilesChangedPerCommit()}]];
+				
+				var average = 0;
+
+				for(var i = 0; i < data.length; i++) {
+				  average += data[i];
+				}
+
+				average /= data.length;
+				var slice = 0;
+				for(var i = data.length; i>=data.length-20; i--) {
+					if(data[i] > average && slice < 10) slice++;
+				}
+				
+				if(data.length > 50) data = data.slice(0, data.length - slice); // remove highest number
+				
+				var category = [[${type.key}]];
+				
+				var buckets = data[data.length-1];
+				var x_ticks = data[data.length-1];
+				if(data[data.length-1] >= 50) buckets = 50; x_ticks = 25;
+				
+				createHistogram(data, "#svg2_" + category, buckets, x_ticks, "Files changed per commit");
 			</script>
 			</div>
 			<div class="alert alert-info" role="alert" th:unless="${type.value.getResultsSize() > 0}">No data available</div>

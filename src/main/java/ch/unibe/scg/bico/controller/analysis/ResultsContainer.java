@@ -41,15 +41,6 @@ public class ResultsContainer {
 		return Tools.median(data);
 	}
 	
-	/*public double getAvgFilesChanged() {
-		double result = 0;
-		for(ResultHolder r : results) {
-			result += r.filesChanged;
-		}
-		if(result != 0) result /= (double) results.size();
-		return result;
-	}*/
-	
 	public int getHighestFilesChanged() {
 		int result = 0;
 		for(ResultHolder r : results) {
@@ -77,34 +68,11 @@ public class ResultsContainer {
 		return Tools.median(result);
 	}
 	
-	/*public double getAvgAdditionsPerFile() {
-		double result = 0;
-		for(ResultHolder r : results) {
-			double tmp = 0;
-			for(FileHolder f : r.fileList) {
-				tmp += f.additions;
-			}
-			if(tmp != 0) tmp /= (double) r.fileList.size();
-			result += tmp;
-		}
-		if(result != 0) result /= (double) results.size();
-		return result;
-	}*/
-	
 	public int getMedianAdditions() {
 		int[] data = results.stream().mapToInt(i -> i.additions).toArray();
 		Arrays.sort(data);
 		return Tools.median(data);
 	}
-	
-	/*public double getAvgAdditionsPerCommit() {
-		double result = 0;
-		for(ResultHolder r : results) {
-			result += r.additions;
-		}
-		if(result != 0) result /= (double) results.size();
-		return result;
-	}*/
 	
 	public int getMedianDeletionsInFiles() {
 		int[] result = new int[0];
@@ -116,36 +84,11 @@ public class ResultsContainer {
 		return Tools.median(result);
 	}
 	
-	/*public double getAvgDeletionsPerFile() {
-		double result = 0;
-		for(ResultHolder r : results) {
-			double tmp = 0;
-			for(FileHolder f : r.fileList) {
-				tmp += f.deletions;
-			}
-			if(tmp != 0) tmp /= (double) r.fileList.size();
-			result += tmp;
-		}
-		if(result != 0) result /= (double) results.size();
-		return result;
-	}*/
-	
 	public int getMedianDeletions() {
 		int[] data = results.stream().mapToInt(i -> i.deletions).toArray();
 		Arrays.sort(data);
 		return Tools.median(data);
 	}
-	
-	/*public double getAvgDeletionsPerCommit() {
-		double result = 0;
-		for(ResultHolder r : results) {
-			for(FileHolder f : r.fileList) {
-				result += f.deletions;
-			}
-		}
-		if(result != 0) result /= (double) results.size();
-		return result;
-	}*/
 	
 	public int getHighestDeletionsPerFile() {
 		int result = 0;
@@ -189,12 +132,55 @@ public class ResultsContainer {
 		return result;
 	}
 	
+	
+	public int getHighestDeletionsPerCommit() {
+		int result = 0;
+		for(ResultHolder r : results) {
+			if(result < r.deletions) result = r.deletions;
+		}
+		return result;
+	}
+	
+	public int getLowestDeletionsPerCommit() {
+		int result = Integer.MAX_VALUE;
+		for(ResultHolder r : results) {
+			if(result > r.deletions) result = r.deletions;
+		}
+		if(result == Integer.MAX_VALUE) result = 0;
+		return result;
+	}
+	
+	public int getHighestAdditionsPerCommit() {
+		int result = 0;
+		for(ResultHolder r : results) {
+			if(result < r.additions) result = r.additions;
+		}
+		return result;
+	}
+	
+	public int getLowestAdditionsPerCommit() {
+		int result = Integer.MAX_VALUE;
+		for(ResultHolder r : results) {
+			if(result > r.additions) result = r.additions;
+		}
+		if(result == Integer.MAX_VALUE) result = 0;
+		return result;
+	}
+	
 	public int[] getAdditionsPerCommit() {
-		return results.stream().mapToInt(i -> i.additions).toArray();
+		int[] result = results.stream().mapToInt(i -> i.additions).toArray();
+		Arrays.sort(result);
+		return result;
 	}
 	
 	public int[] getDeletionsPerCommit() {
 		return results.stream().mapToInt(i -> i.deletions).toArray();
+	}
+	
+	public int[] getFilesChangedPerCommit() {
+		int result[] = results.stream().mapToInt(i -> i.filesChanged).toArray();
+		Arrays.sort(result);
+		return result;
 	}
 	
 	
