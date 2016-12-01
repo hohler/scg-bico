@@ -2,6 +2,7 @@ package ch.unibe.scg.bico.repository;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.egit.github.core.CommitFile;
@@ -10,7 +11,6 @@ import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryCommit;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.CommitService;
-import org.eclipse.egit.github.core.service.PullRequestService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
 import ch.unibe.scg.bico.model.Commit;
@@ -87,6 +87,12 @@ public class GithubRepository implements IRepository {
 		}
 		
 		return result;
+	}
+
+	@Override
+	public Iterator<Commit> getCommitIterator() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

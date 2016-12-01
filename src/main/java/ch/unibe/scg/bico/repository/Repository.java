@@ -1,6 +1,7 @@
 package ch.unibe.scg.bico.repository;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import ch.unibe.scg.bico.model.Commit;
 import ch.unibe.scg.bico.model.Project;
@@ -27,5 +28,10 @@ public class Repository implements IRepository {
 	public ArrayList<Commit> getCommits() {
 		if(repository == null) return null;
 		return repository.getCommits();
+	}
+	
+	@Override
+	public Iterator<Commit> getCommitIterator() {
+		return repository.getCommitIterator();
 	}
 }

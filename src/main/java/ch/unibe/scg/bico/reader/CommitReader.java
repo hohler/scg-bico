@@ -1,13 +1,11 @@
 package ch.unibe.scg.bico.reader;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.batch.item.ItemReader;
 
-import ch.unibe.scg.bico.model.Commit;
 import ch.unibe.scg.bico.model.CommitIssue;
 import ch.unibe.scg.bico.model.Project;
 import ch.unibe.scg.bico.model.service.CommitIssueService;

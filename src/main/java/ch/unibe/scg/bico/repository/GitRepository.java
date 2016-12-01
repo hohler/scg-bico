@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Stack;
 
 import org.eclipse.jgit.api.Git;
@@ -53,6 +54,32 @@ public class GitRepository implements IRepository {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public Iterator<Commit> getCommitIterator() {
+		
+		//RevWalk walk = new RevWalk(repository);
+		Git git = new Git(repository);
+		
+		try {
+			Iterable<RevCommit> commits = git.log().call();
+			Stack<RevCommit> commits_reversed = new Stack<>();
+			commits.forEach(commits_reversed::push);
+			
+			GitRepositoryCommitIterator it = new GitRepositoryCommitIterator(repository, commits_reversed);
+			
+			git.close();
+			
+			return it;
+		} catch (GitAPIException e1) {
+			System.err.println("Git API fail");
+			e1.printStackTrace();
+		}
+		git.close();
+		
+		// returns iterator that returns null on "next" and false on "hasNext"
+		ArrayList<Commit> fail = new ArrayList<Commit>();
+		return fail.iterator();
 	}
 	
 	public ArrayList<Commit> getCommits() {
