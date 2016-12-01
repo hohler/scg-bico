@@ -25,7 +25,7 @@
 		<div class="alert alert-success" th:if="${globalMessage}"
 			th:text="${globalMessage}">Some Success message</div>
 			
-		<table class="table table-bordered">
+		<table class="table table-bordered table-striped">
 			<tr>
 				<th>ID</th>
 				<td th:text="${commit.id}">id</td>
@@ -62,7 +62,7 @@
 				<th colspan="2">Message</th>
 			</tr>
 			<tr>
-				<td colspan="2" th:text="${commit.message}">message</td>
+				<td colspan="2" th:utext="${#strings.replace(commit.message, newLineChar, '&lt;br /&gt;')}">message</td>
 			</tr>
 		</table>
 		

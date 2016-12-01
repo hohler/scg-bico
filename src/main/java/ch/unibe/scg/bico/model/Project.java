@@ -33,7 +33,7 @@ public class Project {
 	private Set<Commit> commits;
 	
 	public enum Type {
-		GITHUB("Github"), GIT("Git"), JIRA("Jira"), BUGZILLA("Bugzilla");
+		GITHUB("GitHub"), GIT("Git"), JIRA("Jira"), BUGZILLA("Bugzilla");
 		
 		private final String name;
 		

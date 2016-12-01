@@ -13,39 +13,41 @@
 					Validation error</p>
 			</div>
 			
-			<label for="name">Name</label>
-			
-			<input id="name" th:field="*{name}" />
-			
-			<br /><br />
-			
-			<label for="url">URL</label>
-			
-			<input id="url" th:field="*{url}" />
-			
-			<br /><br />
-			
-			<label for="branch">Branch name</label>
-			
-			<input id="branch" th:field="*{branch}" />
-			
-			<br /><br />
-			
-			<label for="type">Issue Tracker Type</label>
-			
-			<select id="type" th:field="*{type}">
-			<option value="JIRA">Jira</option>
-				<option value="GITHUB">Github</option>
-				<option value="BUGZILLA">Bugzilla</option>
-			</select>
-			
-			<br /><br />
-			
-			<label for="issueTrackerUrlPattern">issue Tracker Url (if necessary with placeholder)</label>
-			
-			<input id="issueTrackerUrlPattern" th:field="*{issueTrackerUrlPattern}" /> (%s is the issue number)
-			
-            <br /><br />
+		
+			  <div class="form-group">
+			    <label for="name">Name</label>
+			    <input type="text" class="form-control" id="name" placeholder="Name" th:field="*{name}">
+			  </div>
+			  
+			  <div class="form-group">
+			    <label for="url">GIT URL</label>
+			    <input type="text" class="form-control" id="url" placeholder="GIT URL" th:field="*{url}">
+			  </div>
+			  
+			  <div class="form-group">
+			    <label for="branch">Branch Name</label>
+			    <input type="text" class="form-control" id="branch" placeholder="e.g. master" th:field="*{branch}">
+			  </div>
+			  
+			  <div class="form-group">
+			    <label for="type">Issue Tracker Type</label>
+				    <select id="type" class="form-control" th:field="*{type}">
+						<option value="JIRA">Jira</option>
+						<option value="GITHUB">Github</option>
+						<option value="BUGZILLA">Bugzilla</option>
+				</select>
+			  </div>
+			  
+			  <div class="form-group">
+			    <label for="issueTrackerUrlPattern">Issue Tracker URL</label>
+			    <input type="text" class="form-control" id="issueTrackerUrlPattern" placeholder="Issue Tracker URL" th:field="*{issueTrackerUrlPattern}">
+			    <span id="helpBlock" class="help-block"><strong>%s</strong> can be used as placeholder for the Issue-ID<br />
+			    e.g. Apache Issues: https://issues.apache.org/jira/si/jira.issueviews:issue-xml/%s/%s.xml<br />
+			    Github Issues: https://github.com/elastic/elasticsearch<br />
+			    Attlassian Cloud: https://hibernate.atlassian.net/si/jira.issueviews:issue-xml/%s/%s.xml
+			    </span>
+			  </div>
+
 			
 </div>
 </body>
