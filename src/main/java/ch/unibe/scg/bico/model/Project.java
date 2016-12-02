@@ -142,4 +142,12 @@ public class Project {
 		commits.clear();
 	}
 	
+	public int getNumberOfCategorizedCommits() {
+		int count = 0;
+		for(Commit c : commits) {
+			if(c.commitIssues.size() > 0) count++;
+		}
+		return count;
+	}
+	
 }

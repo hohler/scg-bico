@@ -169,6 +169,14 @@
 				<th>Name</th>
 				<td th:text="${project.name}">name</td>
 			</tr>
+			<tr>
+				<th>Number of commits</th>
+				<td th:text="${project.commits.size()}">num</td>
+			</tr>
+			<tr>
+				<th>Number of categorized commits</th>
+				<td th:text="${project.getNumberOfCategorizedCommits()}">num</td>
+			</tr>
 		</table>
 		
 		<h2>Issue types</h2>
