@@ -20,6 +20,7 @@ See the Lucene-Solr example down below for additional MySQL configuration.
 4. Set up a local Tomcat Server Version >= 6 (Version <= 7 with Eclipse) and add it in the Run Configurations in Eclipse
 5. Deploy the project to the Tomcat server
 6. Example repositories
+7. MySQL configuration
 
 ## 1. & 2. ##
 Trivial
@@ -75,6 +76,9 @@ Time measurements:
 - reading commits: 15 minutes
 - get infos from issue tracker: 40 minutes
 
-MySQL specific configuration: some patches are too big. You have to set the max_allowed_packets higher in your MySQL Server configuration. e.g. `max_allowed_packet=10M`
+## 7. MySQL configuration ##
+MySQL specific configuration: some patches are too big. You have to set the max_allowed_packets higher in your MySQL Server configuration. e.g. `max_allowed_packet=20M`.
+
+Also, `innodb_buffer_pool_size` should be raised to 32M.
 
 Location of configuration file on Windows: `C:\ProgramData\MySQL\MySQL Server 5.7\my.ini`
