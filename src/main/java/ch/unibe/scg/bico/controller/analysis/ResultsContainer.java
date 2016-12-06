@@ -198,6 +198,26 @@ public class ResultsContainer {
 			this.deletions = deletions;
 			this.fileList = fileList;
 		}
+
+		public Long getCommitId() {
+			return commitId;
+		}
+
+		public int getFilesChanged() {
+			return filesChanged;
+		}
+
+		public int getAdditions() {
+			return additions;
+		}
+
+		public int getDeletions() {
+			return deletions;
+		}
+
+		public Set<ResultsContainer.FileHolder> getFileList() {
+			return fileList;
+		}
 	}
 	
 	public class FileHolder {

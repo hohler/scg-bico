@@ -61,7 +61,7 @@
 	
 	
 	<script>
-		function createHistogram(data, svgId, buckets, x_ticks, x_title) {
+		function createHistogram(data, svgId, buckets, x_ticks, x_title, tip_y) {
 			
 			
 			var max = Number(d3.max(data)) + 1;
@@ -92,7 +92,7 @@
 			  .attr('class', 'd3-tip')
 			  .offset([-10, 0])
 			  .html(function(d) {
-			    return "<strong>Commits:</strong> <span style='color:red'>" + d.length + "</span><br /><strong>Additions:</strong> <span style='color:red'>" + d.x0 + "-" + d.x1 + "</span>";
+			    return "<strong>Commits:</strong> <span style='color:red'>" + d.length + "</span><br /><strong>"+tip_y+":</strong> <span style='color:red'>" + d.x0 + "-" + d.x1 + "</span>";
 			  });
 			
 			svg.call(tip);
@@ -290,7 +290,7 @@
 				var x_ticks = data[data.length-1];
 				if(data[data.length-1] >= 50) buckets = 50; x_ticks = 25;
 				buckets = 50; x_ticks = 25;
-				createHistogram(data, "#svg_" + category, buckets, x_ticks, "Additions per commit");
+				createHistogram(data, "#svg_" + category, buckets, x_ticks, "Additions per commit", "Additions");
 			</script>
 			
 			<h3>Files changed per commit</h3>
@@ -319,7 +319,7 @@
 				var x_ticks = data[data.length-1];
 				if(data[data.length-1] >= 50) buckets = 50; x_ticks = 25;
 				
-				createHistogram(data, "#svg2_" + category, buckets, x_ticks, "Files changed per commit");
+				createHistogram(data, "#svg2_" + category, buckets, x_ticks, "Files changed per commit", "Files changed");
 			</script>
 			</div>
 			<div class="alert alert-info" role="alert" th:unless="${type.value.getResultsSize() > 0}">No data available</div>
