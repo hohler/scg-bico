@@ -12,8 +12,6 @@ You need a MySQL and a Tomcat Server.
 
 Additional MySQL configuration variables: see chapter 7.
 
-
-
 ### Outline ###
 
 1. Clone repo
@@ -28,19 +26,19 @@ Additional MySQL configuration variables: see chapter 7.
 Trivial
 ## 3. Update configuration ##
 Adapt database parameters in file
-`/src/main/webapp/WEB-INF/applicationContext.xml`
+`/src/main/resources/application.properties`
 
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/bico?autoReconnect=true" />
-		<property name="username" value="bico" />
-		<property name="password" value="bico" />
-	</bean>
+
+	bico.db.url = jdbc:mysql://localhost:3306/bico?autoReconnect=true
+	bico.db.username = bico
+	bico.db.password = bico
+	bico.db.driverClassName = com.mysql.jdbc.Driver
+
 
 Adapt path for cloning repositories in file
 `/src/main/java/org/springframework/batch/admin/sample/repository/GitLoader.java`
 
-`private static String REPOSITORY_PATH = "target/repositories/";`
+	private static String REPOSITORY_PATH = "target/repositories/";
 
 With Eclipse on Windows, this is equivalent to *C:\eclipse\target\repositories\*
 
