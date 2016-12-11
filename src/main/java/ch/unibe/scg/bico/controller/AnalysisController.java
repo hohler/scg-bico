@@ -17,6 +17,7 @@ import ch.unibe.scg.bico.controller.analysis.CommitAnalyzer;
 import ch.unibe.scg.bico.controller.analysis.ResultsContainer;
 import ch.unibe.scg.bico.model.CommitIssue;
 import ch.unibe.scg.bico.model.Project;
+import ch.unibe.scg.bico.model.service.CommitService;
 import ch.unibe.scg.bico.model.service.ProjectService;
 
 @Controller
@@ -25,6 +26,9 @@ public class AnalysisController {
 	
 	@Autowired
 	private ProjectService projectService;
+	
+	@Autowired
+	private CommitService commitService;
 	
 	private List<CommitIssue.Type> typeSet = new ArrayList<>();
 	
@@ -59,6 +63,7 @@ public class AnalysisController {
 		Project project = projectService.findById(pid);
 		
 		CommitAnalyzer ca = new CommitAnalyzer(project, new HashSet<CommitIssue.Type>(typeSet));
+		ca.setCommitService(commitService);
 		ca.load();
 		ca.analyze();
 		

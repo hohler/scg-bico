@@ -78,7 +78,7 @@ public class CommitAnalyzer {
 	public Map<CommitIssue.Type, ResultsContainer> getTypeResults() {
 		return typeResults;
 	}
-	
+
 	public Map<CommitIssue.Type, List<Commit>> getPossibleBigCommits() {
 		// init results
 		HashMap<CommitIssue.Type, List<Commit>> results = new HashMap<>();
@@ -89,14 +89,14 @@ public class CommitAnalyzer {
 		
 		for(Map.Entry<CommitIssue.Type, ResultsContainer> e : typeResults.entrySet()) {
 			
-			List<Commit> resultList = results.get(e.getKey()); 
+			List<Commit> resultList = results.get(e.getKey());
 			
 			ResultsContainer r = e.getValue();
 			int medianFilesChanged = r.getMedianFilesChanged();
-			int medianFilesChangedThreshold = medianFilesChanged * 5;
+			int medianFilesChangedThreshold = medianFilesChanged * 50;
 			
 			int medianAdditions = r.getMedianAdditions();
-			int medianAdditionsThreshold = medianAdditions * 5;
+			int medianAdditionsThreshold = medianAdditions * 50;
 			
 			for(ResultsContainer.ResultHolder h : r.getResults()) {
 				if(h.getFilesChanged() > medianFilesChangedThreshold || h.getAdditions() > medianAdditionsThreshold) {
@@ -107,5 +107,9 @@ public class CommitAnalyzer {
 		}
 		
 		return results;
+	}	
+	
+	public void setCommitService(CommitService commitService) {
+		this.commitService = commitService;
 	}
 }
