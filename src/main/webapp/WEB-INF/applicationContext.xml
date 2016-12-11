@@ -20,6 +20,9 @@
  		<property name="prefix" value="unpack_"/>
  		<property name="putEmptyParamsInPath" value="true"/>
  	</bean> -->
+ 	
+ 	<!-- use environment variables -->
+ 	<context:property-placeholder />
 
 	<!-- Activates various annotations to be detected in bean classes e.g: @Autowired -->
 	<context:annotation-config />
@@ -40,12 +43,12 @@
 	</bean>-->
 
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/bico?autoReconnect=true" />
+		<property name="driverClassName" value="${bico.db.driverClassName}" />
+		<property name="url" value="${bico.db.url}" />
 		<!-- <property name="driverClassName" value="org.hsqldb.jdbcDriver" /> -->
 		<!-- <property name="url" value="jdbc:hsqldb:mem://projectDb" /> -->
-		<property name="username" value="bico" />
-		<property name="password" value="bico" />
+		<property name="username" value="${bico.db.username}" />
+		<property name="password" value="${bico.db.password}" />
 	</bean>
 	
 	<bean id="entityManagerFactory" 
