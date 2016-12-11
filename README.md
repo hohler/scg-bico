@@ -10,7 +10,9 @@
 
 You need a MySQL and a Tomcat Server.
 
-See the Lucene-Solr example down below for additional MySQL configuration.
+Additional MySQL configuration variables: see chapter 7.
+
+
 
 ### Outline ###
 
@@ -47,36 +49,86 @@ After deploying, navigate to [http://localhost:8080/scg-bico/](http://localhost:
 
 ## 6. Example repositories and tips ##
 
-**Apache Flume**
+** Apache Flume **
 
 Amount of commits: ~1'700
 
 URL: https://github.com/apache/flume.git
 
-Type: GIT
+Type: JIRA
 
 Issue Tracker: https://issues.apache.org/jira/si/jira.issueviews:issue-xml/%s/%s.xml
 
-Duration of batch process with cloning:
+Time measurements:
+- batch process without cloning: 3 minutes
 
-Duration of batch process without cloning: 3 minutes
-
-**Apache Lucene-Solr**
+** Apache Lucene-Solr **
 
 Amount of commits: ~26'000
 
 URL: https://github.com/apache/lucene-solr.git
 
-Type: GIT
+Type: JIRA
 
 Issue Tracker: https://issues.apache.org/jira/si/jira.issueviews:issue-xml/%s/%s.xml
 
 Time measurements:
-- cloning repo: 20 minutes???
-- reading commits: 15 minutes
-- get infos from issue tracker: 40 minutes
+- no data
 
-## 7. MySQL configuration ##
+** Apache Nutch **
+
+Amount of commits: ~2'222
+
+URL: https://github.com/apache/nutch.git
+
+Type: JIRA
+
+Issue Tracker: https://issues.apache.org/jira/si/jira.issueviews:issue-xml/%s/%s.xml
+
+Time measurements:
+- no data
+
+** Hibernate Search **
+
+Amount of commits: ~4'800
+
+URL: https://github.com/hibernate/hibernate-search.git
+
+Type: JIRA
+
+Issue Tracker: https://hibernate.atlassian.net/si/jira.issueviews:issue-xml/%s/%s.xml
+
+Time measurements:
+- no data
+
+** elasticsearch **
+
+Amount of commits: ~25'560
+
+URL: https://github.com/elastic/elasticsearch.git
+
+Type: GitHub
+
+Issue Tracker: https://github.com/elastic/elasticsearch 
+
+Time measurements:
+- about 1 hour without cloning
+- no data
+
+** Apache httpclient **
+
+Amount of commits: ~2'650 
+
+URL: https://github.com/apache/httpclient.git
+
+Type: JIRA
+
+Issue Tracker: https://issues.apache.org/jira/si/jira.issueviews:issue-xml/%s/%s.xml
+
+Time measurements:
+-no data
+
+## 7. MySQL Configuration ##
 MySQL specific configuration: some patches are too big. You have to set the max_allowed_packets higher in your MySQL Server configuration. e.g. `max_allowed_packet=20M`.
 
 Also, `innodb_buffer_pool_size` should be raised to 32M.
