@@ -17,6 +17,7 @@ import ch.unibe.scg.bico.controller.analysis.CommitAnalyzer;
 import ch.unibe.scg.bico.controller.analysis.ResultsContainer;
 import ch.unibe.scg.bico.model.CommitIssue;
 import ch.unibe.scg.bico.model.Project;
+import ch.unibe.scg.bico.model.service.CommitService;
 import ch.unibe.scg.bico.model.service.ProjectService;
 
 @Controller
@@ -26,16 +27,23 @@ public class AnalysisController {
 	@Autowired
 	private ProjectService projectService;
 	
-	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView view(Model model, @PathVariable("pid") Long pid) {
-		Project project = projectService.findById(pid);
-		
-		List<CommitIssue.Type> typeSet = new ArrayList<>();
+	@Autowired
+	private CommitService commitService;
+	
+	private List<CommitIssue.Type> typeSet = new ArrayList<>();
+	
+	public AnalysisController() {
+		// init type set to analyze
 		typeSet.add(CommitIssue.Type.BUG);
 		typeSet.add(CommitIssue.Type.FEATURE);
 		typeSet.add(CommitIssue.Type.IMPROVEMENT);
 		typeSet.add(CommitIssue.Type.REFACTOR);
 		typeSet.add(CommitIssue.Type.DOCUMENTATION);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public ModelAndView view(Model model, @PathVariable("pid") Long pid) {
+		Project project = projectService.findById(pid);
 		
 		CommitAnalyzer ca = new CommitAnalyzer(project, new HashSet<CommitIssue.Type>(typeSet));
 		ca.load();
@@ -47,5 +55,21 @@ public class AnalysisController {
 		model.addAttribute("project", project);
 		
 		return new ModelAndView("projects/analysis/view", model.asMap());
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "bigcommits")
+	public ModelAndView bigCommits(Model model, @PathVariable("pid") Long pid) {
+		
+		Project project = projectService.findById(pid);
+		
+		CommitAnalyzer ca = new CommitAnalyzer(project, new HashSet<CommitIssue.Type>(typeSet));
+		ca.setCommitService(commitService);
+		ca.load();
+		ca.analyze();
+		
+		model.addAttribute("commits", ca.getPossibleBigCommits());
+		model.addAttribute("project", project);
+		
+		return new ModelAndView("projects/analysis/bigcommit", model.asMap());
 	}
 }

@@ -1,17 +1,25 @@
 package ch.unibe.scg.bico.controller.analysis;
 
 import ch.unibe.scg.bico.model.Project;
+import ch.unibe.scg.bico.model.service.CommitService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import ch.unibe.scg.bico.model.Commit;
 import ch.unibe.scg.bico.model.CommitFile;
 import ch.unibe.scg.bico.model.CommitIssue;
 
 public class CommitAnalyzer {
+	
+	@Autowired
+	private CommitService commitService;
 
 	private Set<Commit> commits;
 	
@@ -63,11 +71,45 @@ public class CommitAnalyzer {
 				fileList.add(rc.new FileHolder(f.getChangeType(), f.getAdditions(), f.getDeletions()));
 			}
 			
-			rc.addResult(c.getId(), c.getFiles().size(), c.getAdditions(), c.getDeletions(), fileList);
+			rc.addResult(new Long(c.getId()), c.getFiles().size(), c.getAdditions(), c.getDeletions(), fileList);
 		}
 	}
 	
 	public Map<CommitIssue.Type, ResultsContainer> getTypeResults() {
 		return typeResults;
+	}
+
+	public Map<CommitIssue.Type, List<Commit>> getPossibleBigCommits() {
+		// init results
+		HashMap<CommitIssue.Type, List<Commit>> results = new HashMap<>();
+		for(CommitIssue.Type type : typeSet) {
+			results.put(type, new ArrayList<>());
+		}
+		
+		
+		for(Map.Entry<CommitIssue.Type, ResultsContainer> e : typeResults.entrySet()) {
+			
+			List<Commit> resultList = results.get(e.getKey());
+			
+			ResultsContainer r = e.getValue();
+			int medianFilesChanged = r.getMedianFilesChanged();
+			int medianFilesChangedThreshold = medianFilesChanged * 50;
+			
+			int medianAdditions = r.getMedianAdditions();
+			int medianAdditionsThreshold = medianAdditions * 50;
+			
+			for(ResultsContainer.ResultHolder h : r.getResults()) {
+				if(h.getFilesChanged() > medianFilesChangedThreshold || h.getAdditions() > medianAdditionsThreshold) {
+					Commit c = commitService.findById(h.getCommitId());
+					resultList.add(c);
+				}
+			}
+		}
+		
+		return results;
+	}	
+	
+	public void setCommitService(CommitService commitService) {
+		this.commitService = commitService;
 	}
 }

@@ -3,10 +3,10 @@
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
 	layout:decorate="layout">
 <head>
-<title>Projects : View</title>
+<title>Big Commits in Project : View</title>
 </head>
 <body>
-	<h1 layout:fragment="header"><span th:text="${project.name}"></span> : Details</h1>
+	<h1 layout:fragment="header">Possible Big Commits in <span th:text="${project.name}"></span></h1>
 	<div layout:fragment="content" class="container">
 		<div class="alert alert-success" th:if="${globalMessage}"
 			th:text="${globalMessage}">Some Success message</div>
@@ -28,18 +28,6 @@
 				<td th:text="${project.name}">name</td>
 			</tr>
 			<tr>
-				<th>GIT URL</th>
-				<td th:text="${project.url}">url</td>
-			</tr>
-			<tr>
-				<th>Issue Tracker Type</th>
-				<td th:text="${project.type}">type</td>
-			</tr>
-			<tr>
-				<th>Issue Tracker URL (with pattern)</th>
-				<td th:text="${project.issueTrackerUrlPattern}">trackerurl</td>
-			</tr>
-			<tr>
 				<th>Options</th>
 				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/analyze'}">Analyze</a> |&nbsp;
 					<a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name}}">Batch Job</a> |&nbsp;
@@ -49,23 +37,32 @@
 			</tr>
 		</table>
 		
-		<h2>Commits (<span th:text="${project.commits.size()}"></span>)</h2>
-		<table class="table table-bordered table-striped table-condensed" dt:table="true">
-		<tr>
-			<th>ID</th>
-			<th>Issues</th>
-			<th>Additions</th>
-			<th>Deletions</th>
-			<th>FirstLineOfMessage</th>
-		</tr>
-		<tr th:each="commit : ${project.commits}">
-			<td><a th:text="${commit.id}" href="projects" th:href="@{'/projects/' + ${project.id} + '/commits/' + ${commit.id}}">id</a></td>
-			<td th:text="${commit.getCommitIssues().size()}">issues</td>
-			<td th:text="${commit.additions}">additions</td>
-			<td th:text="${commit.deletions}">deletions</td>
-			<td th:text="${commit.firstLineOfMessage()}">firstLineOfMessage</td>
-		</tr>
-		</table>
+		<h2>Possible Big Commits</h2>
+		
+		<div class="alert alert-warning" role="alert">Threshold per category is calculated as following: <br />filesChangedThreshold = medianFilesChangedPerCommit * 50<br />additionsThreshold = medianAdditionsPerCommit * 50</div>
+		
+		<div th:each="map : ${commits}">
+		
+			<h3><span th:text="${map.key.toString()}"></span> (<span th:text="${map.value.size()}"></span>)</h3>
+			<table class="table table-bordered table-striped table-condensed" dt:table="true">
+			<tr>
+				<th>ID</th>
+				<th>Issues</th>
+				<th>Additions</th>
+				<th>Deletions</th>
+				<th>FirstLineOfMessage</th>
+			</tr>
+			<tr th:each="commit : ${map.value}">
+				<td><a th:text="${commit.id}" href="projects" th:href="@{'/projects/' + ${project.id} + '/commits/' + ${commit.id}}">id</a></td>
+				<td th:text="${commit.getCommitIssues().size()}">issues</td>
+				<td th:text="${commit.additions}">additions</td>
+				<td th:text="${commit.deletions}">deletions</td>
+				<td th:text="${commit.firstLineOfMessage()}">firstLineOfMessage</td>
+			</tr>
+			</table>
+			<div class="alert alert-info" role="alert"  th:if="${map.value.size() == 0}">No possible big commits found</div>
+		
+		</div>
 
 	</div>
 </body>
