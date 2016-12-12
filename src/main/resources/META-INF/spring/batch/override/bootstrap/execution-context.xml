@@ -6,10 +6,4 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-
-	<!-- could possibly fix http://forum.spring.io/forum/spring-projects/batch/76181-encountered-an-error-saving-batch-meta-data
-	
-	<bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
-		p:dataSource-ref="dataSource" p:transactionManager-ref="transactionManager" p:maxVarCharLength="3500" />
-	-->
 </beans>

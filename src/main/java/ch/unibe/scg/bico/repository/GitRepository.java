@@ -58,7 +58,6 @@ public class GitRepository implements IRepository {
 	
 	public Iterator<Commit> getCommitIterator() {
 		
-		//RevWalk walk = new RevWalk(repository);
 		Git git = new Git(repository);
 		
 		try {
@@ -85,7 +84,6 @@ public class GitRepository implements IRepository {
 	public ArrayList<Commit> getCommits() {
 		
 		ArrayList<Commit> result = new ArrayList<Commit>();
-		//RevWalk walk = new RevWalk(repository);
 		Git git = new Git(repository);
 		
 		try {
@@ -98,13 +96,11 @@ public class GitRepository implements IRepository {
 			
 			while(!commits_reversed.isEmpty()) {
 				RevCommit commit = commits_reversed.pop();
-			//for(RevCommit commit : commits_reversed) {
 				
 				// branch itself
 				if(commit.getParentCount() == 0) continue;
 				
 				Commit c = new Commit();
-				//c.setProject(project);
 				result.add(c);
 				c.setMessage(commit.getFullMessage());
 				c.setParentCommit(parent);

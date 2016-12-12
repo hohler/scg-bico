@@ -18,7 +18,6 @@ public class ProjectDao implements ProjectDaoInterface {
 	@Override
 	public void persist(Project project) {
 		em.persist(project);
-		em.flush();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -35,13 +34,11 @@ public class ProjectDao implements ProjectDaoInterface {
 	@Override
 	public void delete(Project project) {
 		em.remove(project);
-		em.flush();
 	}
 	
 	@Override
 	public void update(Project project) {
 		em.merge(project);
-		em.flush();
 	}
 
 }

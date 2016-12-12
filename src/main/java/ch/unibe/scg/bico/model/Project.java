@@ -116,14 +116,6 @@ public class Project {
 		return String.format("Project[id=%d, name='%s', type='%s', url='%s']",
 				id, name, type, url);
 	}
-	
-	/*public List<CommitIssue> getAllIssues() {
-		List<CommitIssue> result = new ArrayList<CommitIssue>();
-		for(Commit c : commits) {
-			result.add(c.getCommitIssue());
-		}
-		return result;
-	}*/
 
 	public void setIssueTrackerUrlPattern(String string) {
 		issueTrackerUrlPattern = string;

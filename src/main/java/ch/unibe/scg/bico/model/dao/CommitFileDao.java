@@ -18,7 +18,6 @@ public class CommitFileDao implements CommitFileDaoInterface {
 	@Override
 	public void persist(CommitFile commitFile) {
 		em.persist(commitFile);
-		em.flush();
 	}
 
 	@SuppressWarnings("unchecked")

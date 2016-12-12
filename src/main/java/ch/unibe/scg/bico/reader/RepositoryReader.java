@@ -11,7 +11,6 @@ import ch.unibe.scg.bico.repository.Repository;
 
 public class RepositoryReader implements ItemReader<Commit> {
 
-	//private ArrayList<Commit> commits;
 	private Iterator<Commit> iterator;
 	
 	private Project project;
@@ -27,15 +26,12 @@ public class RepositoryReader implements ItemReader<Commit> {
 		project.cleanForProcessing();
 		projectService.update(project);
 		Repository g = new Repository(project);
-		//commits = g.getCommits();
-		//iterator = commits.iterator();
 		iterator = g.getCommitIterator();
 	}
 	
 	@Override
 	public Commit read() {
 		if(iterator == null) init();
-		//if(project.getCommits().size() == commits.size()) return null; // if no new commits are available
 		if(iterator.hasNext()) {
 			Commit next = iterator.next();
 			project.addCommit(next);

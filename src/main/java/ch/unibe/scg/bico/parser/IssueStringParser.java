@@ -21,7 +21,6 @@ public class IssueStringParser {
 	
 	public String parse(Commit commit) {
 		return internalParse(commit.getMessage());
-		//commit.initIssue(s);
 	}
 	
 	public String parse(String commitMessage) {
@@ -44,9 +43,6 @@ public class IssueStringParser {
 		List<String> result = new ArrayList<String>();
 		while(m.find()) {
 			if(m.group() == null) System.err.println("general error: "+commitMessage.split("\\r?\\n")[0]);
-			/*for(int i = 1; i <= m.groupCount(); i++) {
-				if(m.group(i) != null) result.add(m.group(i));
-			}*/
 			result.add(m.group(1));
 		}
 		if(result.size() == 0) {

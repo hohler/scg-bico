@@ -42,8 +42,6 @@ public class JiraParser implements Parser {
 		Document doc;
 		try {
 			
-			//CommitIssue result = new CommitIssue(issue);
-			//CommitIssue result = issue;
 			IssueInfoHolder result = new IssueInfoHolder();
 			
 			StringBuilder xmlStringBuilder = new StringBuilder();
@@ -66,8 +64,7 @@ public class JiraParser implements Parser {
 			String title = element.getElementsByTagName("title").item(0).getTextContent();
 			
 			result.setName(key);
-			
-			//issue.setName(key);
+
 			System.out.println("["+key+"] type: "+type + " priority: " + priority);
 			
 			switch(type) {
@@ -103,7 +100,6 @@ public class JiraParser implements Parser {
 			
 			return result;
 		} catch (SAXException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

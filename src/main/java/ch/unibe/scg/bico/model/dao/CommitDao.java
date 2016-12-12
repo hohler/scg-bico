@@ -19,7 +19,6 @@ public class CommitDao implements CommitDaoInterface {
 	@Override
 	public void persist(Commit commit) {
 		em.persist(commit);
-		em.flush();
 	}
 
 	@SuppressWarnings("unchecked")

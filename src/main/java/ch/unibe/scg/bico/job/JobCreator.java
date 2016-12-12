@@ -46,12 +46,6 @@ public class JobCreator {
 	@Autowired
 	private ProjectService projectService;
 	
-	/*private ExecutionContextPromotionListener promotionListener() {
-		ExecutionContextPromotionListener listener = new ExecutionContextPromotionListener();
-		listener.setKeys( new String[] { "issuedCommits" } );
-		return listener;
-	}*/
-	
 	private TaskExecutor issueTaskExecutor() {
 		SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor();
 		executor.setConcurrencyLimit(100);
@@ -80,7 +74,6 @@ public class JobCreator {
 				.reader(new RepositoryReader(project, projectService))
 				.processor(new RepositoryProcessor(project.getType()))
 				.writer(new RepositoryWriter(commitService))
-				//.listener(promotionListener())
 				.build();
 		
 		
@@ -108,14 +101,11 @@ public class JobCreator {
 		try {
 			jobRegistry.getJob(jobName);
 		} catch (NoSuchJobException e) {
-			// TODO Auto-generated catch block
 			try {
 				jobRegistry.register(new ReferenceJobFactory(builder));
 			} catch (DuplicateJobException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			//e.printStackTrace();
 		}
 	}
 }

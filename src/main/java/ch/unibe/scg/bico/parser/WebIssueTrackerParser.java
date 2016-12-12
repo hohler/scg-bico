@@ -13,7 +13,6 @@ import ch.unibe.scg.bico.model.Project;
 public class WebIssueTrackerParser {
 
 	private Parser parser;
-	//private CommitIssue issue;
 	private String urlPattern;
 	
 	public WebIssueTrackerParser(String urlPattern, Project.Type trackerType) throws Exception {
@@ -37,14 +36,6 @@ public class WebIssueTrackerParser {
 			throw new Exception("This issue tracker is not known!");
 		}
 	}
-	
-	/*public void setIssue(CommitIssue issue) {
-		this.issue = issue;
-	}
-	
-	public CommitIssue getIssue() {
-		return issue;
-	}*/
 	
 	public IssueInfoHolder parse(CommitIssue issue) {
 		if(issue == null) return null;

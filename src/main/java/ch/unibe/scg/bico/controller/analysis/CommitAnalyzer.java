@@ -55,12 +55,7 @@ public class CommitAnalyzer {
 		}		
 	}
 	
-	public void analyze() {
-		// per type:
-			// how much files changed in a commit
-			// how much additions / deletions per file
-			//
-		
+	public void analyze() {		
 		for(CommitIssue i : toAnalyze) {
 			Commit c = i.getCommit();
 			ResultsContainer rc = typeResults.get(i.getType());

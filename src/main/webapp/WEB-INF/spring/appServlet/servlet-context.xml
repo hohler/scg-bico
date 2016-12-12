@@ -42,7 +42,5 @@
 	<beans:import resource="controllers.xml" />
 	
 	<beans:import resource="../root-context.xml" />
-
-	<!-- <task:annotation-driven /> -->
 	
 </beans:beans>

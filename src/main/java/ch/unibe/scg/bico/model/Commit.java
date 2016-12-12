@@ -32,9 +32,6 @@ public class Commit {
 	@OneToOne(cascade = CascadeType.DETACH, optional=true, fetch = FetchType.LAZY)
 	protected Commit parentCommit;
 	
-	/*@OneToOne(mappedBy="parentCommit", fetch = FetchType.LAZY)
-	protected Commit childCommit;*/
-	
 	@OneToMany(mappedBy = "commit", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	protected Set<CommitIssue> commitIssues;
 	
@@ -115,14 +112,6 @@ public class Commit {
 		return id;
 	}
 
-	/*public Commit getChildCommit() {
-		return childCommit;
-	}
-
-	public void setChildCommit(Commit childCommit) {
-		this.childCommit = childCommit;
-	}*/
-	
 	public Set<CommitIssue> getCommitIssues() {
 		return commitIssues;
 	}
@@ -134,13 +123,6 @@ public class Commit {
 	public void setRef(String ref) {
 		this.ref = ref;
 	}
-
-	/*public void setCommitIssue(CommitIssue commitIssue) {
-		this.commitIssue = commitIssue;
-	}
-	public void initIssue(String issue) {
-		commitIssue = new CommitIssue(issue);
-	}*/
 	
 	public void initIssue(String issue) {
 		if(issue == null) return;

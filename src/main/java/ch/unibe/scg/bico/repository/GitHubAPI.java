@@ -24,8 +24,6 @@ public class GitHubAPI {
 	private String owner;
 	private GitHubClient client;
 	
-	//private Map<Integer, PullRequest> pullRequests;
-	
 	private Map<String, CommitIssue.Type> types;
 	private Map<String, CommitIssue.Priority> priorities;
 	
@@ -42,13 +40,84 @@ public class GitHubAPI {
 		try {
 			repository = service.getRepository(owner, name);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//pullRequests = new HashMap<>();
 		priorities = new HashMap<>();
 		types = new HashMap<>();
 		loadLabels();
+	}
+	
+	private void loadLabels() {
+		LabelService service = new LabelService(client);
+		try {
+			List<Label> labels = service.getLabels(repository);
+			for(Label l : labels) {
+				String name = l.getName().toLowerCase();
+				if(name.startsWith(":")) continue;
+				SwitchSubstring.of(name)
+					//Priorities
+					.when("blocker").then(() -> priorities.put(name, CommitIssue.Priority.BLOCKER))
+					.when("breaking", "breaking-java", "pretty blooding important", "critical").then(() -> priorities.put(name,  CommitIssue.Priority.CRITICAL))
+					.when("major", "severity").then(() -> priorities.put(name, CommitIssue.Priority.MAJOR))
+					.when("minor").then(() -> priorities.put(name, CommitIssue.Priority.MINOR))
+					.when("trivial").then(() -> priorities.put(name, CommitIssue.Priority.TRIVIAL))
+					//Types
+					.when("bug").then(() -> types.put(name, CommitIssue.Type.BUG))
+					.when("deprecation").then(() -> types.put(name, CommitIssue.Type.DEPRECATION))
+					.when("refactor", "change").then(() -> types.put(name, CommitIssue.Type.REFACTOR))
+					.when("docs", "documentation", "doc").then(() -> types.put(name, CommitIssue.Type.DOCUMENTATION))
+					.when("feature").then(() -> types.put(name, CommitIssue.Type.FEATURE))
+					.when("enhancement", "optimization", "improvement").then(() -> types.put(name, CommitIssue.Type.IMPROVEMENT))
+					.when("test").then(() -> types.put(name, CommitIssue.Type.TEST))
+					.when("access").then(() -> types.put(name, CommitIssue.Type.ACCESS))
+					.when("dependency").then(() -> types.put(name, CommitIssue.Type.DEPENDENCY_UPGRADE))
+					.when("request").then(() -> types.put(name, CommitIssue.Type.REQUEST))
+					.when("subtask").then(() -> types.put(name, CommitIssue.Type.SUBTASK))
+					.when("task").then(() -> types.put(name, CommitIssue.Type.TASK))
+					.when("wish").then(() -> types.put(name, CommitIssue.Type.WISH));
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Issue getIssue(int issueNumber) {
+		IssueService service = new IssueService(client);
+		try {
+			Issue issue = service.getIssue(repository, issueNumber);
+			return issue;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public IssueInfoHolder parseIssue(String issueNumber) {
+		if(issueNumber == null) return null;
+		Issue issue = getIssue(Integer.parseInt(issueNumber));
+		
+		IssueInfoHolder holder = new IssueInfoHolder();
+		holder.setName(Integer.toString(issue.getNumber()));
+		
+		for(Label l : issue.getLabels()) {
+			if(l.getName().startsWith(":")) continue;
+			if(holder.getType() == CommitIssue.Type.NA) {
+				CommitIssue.Type type = types.get(l.getName().toLowerCase());
+				if(type != null) {
+					holder.setType(type);
+				}
+			}
+			if(holder.getPriority() == CommitIssue.Priority.NA) {
+				CommitIssue.Priority priority = priorities.get(l.getName().toLowerCase());
+				if(priority != null) {
+					holder.setPriority(priority);
+				}
+			}
+		}
+		if(holder.getType() == CommitIssue.Type.NA) holder.setType(CommitIssue.Type.OTHER);
+		
+		return holder;
 	}
 	
 	
@@ -109,105 +178,12 @@ public class GitHubAPI {
 		}
 	}*/
 	
-	private void loadLabels() {
-		LabelService service = new LabelService(client);
-		try {
-			List<Label> labels = service.getLabels(repository);
-			for(Label l : labels) {
-				String name = l.getName().toLowerCase();
-				if(name.startsWith(":")) continue;
-				SwitchSubstring.of(name)
-					//Priorities
-					.when("blocker").then(() -> priorities.put(name, CommitIssue.Priority.BLOCKER))
-					.when("breaking", "breaking-java", "pretty blooding important", "critical").then(() -> priorities.put(name,  CommitIssue.Priority.CRITICAL))
-					.when("major", "severity").then(() -> priorities.put(name, CommitIssue.Priority.MAJOR))
-					.when("minor").then(() -> priorities.put(name, CommitIssue.Priority.MINOR))
-					.when("trivial").then(() -> priorities.put(name, CommitIssue.Priority.TRIVIAL))
-					//Types
-					.when("bug").then(() -> types.put(name, CommitIssue.Type.BUG))
-					.when("deprecation").then(() -> types.put(name, CommitIssue.Type.DEPRECATION))
-					.when("refactor", "change").then(() -> types.put(name, CommitIssue.Type.REFACTOR))
-					.when("docs", "documentation", "doc").then(() -> types.put(name, CommitIssue.Type.DOCUMENTATION))
-					.when("feature").then(() -> types.put(name, CommitIssue.Type.FEATURE))
-					.when("enhancement", "optimization", "improvement").then(() -> types.put(name, CommitIssue.Type.IMPROVEMENT))
-					.when("test").then(() -> types.put(name, CommitIssue.Type.TEST))
-					.when("access").then(() -> types.put(name, CommitIssue.Type.ACCESS))
-					.when("dependency").then(() -> types.put(name, CommitIssue.Type.DEPENDENCY_UPGRADE))
-					.when("request").then(() -> types.put(name, CommitIssue.Type.REQUEST))
-					.when("subtask").then(() -> types.put(name, CommitIssue.Type.SUBTASK))
-					.when("task").then(() -> types.put(name, CommitIssue.Type.TASK))
-					.when("wish").then(() -> types.put(name, CommitIssue.Type.WISH));
-				
-				/*switch(name.toLowerCase()) {
-				case "blocker": priorities.put(name, CommitIssue.Priority.BLOCKER); break;
-				case "breaking":
-				case "breaking-java": 
-				case "pretty bloody important": 
-				case "critical": priorities.put(name,  CommitIssue.Priority.CRITICAL); break;
-				case "bug": types.put(name, CommitIssue.Type.BUG); break;
-				case "deprecation": types.put(name, CommitIssue.Type.DEPRECATION); break;
-				case "docs":
-				case "documentation":
-				case "doc": types.put(name, CommitIssue.Type.DOCUMENTATION); break;
-				case "feature": types.put(name, CommitIssue.Type.FEATURE); break;
-				case "enhancement":
-				case "optimization":
-				case "improvement": types.put(name, CommitIssue.Type.IMPROVEMENT); break; 
-				case "test": types.put(name, CommitIssue.Type.TEST); break;
-				}*/				
-			}
-			//System.out.println(types);
-			//System.out.println(priorities);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
-	public Issue getIssue(int issueNumber) {
-		IssueService service = new IssueService(client);
-		try {
-			Issue issue = service.getIssue(repository, issueNumber);
-			return issue;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	public IssueInfoHolder parseIssue(String issueNumber) {
-		if(issueNumber == null) return null;
-		Issue issue = getIssue(Integer.parseInt(issueNumber));
-		
-		IssueInfoHolder holder = new IssueInfoHolder();
-		holder.setName(Integer.toString(issue.getNumber()));
-		
-		for(Label l : issue.getLabels()) {
-			if(l.getName().startsWith(":")) continue;
-			if(holder.getType() == CommitIssue.Type.NA) {
-				CommitIssue.Type type = types.get(l.getName().toLowerCase());
-				if(type != null) {
-					holder.setType(type);
-				}
-			}
-			if(holder.getPriority() == CommitIssue.Priority.NA) {
-				CommitIssue.Priority priority = priorities.get(l.getName().toLowerCase());
-				if(priority != null) {
-					holder.setPriority(priority);
-				}
-			}
-		}
-		if(holder.getType() == CommitIssue.Type.NA) holder.setType(CommitIssue.Type.OTHER);
-		
-		return holder;
-	}
-		
 	/*private int getIssueNumberFromPullRequest(PullRequest p) {
 		String[] tmp = p.getIssueUrl().split("/");
 		return Integer.parseInt(tmp[tmp.length-1]);		
 	}*/
-
+	
 	/*public IssueInfoHolder parsePullRequestToIssue(String id) {
 		PullRequest p = loadSinglePullRequest(Integer.parseInt(id));
 		Issue issue = getIssue(p);

@@ -42,7 +42,6 @@ public class GitLoader {
 				git.pull().call();
 				return true;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.err.println("Could not pull from repo");
 				return false;
@@ -67,7 +66,6 @@ public class GitLoader {
 			return true;
 			
 		} catch (GitAPIException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.err.println("Could not clone repo");
 			return false;

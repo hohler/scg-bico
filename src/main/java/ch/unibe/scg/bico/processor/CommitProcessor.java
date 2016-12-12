@@ -15,8 +15,6 @@ public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> 
 	private GitHubAPI gitHubApi;
 	
 	public CommitProcessor(Project.Type type, String urlPattern) {
-		//if(project == null) throw new NullPointerException("project is null!");
-		//urlPattern = project.getIssueTrackerUrlPattern();
 		this.issueTrackerType = type;
 		this.urlPattern = urlPattern;
 		if(urlPattern == null) throw new NullPointerException("urlPattern is null");
@@ -24,10 +22,7 @@ public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> 
 
 	@Override
 	public CommitIssue process(CommitIssue input) throws Exception {
-		//if(input.getCommitIssue() != null) return input;
-		//CommitIssue issue = input.getCommitIssue();
 		System.out.println("commit process: " + input.getName());
-		//System.out.println(input.toString());
 
 		try {
 			IssueInfoHolder result = null;
@@ -46,7 +41,6 @@ public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> 
 				input.setName(null);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return input;

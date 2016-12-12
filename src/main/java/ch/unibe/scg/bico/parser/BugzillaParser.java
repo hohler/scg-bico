@@ -104,23 +104,6 @@ public class BugzillaParser implements Parser {
 				.when("task").then(() -> result.setType(CommitIssue.Type.TASK))
 				.when("wish").then(() -> result.setType(CommitIssue.Type.WISH))
 				.orElse(() -> result.setType(CommitIssue.Type.NA));
-				
-		
-			
-			/*switch(type) {
-				case "Access": result.setType(CommitIssue.Type.ACCESS); break;
-				case "Bug": result.setType(CommitIssue.Type.BUG); break;
-				case "Dependency upgrade": result.setType(CommitIssue.Type.DEPENDENCY_UPGRADE); break; 
-				case "Documentation": result.setType(CommitIssue.Type.DOCUMENTATION); break;
-				case "Improvement": result.setType(CommitIssue.Type.IMPROVEMENT); break;
-				case "Request": result.setType(CommitIssue.Type.REQUEST); break;
-				case "Task": result.setType(CommitIssue.Type.TASK); break;
-				case "Test": result.setType(CommitIssue.Type.TEST); break;
-				case "Wish": result.setType(CommitIssue.Type.WISH); break;
-				case "New Feature": result.setType(CommitIssue.Type.FEATURE); break;
-				case "Sub-task": result.setType(CommitIssue.Type.SUBTASK); break;
-				default: result.setType(CommitIssue.Type.OTHER); break;
-			}*/
 			
 			
 			switch(priority.toLowerCase()) {
@@ -136,7 +119,6 @@ public class BugzillaParser implements Parser {
 			
 			return result;
 		} catch (SAXException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

@@ -56,13 +56,10 @@ public class CommitIssue {
 			return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 		}
 	    public String getName() {
-	    	//String name = toString();
-	    	//return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 	    	return formatName();
 	    }
 	    
 	    public String toString() {
-	    	//return this.getName();
 	    	return formatName();
 	    }
 	}

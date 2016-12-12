@@ -24,15 +24,8 @@ public class CommitReader implements ItemReader<CommitIssue> {
 
 	private synchronized void init() {
 		if(commitIssues != null) return;
-		//Hibernate.initialize(project.getCommits());
-		//commits = project.getCommits();
-		//commits = commitService.getProjectCommits(project);
-		//commitIssues = new HashSet<>();
-		/*for(Commit c : project.getCommits()) {
-			commitIssues.addAll(c.getCommitIssues());
-		}*/
+
 		commitIssues = commitIssueService.findAllByProject(project);
-		//commits = project.getCommits(); 
 		iterator = commitIssues.iterator();
 		
 	}
@@ -53,16 +46,4 @@ public class CommitReader implements ItemReader<CommitIssue> {
 			}
 		return null;
 	}
-
-	/*
-	 * @SuppressWarnings("unchecked")
-	 * 
-	 * @BeforeStep public void retrieveInterstepData(StepExecution
-	 * stepExecution) { JobExecution jobExecution =
-	 * stepExecution.getJobExecution(); ExecutionContext jobContext =
-	 * jobExecution.getExecutionContext(); Object o =
-	 * jobContext.get("issuedCommits"); if(o instanceof List<?>) { issues =
-	 * (List<IssuedCommit>) o; iterator = issues.iterator(); } else { issues =
-	 * null; } }
-	 */
 }

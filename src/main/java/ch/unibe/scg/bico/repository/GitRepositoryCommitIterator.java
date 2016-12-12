@@ -38,18 +38,14 @@ public class GitRepositoryCommitIterator implements Iterator<Commit> {
 	public Commit next() {
 		if(!hasNext()) return null;
 		RevCommit commit = data.pop();
-	//for(RevCommit commit : commits_reversed) {
 		
 		// branch itself, get another commit from the stack
 		if(commit.getParentCount() == 0) commit = data.pop();
 		
 		Commit c = new Commit();
-		//c.setProject(project);
-		//result.add(c);
 		c.setMessage(commit.getFullMessage());
 		c.setParentCommit(parentCommit);
 		c.setRef(commit.getName());
-		//project.addCommit(c);
 		int commitAdditions = 0;
 		int commitDeletions = 0;
 		
@@ -93,13 +89,10 @@ public class GitRepositoryCommitIterator implements Iterator<Commit> {
 	            
 	        }
 	    } catch (CorruptObjectException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MissingObjectException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	    

@@ -12,14 +12,6 @@
 		http://www.springframework.org/schema/tx/spring-tx.xsd"
 			>
 
-	<!-- Workaround for INT-1831 -->
-	<!-- <bean id="dummy" class="java.util.Date"/>
-
- 	
- 	<bean id="parameterUnpackerFilter" class="org.springframework.batch.admin.web.filter.ParameterUnpackerFilter">
- 		<property name="prefix" value="unpack_"/>
- 		<property name="putEmptyParamsInPath" value="true"/>
- 	</bean> -->
  	
  	<!-- use environment variables -->
  	<context:property-placeholder />
@@ -32,15 +24,6 @@
 		<context:exclude-filter type="regex" expression="ch.unibe.scg.bico.controller.*" />  
 		<context:exclude-filter type="regex" expression="ch.unibe.scg.bico.job.*" />  
 	</context:component-scan>
-
-	
-	<!--  <bean id="projectDao" class="org.springframework.batch.admin.sample.model.ProjectDao">
-		<property name="entityManager" ref="entityManagerFactory" />
-	</bean>
-	
-	<bean id="projectService" class="org.springframework.batch.admin.sample.model.ProjectService">
-		<property name="projectDao" ref="projectDao" />
-	</bean>-->
 
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${bico.db.driverClassName}" />
@@ -88,7 +71,4 @@
  	
  	<bean id="jobCreator" class="ch.unibe.scg.bico.job.JobCreator" />
 
-	<!-- <import resource="classpath*:/org/springframework/batch/admin/web/resources/webapp-config.xml" /> -->
- 	<!-- <import resource="classpath*:/META-INF/spring/batch/bootstrap/**/*.xml" /> -->
- 	<!-- <import resource="classpath*:/META-INF/spring/batch/override/**/*.xml" /> -->
 </beans>

@@ -15,6 +15,7 @@ import org.eclipse.egit.github.core.service.RepositoryService;
 
 import ch.unibe.scg.bico.model.Commit;
 
+@Deprecated
 public class GithubRepository implements IRepository {
 
 	private String owner;
@@ -34,7 +35,6 @@ public class GithubRepository implements IRepository {
 		try {
 			repository = service.getRepository(owner, name);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -48,15 +48,11 @@ public class GithubRepository implements IRepository {
 		try {
 			commits = service.getCommits(repository);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
 		
 		for(RepositoryCommit c : commits) {
-			
-			// DEBUG
-			System.out.println(c.getSha());
 			
 			Commit commit = new Commit();
 			
@@ -91,7 +87,6 @@ public class GithubRepository implements IRepository {
 
 	@Override
 	public Iterator<Commit> getCommitIterator() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

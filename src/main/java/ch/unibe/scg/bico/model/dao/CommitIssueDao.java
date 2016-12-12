@@ -19,7 +19,6 @@ public class CommitIssueDao implements CommitIssueDaoInterface {
 	@Override
 	public void persist(CommitIssue commitIssue) {
 		em.persist(commitIssue);
-		//em.flush();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -41,14 +40,11 @@ public class CommitIssueDao implements CommitIssueDaoInterface {
 		} else {
 			em.remove(commitIssue);
 		}
-		//em.remove( em.contains(commitIssue) ? commitIssue : em.merge(commitIssue));
-		//em.flush();
 	}
 	
 	@Override
 	public void update(CommitIssue commitIssue) {
 		em.merge(commitIssue);
-		//em.flush();
 	}
 
 	@Override
@@ -56,7 +52,6 @@ public class CommitIssueDao implements CommitIssueDaoInterface {
 		for(CommitIssue ci : commitIssues) {
 			em.merge(ci);
 		}
-		//em.flush();
 	}
 	
 	@SuppressWarnings("unchecked")
