@@ -52,6 +52,10 @@
 				<td th:text="${commit.deletions}">deletions</td>
 			</tr>
 			<tr>
+				<th>Files changed</th>
+				<td th:text="${commit.files.size()}">files changed</td>
+			</tr>
+			<tr>
 				<th>Ref</th>
 				<td th:text="${commit.ref}">ref</td>
 			</tr>

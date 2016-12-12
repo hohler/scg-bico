@@ -50,6 +50,7 @@
 				<th>Issues</th>
 				<th>Additions</th>
 				<th>Deletions</th>
+				<th>Files changed</th>
 				<th>FirstLineOfMessage</th>
 			</tr>
 			<tr th:each="commit : ${map.value}">
@@ -57,6 +58,7 @@
 				<td th:text="${commit.getCommitIssues().size()}">issues</td>
 				<td th:text="${commit.additions}">additions</td>
 				<td th:text="${commit.deletions}">deletions</td>
+				<td th:text="${commit.files.size()}">Files changed</td>
 				<td th:text="${commit.firstLineOfMessage()}">firstLineOfMessage</td>
 			</tr>
 			</table>
