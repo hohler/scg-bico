@@ -42,10 +42,12 @@ public class ProjectController {
 	@RequestMapping(method = RequestMethod.GET, value="{id}")
 	public ModelAndView view(@PathVariable("id") Long id, RedirectAttributes redirect) {
 		Project project = projectService.findById(id);
+		
 		if(project == null) {
-			redirect.addFlashAttribute("globalMessage", "This entity does not exist!");
-			return new ModelAndView("projects");
+			redirect.addFlashAttribute("globalErrorMessage", "Project does not exist");
+			return new ModelAndView("redirect:/projects");
 		}
+		
 		return new ModelAndView("projects/view", "project", project);
 	}
 	
@@ -71,6 +73,12 @@ public class ProjectController {
 	@RequestMapping(method = RequestMethod.GET, value = "delete/{id}")
 	public ModelAndView delete(@PathVariable("id") Long id, RedirectAttributes redirect) {
 		Project project = projectService.findById(id);
+		
+		if(project == null) {
+			redirect.addFlashAttribute("globalErrorMessage", "Project does not exist");
+			return new ModelAndView("redirect:/projects");
+		}
+		
 		jobCreator.removeJob(project);
 		projectService.delete(project);
 		redirect.addFlashAttribute("globalMessage", "Successfully deleted project");
@@ -78,25 +86,40 @@ public class ProjectController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "modify/{id}")
-	public ModelAndView modifyForm(@PathVariable("id") Long id) {
+	public ModelAndView modifyForm(@PathVariable("id") Long id, RedirectAttributes redirect) {
 		Project project = projectService.findById(id);
+		
+		if(project == null) {
+			redirect.addFlashAttribute("globalErrorMessage", "Project does not exist");
+			return new ModelAndView("redirect:/projects");
+		}
+		
 		return new ModelAndView("projects/edit_form", "project", project);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "modify/{id}")	
-	public ModelAndView modifyFormUpdate(@Valid Project project, BindingResult result,
+	public ModelAndView modifyFormUpdate(@ModelAttribute Project project, BindingResult result,
 			RedirectAttributes redirect, @PathVariable("id") Long id) {
 		if(result.hasErrors()) {
 			//return new ModelAndView("projects/edit_form", "formErrors", result.getAllErrors());
 			return new ModelAndView("projects/edit_form", "project", project);
 		}
-		//Project oldProject = projectService.findById(id);
-		//jobCreator.removeJob(id, oldProject.getName());
-		projectService.update(project);
-		System.out.println(project);
-		//jobCreator.createJob(project);
+		
+		Project dbProject = projectService.findById(id);
+		String oldName = new String(dbProject.getName());
+		
+		dbProject.setBranch(project.getBranch());
+		dbProject.setIssueTrackerUrlPattern(project.getIssueTrackerUrlPattern());
+		dbProject.setName(project.getName());
+		dbProject.setType(project.getType());
+		dbProject.setUrl(project.getUrl());
+		
+		projectService.update(dbProject);
+		jobCreator.removeJob(id, oldName);
+		jobCreator.createJob(dbProject);
+		
 		redirect.addFlashAttribute("globalMessage", "Successfully updated project");
-		return new ModelAndView("redirect:/projects/{project.id}", "project.id", project.getId());
+		return new ModelAndView("redirect:/projects/{project.id}", "project.id", dbProject.getId());
 	}
 
 }

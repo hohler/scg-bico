@@ -8,8 +8,9 @@
 <body>
 	<h1 layout:fragment="header">Projects : View all</h1>
 	<div layout:fragment="content" class="container">
-	<div class="alert alert-success" th:if="${globalMessage}"
-			th:text="${globalMessage}">Some Success message</div>
+	<div class="alert alert-success" th:if="${globalMessage}" th:text="${globalMessage}">Some Success message</div>
+	<div class="alert alert-danger" th:if="${globalErrorMessage}" th:text="${globalErrorMessage}">Some error message</div>
+			
 		<div class="pull-right" style="margin-bottom:10px;">
 			<a href="form.html" class="btn btn-primary" th:href="@{/projects/create}">Create Project</a>
 		</div>
@@ -31,9 +32,11 @@
 					<td th:text="${project.name}">name</td>
 					<td th:text="${project.type}">Type</td>
 					<td><a href="view.html" th:href="@{'/projects/' + ${project.id}}">Details</a> |&nbsp;
+						<a href="view.html" th:href="@{'/projects/' + 'modify/' + ${project.id}}">Modify</a> |&nbsp;
 						<a href="view.html" th:href="@{'/projects/' + ${project.id} + '/analyze'}">Analyze</a> |&nbsp;
 						<a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name}}">Batch Job</a> |&nbsp;
-						<a href="projects" th:href="@{'/projects/' + ${project.id} + '/issues'}">Issues</a>
+						<a href="projects" th:href="@{'/projects/' + ${project.id} + '/issues'}">Issues</a> |&nbsp;
+						<a href="projects" th:href="@{'/projects/' + 'delete/' + ${project.id}}">Remove</a>
 						</td>
 				</tr>
 			</tbody>
