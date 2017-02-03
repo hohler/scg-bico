@@ -23,7 +23,7 @@ public class GitLoader {
 		this.branch = branch;
 		
 		ArrayList<String> branches = new ArrayList<String>();
-		branches.add(branch);
+		branches.add("refs/origin"+branch);
 		
 		// if repo does not exist, create; else pull
 		String[] url_splitted = gitUrl.split("/");
