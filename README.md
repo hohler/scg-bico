@@ -51,7 +51,7 @@ In Eclipse, go to Window -> Show View -> Servers . Then in the servers view, rig
 
 ## 5. Deploy test server ##
 
-After you completed Step 4, you may "Run as" the project and choose your newly created Tomcat server. With this way, you don't have to generate a .war file and deploy manually.
+After you completed Step 4, you may "Run as" the project, choose "Run on Server" and use your newly created Tomcat server. This way, you don't have to generate a .war file and deploy manually.
 
 After deploying, navigate to [http://localhost:8080/scg-bico/](http://localhost:8080/scg-bico/)
 
