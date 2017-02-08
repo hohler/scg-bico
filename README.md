@@ -44,7 +44,15 @@ Adapt path for cloning repositories in file
 
 With Eclipse on Windows, this is equivalent to *C:\eclipse\target\repositories\*
 
-## 4. & 5. ##
+## 4. Install Tomcat and Eclipse Configuration ##
+Install Tomcat from [https://tomcat.apache.org](https://tomcat.apache.org). Use Version 8 or 9.
+
+In Eclipse, go to Window -> Show View -> Servers . Then in the servers view, right click and add new. It will show a pop up containing many server vendors. Under Apache select Tomcat v8.0 (Depending upon your downloaded server version). And in the run time configuration point it to the Tomcat folder you have downloaded. 
+
+## 5. Deploy test server ##
+
+After you completed Step 4, you may "Run as" the project and choose your newly created Tomcat server. With this way, you don't have to generate a .war file and deploy manually.
+
 After deploying, navigate to [http://localhost:8080/scg-bico/](http://localhost:8080/scg-bico/)
 
 ## 6. Example repositories and tips ##
