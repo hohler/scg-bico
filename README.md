@@ -175,9 +175,12 @@ Download-Link: [download here](https://mega.nz/#!v4xkWIqR!BJ1cjpWcGUCjEJkYPOgGan
 
 Import the appliance with Oracle VM VirtualBox Manager [https://www.virtualbox.org/wiki/Downloads](https://www.virtualbox.org/wiki/Downloads)
 
-The network adapter is set to "Bridged Network". So if you don't use DHCP, you have to set the VM IP manually.
+There are two network adapter. One is NAT (eth0) for internet access. The second is "Host-Only" (eth1) for accessing the tool. With a normal VirtualBox installation, the VM should automatically get a local IP.
 
-Connect to the interface with [http://assigned-ip-address:8080/scg-bico/](http://assigned-ip-address:8080/scg-bico/)
+You can get the IP of eth1 with the command:
+```ifconfig```
+
+Connect to the interface with [http://assigned-ip-address-of-eth1:8080/scg-bico/](http://assigned-ip-address-of-eth1:8080/scg-bico/)
 
 **Accounts**
 
@@ -201,4 +204,4 @@ Restart services:
 `systemctl restart mysql`
 `systemctl restart apache2`
 
-phpMyAdmin: [http://assigned-ip-address/phpMyAdmin](http://assigned-ip-address/phpMyAdmin)
+phpMyAdmin: [http://assigned-ip-address-of-eth1/phpMyAdmin](http://assigned-ip-address-of-eth1/phpMyAdmin)
