@@ -171,7 +171,7 @@ I recommend to just import the db_structure.sql and don't touch `generateDdl`.
 
 ## 9. Ready-to-use VirtualBox VM ##
 
-Download-Link: [download here](https://mega.nz/#!v4xkWIqR!BJ1cjpWcGUCjEJkYPOgGanTiVQ8VSIh54kRGiTmB56U)
+Download-Link: [download here](https://mega.nz/#!7txXVLAA!NpQO_EscfeGNQadh66IMdHxAo6U9AyLUctXqbxdvYX4)
 
 Import the appliance with Oracle VM VirtualBox Manager [https://www.virtualbox.org/wiki/Downloads](https://www.virtualbox.org/wiki/Downloads)
 
