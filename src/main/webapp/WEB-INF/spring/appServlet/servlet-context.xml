@@ -15,7 +15,7 @@
 	<!-- <annotation-driven conversion-service="conversionService" enable-matrix-variables="true"> -->
 	<annotation-driven conversion-service="conversionService" >
 		<argument-resolvers>
-			<beans:bean class="ch.unibe.scg.bico.mvc.CustomArgumentResolver"/>
+			<beans:bean class="tool.bico.mvc.CustomArgumentResolver"/>
 		</argument-resolvers>
 	</annotation-driven>
 
@@ -31,7 +31,7 @@
 	<!-- Only needed because we install custom converters to support the examples in the org.springframewok.samples.mvc.convert package -->
 	<beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
 		<beans:property name="formatters">
-            <beans:bean class="ch.unibe.scg.bico.mvc.MaskFormatAnnotationFormatterFactory" />
+            <beans:bean class="tool.bico.mvc.MaskFormatAnnotationFormatterFactory" />
 		</beans:property>
 	</beans:bean>
 

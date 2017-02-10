@@ -38,12 +38,22 @@
 		</table>
 		
 		<h2>Possible Big Commits</h2>
-		
-		<div class="alert alert-warning" role="alert">Threshold per category is calculated as following: <br />filesChangedThreshold = medianFilesChangedPerCommit * 50<br />additionsThreshold = medianAdditionsPerCommit * 50</div>
-		
+
 		<div th:each="map : ${commits}">
-		
+					
 			<h3><span th:text="${map.key.toString()}"></span> (<span th:text="${map.value.size()}"></span>)</h3>
+			
+			<div class="alert alert-info" role="alert" th:if="${map.value.size() != 0}"><strong>Threshold for filesChanged</strong><br />
+				Threshold = Q3 + (3 * (Q3-Q1)) = <span th:text="${thresholds.get(map.key).get('filesChangedThreshold')}"></span><br />
+				Q1 = <span th:text="${thresholds.get(map.key).get('firstQuartileFilesChanged')}"></span><br />
+				Q3 = <span th:text="${thresholds.get(map.key).get('thirdQuartileFilesChanged')}"></span><br />
+				<strong>Threshold for additions</strong><br />
+				Threshold = Q3 + (3 * (Q3-Q1)) = <span th:text="${thresholds.get(map.key).get('additionsThreshold')}"></span><br />
+				Q1 = <span th:text="${thresholds.get(map.key).get('firstQuartileAdditions')}"></span><br />
+				Q3 = <span th:text="${thresholds.get(map.key).get('thirdQuartileAdditions')}"></span><br />
+				Following commits meet the condition <strong>commit.filesChanged > filesChangedThreshold OR commit.additions > additionsThreshold</strong>
+			</div>
+			
 			<table class="table table-bordered table-striped table-condensed" dt:table="true">
 			<tr>
 				<th>ID</th>
