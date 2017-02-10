@@ -53,7 +53,7 @@ In Eclipse, go to Window -> Show View -> Servers . Then in the servers view, rig
 
 After you completed Step 4, you may "Run as" the project, choose "Run on Server" and use your newly created Tomcat server. This way, you don't have to generate a .war file and deploy manually.
 
-After deploying, navigate to [http://localhost:8080/scg-bico/](http://localhost:8080/scg-bico/)
+After deploying, navigate to [http://localhost:8080/bico/](http://localhost:8080/bico/)
 
 ## 6. Example repositories and tips ##
 
@@ -179,7 +179,7 @@ There are two network adapter. One is NAT (eth0) for internet access. The second
 
 You can get the IP of eth1 with the command `ifconfig` while logged in on the VM.
 
-Connect to the interface with [http://assigned-ip-address-of-eth1:8080/scg-bico/](http://assigned-ip-address-of-eth1:8080/scg-bico/)
+Connect to the interface with [http://assigned-ip-address-of-eth1:8080/bico/](http://assigned-ip-address-of-eth1:8080/bico/)
 
 **Accounts**
 
@@ -190,12 +190,6 @@ Connect to the interface with [http://assigned-ip-address-of-eth1:8080/scg-bico/
 mysql *root* : b1c0_2017
 
 **Details**
-
-All data is located in `/opt/`
-
-The repository is cloned to `/opt/scg-bico/`. You can use `mvn clean install -X` to generate the .war file (saved to target/)
-
-Tomcat server is located in `/opt/tomcat-latest/` - updated war files have to be copied to `/opt/tomcat-latest/webapps/scg-bico.war`
 
 Restart services:
 
