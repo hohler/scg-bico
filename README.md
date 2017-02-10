@@ -177,8 +177,7 @@ Import the appliance with Oracle VM VirtualBox Manager [https://www.virtualbox.o
 
 There are two network adapter. One is NAT (eth0) for internet access. The second is "Host-Only" (eth1) for accessing the tool. With a normal VirtualBox installation, the VM should automatically get a local IP.
 
-You can get the IP of eth1 with the command:
-```ifconfig```
+You can get the IP of eth1 with the command `ifconfig` while logged in on the VM.
 
 Connect to the interface with [http://assigned-ip-address-of-eth1:8080/scg-bico/](http://assigned-ip-address-of-eth1:8080/scg-bico/)
 
