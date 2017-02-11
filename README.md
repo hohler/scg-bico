@@ -20,6 +20,7 @@ Additional MySQL configuration variables: see chapter 8.
 4. Set up a local Tomcat Server Version >= 6 (Version <= 7 with Eclipse) and add it in the Run Configurations in Eclipse
 5. Deploy the project to the Tomcat server
 6. How to use the tool
+6.1 Spring Batch Admin
 7. Example repositories
 8. MySQL configuration
 9. Deployment for production environment
@@ -60,11 +61,23 @@ After deploying, navigate to [http://localhost:8080/bico/](http://localhost:8080
 
 1. Create a new project (Go to `Projects` and click `Create Project`) and use the example repositories from section 7.
 
-2. After creating a project, click in the `Projects` view on `Batch Job` and start the job. This will clone the repository, parse the commits and link the issues.
+2. After creating a project, click in the `Projects` view on `Batch Job` and start the job with `Launch`. This will clone the repository, parse the commits and link the issues.
 
 3. You can check the status of the batch job in the `Batch Admin` where you started it.
 
 4. After successful execution, go back to the BiCo interface and open the project with `Details`. You can now do the analysis with `Analyze` and look for `Possible Big Commits`.
+
+## 6.1 Batch Admin interface ##
+
+If you click on `Batch Admin` in the BiCo interface navigation, you'll get to the Spring Batch Admin interface.
+
+Click on `Jobs` and you see the list of all batch jobs from the BiCo projects.
+
+Click on one job. This is the execution form - click on `Launch` and the job is executed.
+
+The navigation link `Executions` shows current running jobs and their status.
+
+Do not click on `Home` since this version of Spring Batch Admin will redirect to a wrong url.
  
 ## 7. Example repositories and tips ##
 
