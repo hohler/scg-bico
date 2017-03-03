@@ -21,4 +21,6 @@ public interface CommitIssueDaoInterface {
 
 	List<CommitIssue> findAllByProject(Project project);
 
+	CommitIssue findByProjectAndIssueName(Project project, String name);
+
 }

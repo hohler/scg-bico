@@ -11,6 +11,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -29,10 +32,11 @@ public class Commit {
 	@OrderBy("id")
 	protected Set<CommitFile> files;
 	
-	@OneToOne(cascade = CascadeType.DETACH, optional=true, fetch = FetchType.LAZY)
+	@OneToOne(cascade = {CascadeType.DETACH}, optional=true, fetch = FetchType.LAZY)
 	protected Commit parentCommit;
 	
-	@OneToMany(mappedBy = "commit", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@ManyToMany(targetEntity = CommitIssue.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	//@JoinTable(name = "commitissues_commits", joinColumns = @JoinColumn(name = "commits_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "commitissues_id", referencedColumnName = "id"))
 	protected Set<CommitIssue> commitIssues;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -127,17 +131,19 @@ public class Commit {
 	public void initIssue(String issue) {
 		if(issue == null) return;
 		CommitIssue i = new CommitIssue(issue);
-		i.setCommit(this);
+		//i.setCommit(this);
 		this.addCommitIssue(i);
 	}
 	
 	public void addCommitIssue(CommitIssue commitIssue) {
-		commitIssue.setCommit(this);
+		//commitIssue.setCommit(this);
+		commitIssue.addCommit(this);
 		this.commitIssues.add(commitIssue);
 	}
 	
 	public void removeCommitIssue(CommitIssue commitIssue) {
-		commitIssue.setCommit(null);
+		//commitIssue.setCommit(null);
+		commitIssue.removeCommit(this);
 		this.commitIssues.remove(commitIssue);
 	}
 

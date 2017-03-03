@@ -1,11 +1,17 @@
 package tool.bico.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -68,26 +74,30 @@ public class CommitIssue {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade=javax.persistence.CascadeType.REFRESH)
-	private Commit commit;
+	@ManyToMany(targetEntity = Commit.class, fetch = FetchType.LAZY, cascade={CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "commitIssues")
+	protected Set<Commit> commits;
 	
 	private Type type = Type.NA;
 	
 	private Priority priority = Priority.NA;
 	
+	@Column(nullable = true)
 	private String name = "";
 	
 	public CommitIssue() {
+		this.commits = new HashSet<Commit>();
 	}
 	
 	public CommitIssue(String name) {
 		this.name = name;
+		this.commits = new HashSet<Commit>();
 	}
 	
 	public CommitIssue(String name, Type type, Priority priority) {
 		this.name = name;
 		this.type = type;
 		this.priority = priority;
+		this.commits = new HashSet<Commit>();
 	}
 	
 	public CommitIssue(CommitIssue issue) {
@@ -128,12 +138,20 @@ public class CommitIssue {
 		this.priority = priority;
 	}
 	
-	public Commit getCommit() {
-		return commit;
+	public Set<Commit> getCommits() {
+		return commits;
 	}
 
-	public void setCommit(Commit commit) {
+	/*public void setCommit(Commit commit) {
 		this.commit = commit;
+	}*/
+	
+	public void addCommit(Commit commit) {
+		this.commits.add(commit);
+	}
+	
+	public void removeCommit(Commit commit) {
+		this.commits.remove(commit);
 	}
 
 	public Long getId() {

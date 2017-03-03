@@ -57,7 +57,19 @@ public class CommitIssueDao implements CommitIssueDaoInterface {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CommitIssue> findAllByProject(Project project) {
-		return em.createQuery("SELECT c from CommitIssue c LEFT JOIN c.commit i WHERE i.project = :project")
+		return em.createQuery("SELECT c from CommitIssue c LEFT JOIN c.commits i WHERE i.project = :project")
 				.setParameter("project", project).getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")	
+	@Override
+	public CommitIssue findByProjectAndIssueName(Project project, String name) {
+		List<CommitIssue> result;
+
+		result = em.createQuery("SELECT c from CommitIssue c LEFT JOIN c.commits i WHERE i.project = :project AND c.name = :name")
+			.setParameter("project", project).setParameter("name", name).getResultList();
+		
+		if(result == null || result.isEmpty()) return null;
+		return result.get(0);				
 	}
 }
