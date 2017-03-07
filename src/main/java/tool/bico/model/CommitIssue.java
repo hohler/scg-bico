@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -75,6 +76,7 @@ public class CommitIssue {
 	private Long id;
 	
 	@ManyToMany(targetEntity = Commit.class, fetch = FetchType.LAZY, cascade={CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "commitIssues")
+	@OrderBy("id ASC")
 	protected Set<Commit> commits;
 	
 	private Type type = Type.NA;

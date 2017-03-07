@@ -57,7 +57,7 @@ public class CommitIssueDao implements CommitIssueDaoInterface {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CommitIssue> findAllByProject(Project project) {
-		return em.createQuery("SELECT c from CommitIssue c LEFT JOIN c.commits i WHERE i.project = :project")
+		return em.createQuery("SELECT DISTINCT c from CommitIssue c LEFT JOIN c.commits i WHERE i.project = :project")
 				.setParameter("project", project).getResultList();
 	}
 	
