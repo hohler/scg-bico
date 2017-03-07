@@ -13,11 +13,13 @@ import tool.bico.model.service.CommitService;
 public class RepositoryWriter implements ItemWriter<Commit> {
 
 	private CommitService commitService;
+	private CommitIssueService commitIssueService;
 	
 	private List<CommitIssue> tempCommitIssues;
 
-	public RepositoryWriter(CommitService commitService) {
+	public RepositoryWriter(CommitService commitService, CommitIssueService commitIssueService) {
 		this.commitService = commitService;
+		this.commitIssueService = commitIssueService;
 		this.tempCommitIssues = new ArrayList<CommitIssue>();
 	}
 	
@@ -34,6 +36,7 @@ public class RepositoryWriter implements ItemWriter<Commit> {
 						commit.addCommitIssue(i);
 					}
 				} else {
+					commitIssueService.add(c);
 					tempCommitIssues.add(c);
 				}
 			}

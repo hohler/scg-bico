@@ -73,7 +73,7 @@ public class JobCreator {
 				.<Commit, Commit> chunk(100)
 				.reader(new RepositoryReader(project, projectService))
 				.processor(new RepositoryProcessor(project.getType()))
-				.writer(new RepositoryWriter(commitService))
+				.writer(new RepositoryWriter(commitService, commitIssueService))
 				.build();
 		
 		

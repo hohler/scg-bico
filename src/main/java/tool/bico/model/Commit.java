@@ -35,7 +35,7 @@ public class Commit {
 	@OneToOne(cascade = {CascadeType.DETACH}, optional=true, fetch = FetchType.LAZY)
 	protected Commit parentCommit;
 	
-	@ManyToMany(targetEntity = CommitIssue.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(targetEntity = CommitIssue.class, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE}, fetch = FetchType.LAZY)
 	//@JoinTable(name = "commitissues_commits", joinColumns = @JoinColumn(name = "commits_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "commitissues_id", referencedColumnName = "id"))
 	protected Set<CommitIssue> commitIssues;
 	

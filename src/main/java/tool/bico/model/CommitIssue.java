@@ -161,4 +161,16 @@ public class CommitIssue {
 	public String toString() {
 		return "Issue[id="+id+", name="+name+", type="+type+", priority="+priority+"]";
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+	    if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof CommitIssue)) return false;
+	    CommitIssue that = (CommitIssue) other;
+	    if(this.name != null && this.name.length() > 0 && that.name != null && that.name.length() > 0) {
+	    	if(this.name.equals(that.name)) return true;
+	    }
+	    return false;
+	}
 }
