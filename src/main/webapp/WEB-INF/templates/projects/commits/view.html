@@ -65,7 +65,7 @@
 			</tr>
 			<tr>
 				<th>Parent commit</th>
-				<td><a href="projects" th:if="${commit.parentCommit}" th:href="@{'/projects/' + ${commit.project.id} + '/commits/' + ${commit.parentCommit.id}}">parent commit</a></td>
+				<td><a href="projects" th:if="${commit.parentCommit}" th:href="@{'/projects/' + ${commit.project.id} + '/commits/' + ${commit.parentCommit.id}}" th:text="${commit.parentCommit.firstLineOfMessage()}">parent commit</a></td>
 			</tr>
 			<tr>
 				<th colspan="2">Message</th>
@@ -84,7 +84,7 @@
 				<th>Priority</th>
 			</tr>
 			<tr th:each="issue : ${commit.commitIssues}">
-				<td th:text="${issue.id}">id</td>
+				<td><a th:href="@{'/projects/' + ${commit.project.id} + '/issues/' + ${issue.id}}" th:text="${issue.id}">id</a></td>
 				<td th:text="${issue.name}">name</td>
 				<td th:text="${issue.type}">type</td>
 				<td th:text="${issue.priority}">priority</td>

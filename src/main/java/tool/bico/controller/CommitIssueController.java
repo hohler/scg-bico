@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import tool.bico.model.Commit;
 import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
 import tool.bico.model.service.CommitIssueService;
@@ -56,5 +57,15 @@ public class CommitIssueController {
 		model.addAttribute("issues", issues);
 		model.addAttribute("issuesMapped", issuesMapped);
 		return new ModelAndView("projects/issues/index", model.asMap());
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="{cid}")
+	public ModelAndView view(Model model, @PathVariable("id") Long id, @PathVariable("cid") Long cid) {
+		CommitIssue commitIssue = commitIssueService.findById(cid);
+		Project project = projectService.findById(id);
+		model.addAttribute("issue", commitIssue);
+		model.addAttribute("project", project);
+		
+		return new ModelAndView("projects/issues/view", model.asMap());
 	}
 }
