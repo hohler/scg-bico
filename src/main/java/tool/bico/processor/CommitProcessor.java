@@ -37,6 +37,8 @@ public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> 
 				input.setName(result.getName());
 				input.setPriority(result.getPriority());
 				input.setType(result.getType());
+				input.setLink(result.getLink());
+				input.setDescription(result.getDescription());
 			} else {
 				input.setName(null);
 			}

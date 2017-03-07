@@ -65,6 +65,7 @@ public class CommitIssueController {
 		Project project = projectService.findById(id);
 		model.addAttribute("issue", commitIssue);
 		model.addAttribute("project", project);
+		model.addAttribute("newLineChar", "\n");
 		
 		return new ModelAndView("projects/issues/view", model.asMap());
 	}

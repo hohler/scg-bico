@@ -34,11 +34,21 @@
 			</tr>
 			<tr>
 				<th>Name</th>
-				<td th:text="${issue.getName()}">name</td>
+				<td th:text="${issue.name}">name</td>
+			</tr>
+			<tr>
+				<th>Link</th>
+				<td><a th:if="${issue.link}" th:href="${issue.link}" target="_blank" th:text="${issue.link}">link</a></td>
 			</tr>
 			<tr>
 				<th>Number of commits assigned to this issue</th>
 				<td th:text="${issue.getCommits().size()}">count</td>
+			</tr>
+			<tr>
+				<th colspan="2">Description</th>
+			</tr>
+			<tr>
+				<td colspan="2" th:utext="${#strings.replace(issue.description, newLineChar, '&lt;br /&gt;')}">description</td>
 			</tr>
 		</table>
 		

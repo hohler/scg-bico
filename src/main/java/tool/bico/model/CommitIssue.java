@@ -86,6 +86,12 @@ public class CommitIssue {
 	@Column(nullable = true)
 	private String name = "";
 	
+	@Column(nullable = true)
+	private String link = "";
+	
+	@Column(nullable = true, columnDefinition = "TEXT")
+	private String description = "";
+	
 	public CommitIssue() {
 		this.commits = new HashSet<Commit>();
 	}
@@ -158,6 +164,23 @@ public class CommitIssue {
 
 	public Long getId() {
 		return id;
+	}
+	
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String toString() {
