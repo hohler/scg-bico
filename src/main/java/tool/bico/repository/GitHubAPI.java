@@ -100,6 +100,9 @@ public class GitHubAPI {
 		IssueInfoHolder holder = new IssueInfoHolder();
 		holder.setName(Integer.toString(issue.getNumber()));
 		
+		holder.setLink(issue.getHtmlUrl());
+		holder.setDescription(issue.getTitle());
+		
 		for(Label l : issue.getLabels()) {
 			if(l.getName().startsWith(":")) continue;
 			if(holder.getType() == CommitIssue.Type.NA) {

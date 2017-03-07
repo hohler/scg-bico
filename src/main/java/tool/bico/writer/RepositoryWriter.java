@@ -1,6 +1,7 @@
 package tool.bico.writer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.batch.item.ItemWriter;
@@ -16,29 +17,40 @@ public class RepositoryWriter implements ItemWriter<Commit> {
 	private CommitIssueService commitIssueService;
 	
 	private List<CommitIssue> tempCommitIssues;
+	private List<CommitIssue> tempNewCommitIssues;
 
 	public RepositoryWriter(CommitService commitService, CommitIssueService commitIssueService) {
 		this.commitService = commitService;
 		this.commitIssueService = commitIssueService;
 		this.tempCommitIssues = new ArrayList<CommitIssue>();
+		this.tempNewCommitIssues = new ArrayList<CommitIssue>();
 	}
 	
 	@Override
 	public void write(List<? extends Commit> items) throws Exception {
 		for(Commit commit : items) {
 			// Check if there already exists and issue in this project with the same name
-			for(CommitIssue c : commit.getCommitIssues()) {
+			Iterator<CommitIssue> commitIssuesIterator = commit.getCommitIssues().iterator();
+			while(commitIssuesIterator.hasNext()) {
+				CommitIssue c = commitIssuesIterator.next();
+			//}
+			//for(CommitIssue c : commit.getCommitIssues()) {
 				//CommitIssue i = commitIssueService.findByProjectAndIssueName(commit.getProject(), c.getName());
 				if(tempCommitIssues.contains(c)) {
 					CommitIssue i = tempCommitIssues.get(tempCommitIssues.indexOf(c));
 					if(i != null) {
-						commit.removeCommitIssue(c);
-						commit.addCommitIssue(i);
+						commitIssuesIterator.remove();
+						//commit.removeCommitIssue(c);
+						//commit.addCommitIssue(i);
+						tempNewCommitIssues.add(i);
 					}
 				} else {
 					commitIssueService.add(c);
 					tempCommitIssues.add(c);
 				}
+			}
+			for(CommitIssue t : tempNewCommitIssues) {
+				commit.addCommitIssue(t);
 			}
 			commitService.add(commit);
 		}
