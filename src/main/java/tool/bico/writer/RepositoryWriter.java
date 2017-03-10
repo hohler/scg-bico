@@ -29,6 +29,7 @@ public class RepositoryWriter implements ItemWriter<Commit> {
 	@Override
 	public void write(List<? extends Commit> items) throws Exception {
 		for(Commit commit : items) {
+			tempNewCommitIssues = new ArrayList<>();
 			// Check if there already exists and issue in this project with the same name
 			Iterator<CommitIssue> commitIssuesIterator = commit.getCommitIssues().iterator();
 			while(commitIssuesIterator.hasNext()) {
