@@ -50,6 +50,8 @@ public class GitRepositoryCommitIterator implements Iterator<Commit> {
 		int commitAdditions = 0;
 		int commitDeletions = 0;
 		
+		if(commit.getParentCount() > 0) c.setMergeCommit(true);
+		
 		parentCommit = c;
 		
 		System.out.println("commit: "+commit.getShortMessage());

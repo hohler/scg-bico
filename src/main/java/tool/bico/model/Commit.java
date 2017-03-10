@@ -62,6 +62,8 @@ public class Commit {
 	@Column(columnDefinition = "TEXT")
 	protected String message;
 	
+	protected boolean isMergeCommit = false;
+	
 	public Commit() {
 		files = new HashSet<CommitFile>();
 		commitIssues = new HashSet<CommitIssue>();
@@ -173,6 +175,15 @@ public class Commit {
 		return additions + deletions;
 	}
 	
+	
+	public boolean isMergeCommit() {
+		return isMergeCommit;
+	}
+
+	public void setMergeCommit(boolean isMergeCommit) {
+		this.isMergeCommit = isMergeCommit;
+	}
+
 	public String toString() {
 		return String.format("Commit[id=%d, name='%s', additions='%d', deletions='%d']",
 				id, firstLineOfMessage(), additions, deletions);
