@@ -9,6 +9,7 @@
 				<value>classpath:/org/springframework/batch/admin/bootstrap/batch.properties</value>
 				<value>classpath:batch-default.properties</value>
 				<value>classpath:batch-mysql.properties</value>
+				<value>classpath:batch-postgresql.properties</value>
 				<value>classpath:application.properties</value>
 			</list>
 		</property>
