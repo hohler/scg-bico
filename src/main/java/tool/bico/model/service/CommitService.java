@@ -62,4 +62,8 @@ public class CommitService {
 		return commitDao.getProjectCommits(project);
 	}
 
+	@Transactional
+	public void flush() {
+		commitDao.flush();
+	}
 }

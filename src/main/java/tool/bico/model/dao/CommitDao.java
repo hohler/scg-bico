@@ -48,4 +48,9 @@ public class CommitDao implements CommitDaoInterface {
 		return em.createQuery("SELECT c from  Commit c WHERE c.project = :project_id")
 		.setParameter("project_id", project).getResultList();
 	}
+	
+	@Override
+	public void flush() {
+		em.flush();
+	}
 }

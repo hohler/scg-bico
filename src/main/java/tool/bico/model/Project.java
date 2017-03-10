@@ -19,7 +19,7 @@ import javax.persistence.Table;
 public class Project {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	private String name;
@@ -130,7 +130,19 @@ public class Project {
 	}
 	
 	public void cleanForProcessing() {
-		commits.forEach(s -> s.setProject(null));
+		/*commits.forEach(s -> {
+			s.setProject(null);	
+			s.getCommitIssues().forEach(i -> {
+				i.removeCommit(s);
+			});
+			s.getFiles().forEach(f -> {
+				f.setCommit(null);
+			});
+			s.getFiles().clear();
+		});*/
+		commits.forEach(s -> {
+			s.setProject(null);
+		});
 		commits.clear();
 	}
 	

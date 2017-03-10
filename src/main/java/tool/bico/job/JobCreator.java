@@ -1,5 +1,7 @@
 package tool.bico.job;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.DuplicateJobException;
@@ -12,7 +14,6 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
-
 import tool.bico.model.Commit;
 import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
@@ -21,7 +22,7 @@ import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
 import tool.bico.processor.CommitProcessor;
 import tool.bico.processor.RepositoryProcessor;
-import tool.bico.reader.CommitReader;
+import tool.bico.reader.CommitReader2;
 import tool.bico.reader.RepositoryReader;
 import tool.bico.repository.GitHubAPI;
 import tool.bico.writer.CommitWriter;
@@ -46,6 +47,10 @@ public class JobCreator {
 	@Autowired
 	private ProjectService projectService;
 	
+	@Autowired
+	private EntityManagerFactory entityManagerFactory;
+	
+	
 	private TaskExecutor issueTaskExecutor() {
 		SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor();
 		executor.setConcurrencyLimit(100);
@@ -55,6 +60,7 @@ public class JobCreator {
 	public JobCreator() {
 		System.err.println("JobCreator initialized!");
 	}
+	
 	
 	public void removeJob(Project project) {
 		String jobName = project.getId().toString() + "_" + project.getName();
@@ -85,9 +91,9 @@ public class JobCreator {
 		
 		Step step2 = stepBuilderFactory.get(jobName+"_getIssueInformationForEachCommit")
 				.<CommitIssue, CommitIssue> chunk(50)
-				.reader(new CommitReader(project, commitIssueService))
+				.reader(new CommitReader2(project, entityManagerFactory))
 				.processor(commitProcessor)
-				.writer(new CommitWriter(commitService, commitIssueService))
+				.writer(new CommitWriter(commitIssueService))
 				.taskExecutor(issueTaskExecutor())
 				.build();
 		

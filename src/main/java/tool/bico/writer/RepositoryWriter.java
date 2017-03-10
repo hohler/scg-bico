@@ -34,15 +34,11 @@ public class RepositoryWriter implements ItemWriter<Commit> {
 			Iterator<CommitIssue> commitIssuesIterator = commit.getCommitIssues().iterator();
 			while(commitIssuesIterator.hasNext()) {
 				CommitIssue c = commitIssuesIterator.next();
-			//}
-			//for(CommitIssue c : commit.getCommitIssues()) {
-				//CommitIssue i = commitIssueService.findByProjectAndIssueName(commit.getProject(), c.getName());
+
 				if(tempCommitIssues.contains(c)) {
 					CommitIssue i = tempCommitIssues.get(tempCommitIssues.indexOf(c));
 					if(i != null) {
 						commitIssuesIterator.remove();
-						//commit.removeCommitIssue(c);
-						//commit.addCommitIssue(i);
 						tempNewCommitIssues.add(i);
 					}
 				} else {
@@ -50,8 +46,10 @@ public class RepositoryWriter implements ItemWriter<Commit> {
 					tempCommitIssues.add(c);
 				}
 			}
+			
+			commitService.flush();
 			for(CommitIssue t : tempNewCommitIssues) {
-				commit.addCommitIssue(t);
+				commit.addCommitIssueSilently(t);
 			}
 			commitService.add(commit);
 		}

@@ -13,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
+import javax.persistence.ForeignKey;
+import javax.persistence.ConstraintMode;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -25,7 +27,7 @@ import javax.persistence.Table;
 public class Commit {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	protected Long id;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "commit", orphanRemoval = true)
@@ -35,8 +37,16 @@ public class Commit {
 	@OneToOne(cascade = {CascadeType.DETACH}, optional=true, fetch = FetchType.LAZY)
 	protected Commit parentCommit;
 	
-	@ManyToMany(targetEntity = CommitIssue.class, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-	//@JoinTable(name = "commitissues_commits", joinColumns = @JoinColumn(name = "commits_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "commitissues_id", referencedColumnName = "id"))
+	@ManyToMany(targetEntity = CommitIssue.class, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+	@JoinTable(name = "commits_commitissues",
+    inverseJoinColumns = @JoinColumn(name = "commitissue_id",
+            nullable = false,
+            updatable = false),
+    joinColumns = @JoinColumn(name = "commit_id",
+            nullable = false,
+            updatable = false),
+    foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT),
+    inverseForeignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
 	@OrderBy("id ASC")
 	protected Set<CommitIssue> commitIssues;
 	
@@ -137,14 +147,21 @@ public class Commit {
 	}
 	
 	public void addCommitIssue(CommitIssue commitIssue) {
+		//commitIssue.addCommit(this);
+		this.commitIssues.add(commitIssue);
+	}
+	
+	public void addCommitIssueSilently(CommitIssue commitIssue) {
 		//commitIssue.setCommit(this);
-		commitIssue.addCommit(this);
 		this.commitIssues.add(commitIssue);
 	}
 	
 	public void removeCommitIssue(CommitIssue commitIssue) {
-		//commitIssue.setCommit(null);
-		commitIssue.removeCommit(this);
+		//commitIssue.removeCommit(this);
+		this.commitIssues.remove(commitIssue);
+	}
+	
+	public void removeCommitIssueSilently(CommitIssue commitIssue) {
 		this.commitIssues.remove(commitIssue);
 	}
 

@@ -20,7 +20,7 @@ import tool.bico.model.CommitFile;
 public class CommitFile {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	private int additions;
@@ -34,7 +34,7 @@ public class CommitFile {
 	
 	private String newPath;
 	
-	@Column(columnDefinition = "MEDIUMTEXT")
+	@Column(columnDefinition = "TEXT") // TEXT for PostgreSQL, MEDIUMTEXT for MySQL !
 	private String patch;
 	
 	private ChangeType changeType;

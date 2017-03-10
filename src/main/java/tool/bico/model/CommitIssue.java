@@ -10,10 +10,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ForeignKey;
+import javax.persistence.ConstraintMode;
 
 @Entity
 @Table(name="commitissues")
@@ -72,10 +75,19 @@ public class CommitIssue {
 	}
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@ManyToMany(targetEntity = Commit.class, fetch = FetchType.LAZY, cascade={CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "commitIssues")
+	@ManyToMany(targetEntity = Commit.class, fetch = FetchType.LAZY, cascade={CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+	@JoinTable(name = "commits_commitissues",
+    joinColumns = @JoinColumn(name = "commitissue_id",
+            nullable = false,
+            updatable = false),
+    inverseJoinColumns = @JoinColumn(name = "commit_id",
+            nullable = false,
+            updatable = false),
+    foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT),
+    inverseForeignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
 	@OrderBy("id ASC")
 	protected Set<Commit> commits;
 	

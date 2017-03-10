@@ -37,6 +37,7 @@ public class RepositoryReader implements ItemReader<Commit> {
 			project.addCommit(next);
 			return next;
 		}
+		iterator = null;
 		return null;
 	}
 }

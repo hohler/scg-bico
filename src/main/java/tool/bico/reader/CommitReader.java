@@ -16,10 +16,12 @@ public class CommitReader implements ItemReader<CommitIssue> {
 	private Iterator<CommitIssue> iterator;
 	private Project project;
 	private CommitIssueService commitIssueService;
+	private int inits = 0;
 
 	public CommitReader(Project project, CommitIssueService commitIssueService) {
 		this.project = project;
 		this.commitIssueService = commitIssueService;
+		inits++;
 	}
 
 	private synchronized void init() {
@@ -31,19 +33,27 @@ public class CommitReader implements ItemReader<CommitIssue> {
 	}
 
 	@Override
-	public CommitIssue read() {
-		if (commitIssues == null)
+	public synchronized CommitIssue read() {
+		if (commitIssues == null && inits == 0)
 			init();
+		else if(commitIssues == null && inits != 0) {
+			System.err.println("YOU SHOULD NOT HAVE DONE THIS!");
+			return null;
+		}
 		if (commitIssues.isEmpty())
 			throw new NullPointerException("commit list is empty");
 		if (iterator == null)
 			throw new NullPointerException("commit iterator is null");
-		if (iterator.hasNext())
+		if (iterator.hasNext()) {
 			try {
 				return iterator.next();
 			} catch(NoSuchElementException e) {
 				return null;
 			}
-		return null;
+		} else {
+			iterator = null;
+			commitIssues = null;
+			return null;
+		}
 	}
 }
