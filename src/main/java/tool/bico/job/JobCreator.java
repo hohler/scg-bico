@@ -87,7 +87,7 @@ public class JobCreator {
 				.<CommitIssue, CommitIssue> chunk(50)
 				.reader(new CommitReader(project, commitIssueService))
 				.processor(commitProcessor)
-				.writer(new CommitWriter(commitIssueService))
+				.writer(new CommitWriter(commitService, commitIssueService))
 				.taskExecutor(issueTaskExecutor())
 				.build();
 		
