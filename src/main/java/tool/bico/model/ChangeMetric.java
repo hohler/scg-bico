@@ -1,5 +1,6 @@
 package tool.bico.model;
 
+import java.io.File;
 import java.util.Calendar;
 
 import javax.persistence.Entity;
@@ -243,5 +244,11 @@ public class ChangeMetric {
 
 	public void setWeightedAge(double weightedAge) {
 		this.weightedAge = weightedAge;
+	}
+	
+	public String getShortFile() {
+		if(file == null) return "";
+		String[] fileName = file.split("/");
+		return (fileName.length-3 > 0 ? fileName[fileName.length-3] + "/": "") + (fileName.length-2 > 0 ? fileName[fileName.length-2] + "/" : "") + fileName[fileName.length-1];
 	}
 }

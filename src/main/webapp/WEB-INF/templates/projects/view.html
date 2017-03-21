@@ -49,6 +49,10 @@
 					<a href="projects" th:href="@{'/projects/' + ${project.id} + '/analyze/bigcommits'}">Possible Big Commits</a>
 					</td>
 			</tr>
+			<tr>
+				<th>Metrics</th>
+				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/changemetrics'}">Change metrics</a></td>
+			</tr>
 		</table>
 		
 		<h2>Commits (<span th:text="${project.commits.size()}"></span>)</h2>

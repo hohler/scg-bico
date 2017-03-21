@@ -27,7 +27,7 @@ public class ChangeMetricController {
 	private ProjectService projectService;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView view(Model model, @PathVariable("id") Long id) {
+	public ModelAndView index(Model model, @PathVariable("id") Long id) {
 		Project project = projectService.findById(id);
 		
 		List<ChangeMetric> changeMetrics = changeMetricService.getProjectChangeMetrics(project);
@@ -35,6 +35,6 @@ public class ChangeMetricController {
 		model.addAttribute("changeMetrics", changeMetrics);
 		model.addAttribute("project", project);
 
-		return new ModelAndView("projects/metrics/changemetrics/view", model.asMap());
+		return new ModelAndView("projects/metrics/changemetrics/index", model.asMap());
 	}
 }
