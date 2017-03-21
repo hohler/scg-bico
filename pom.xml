@@ -226,6 +226,18 @@
 			<artifactId>postgresql</artifactId>
 			<version>9.4.1212</version>
 		</dependency>
+		
+		<dependency>
+		  <groupId>org.repodriller</groupId>
+		  <artifactId>repodriller</artifactId>
+		  <version>1.2.3-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>ch.unibe.scg.metrics</groupId>
+		  <artifactId>changemetrics</artifactId>
+		  <version>1.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -245,15 +257,14 @@
 			</plugin>
 			
 			<plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <!-- or whatever version you use -->
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-			
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-compiler-plugin</artifactId>
+		        <configuration>
+		          <!-- or whatever version you use -->
+		          <source>1.8</source>
+		          <target>1.8</target>
+		        </configuration>
+      		</plugin>
 		</plugins>
 	</build>
 	<repositories>
@@ -271,6 +282,12 @@
 			<name>repo.spring.io-milestones</name>
 			<url>http://repo.spring.io/libs-milestone</url>
 		</repository>
+		
+	  <repository>
+	    <id>data-local</id>
+	    <name>data</name>
+	    <url>file://${basedir}/local_maven_repository</url>
+	  </repository>
 
 	</repositories>
 	<packaging>war</packaging>

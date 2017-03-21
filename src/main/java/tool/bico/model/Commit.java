@@ -64,6 +64,10 @@ public class Commit {
 	
 	protected boolean isMergeCommit = false;
 	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="commit", orphanRemoval = true)
+	@OrderBy("id")
+	private Set<ChangeMetric> changeMetrics;
+	
 	public Commit() {
 		files = new HashSet<CommitFile>();
 		commitIssues = new HashSet<CommitIssue>();

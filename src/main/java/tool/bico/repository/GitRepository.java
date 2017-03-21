@@ -56,6 +56,11 @@ public class GitRepository implements IRepository {
 		}
 	}
 	
+	public String getRepositoryPath() {
+		if(repository == null) return null;
+		return repository.getDirectory().getAbsolutePath();
+	}
+	
 	public Iterator<Commit> getCommitIterator() {
 		
 		Git git = new Git(repository);

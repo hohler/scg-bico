@@ -11,12 +11,15 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.support.ReferenceJobFactory;
 import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
+
 import tool.bico.model.Commit;
 import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
+import tool.bico.model.service.ChangeMetricService;
 import tool.bico.model.service.CommitIssueService;
 import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
@@ -48,6 +51,9 @@ public class JobCreator {
 	private ProjectService projectService;
 	
 	@Autowired
+	private ChangeMetricService changeMetricsService;
+	
+	@Autowired
 	private EntityManagerFactory entityManagerFactory;
 	
 	
@@ -64,16 +70,22 @@ public class JobCreator {
 	
 	public void removeJob(Project project) {
 		String jobName = project.getId().toString() + "_" + project.getName();
+		String jobNameMetrics = jobName + "_metrics";
 		jobRegistry.unregister(jobName);
+		jobRegistry.unregister(jobNameMetrics);
 	}
 	
 	public void removeJob(Long id, String name) {
 		String jobName = id.toString() + "_" + name;
+		String jobNameMetrics = jobName + "_metrics";
 		jobRegistry.unregister(jobName);
+		jobRegistry.unregister(jobNameMetrics);
 	}
 	
 	public void createJob(Project project) {
 		String jobName = project.getId().toString() + "_" + project.getName();
+		
+		createMetricsJob(project);
 		
 		Step step = stepBuilderFactory.get(jobName+"_repositoryToCollectionOfCommits")
 				.<Commit, Commit> chunk(100)
@@ -101,6 +113,34 @@ public class JobCreator {
 				.incrementer(new RunIdIncrementer())
 				.start(step)
 				.next(step2)
+				.build();
+		
+		
+		try {
+			jobRegistry.getJob(jobName);
+		} catch (NoSuchJobException e) {
+			try {
+				jobRegistry.register(new ReferenceJobFactory(builder));
+			} catch (DuplicateJobException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	private void createMetricsJob(Project project) {
+		String jobName = project.getId().toString() + "_" + project.getName() + "_metrics";
+		
+		Tasklet tasklet = new ChangeMetricsTasklet(project, changeMetricsService);
+		
+		Step step = stepBuilderFactory.get(jobName+"_changeMetrics")
+				.tasklet(tasklet)
+				.build();
+		
+		// TODO: Add source code metrics step
+		
+		Job builder = jobBuilderFactory.get(jobName)
+				.incrementer(new RunIdIncrementer())
+				.start(step)
 				.build();
 		
 		
