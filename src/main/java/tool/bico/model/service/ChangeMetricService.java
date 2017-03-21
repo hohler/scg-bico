@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import tool.bico.model.ChangeMetric;
+import tool.bico.model.Commit;
 import tool.bico.model.Project;
 import tool.bico.model.dao.ChangeMetricDaoInterface;
 
@@ -59,5 +60,10 @@ public class ChangeMetricService {
 	@Transactional(readOnly = true)
 	public List<ChangeMetric> getProjectChangeMetrics(Project project) {
 		return changeMetricDao.getProjectChangeMetrics(project);
+	}
+	
+	@Transactional
+	public void removeAllByCommit(Commit commit) {
+		changeMetricDao.removeAllByCommit(commit);
 	}
 }

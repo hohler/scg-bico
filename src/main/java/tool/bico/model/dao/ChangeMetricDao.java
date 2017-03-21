@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import tool.bico.model.ChangeMetric;
+import tool.bico.model.Commit;
 import tool.bico.model.Project;
 
 @Repository
@@ -47,5 +48,16 @@ public class ChangeMetricDao implements ChangeMetricDaoInterface {
 	public List<ChangeMetric> getProjectChangeMetrics(Project project) {
 		return em.createQuery("SELECT DISTINCT c from ChangeMetric c LEFT JOIN c.commit i WHERE i.project = :project")
 				.setParameter("project", project).getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void removeAllByCommit(Commit commit) {
+		List<ChangeMetric> list = em.createQuery("SELECT DISTINCT c from ChangeMetric c LEFT JOIN c.commit i WHERE i = :commit")
+				.setParameter("commit",  commit).getResultList();
+		
+		for(ChangeMetric c : list) {
+			em.remove(c);
+		}
 	}
 }

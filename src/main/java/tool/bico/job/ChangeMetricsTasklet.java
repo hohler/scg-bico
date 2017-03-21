@@ -13,6 +13,7 @@ import ch.unibe.scg.metrics.changemetrics.domain.CMFile;
 import ch.unibe.scg.metrics.changemetrics.domain.CMRepository;
 import tool.bico.model.ChangeMetric;
 import tool.bico.model.Project;
+import tool.bico.model.Commit;
 import tool.bico.model.service.ChangeMetricService;
 import tool.bico.repository.GitRepository;
 
@@ -36,13 +37,16 @@ public class ChangeMetricsTasklet implements Tasklet {
 		
 		ChangeMetrics cm = new ChangeMetrics(Paths.get("C:/eclipse/target/repositories/flume"));
 		CMRepository results = cm.analyze();
+		Commit commit = project.getCommits().stream().findFirst().get(); 
+		
+		changeMetricsService.removeAllByCommit(commit);
 		
 		for(CMFile f : results.all()) {
 			System.out.println(f);
 			
 			ChangeMetric c = new ChangeMetric(f);
 			try {
-				c.setCommit(project.getCommits().stream().findFirst().get());
+				c.setCommit(commit);
 			} catch(NoSuchElementException e) {
 				// failed to get first commit of project
 			}

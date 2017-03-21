@@ -19,4 +19,6 @@ public interface ChangeMetricDaoInterface {
 	void update(ChangeMetric changeMetric);
 
 	List<ChangeMetric> getProjectChangeMetrics(Project project);
+	
+	void removeAllByCommit(Commit commit);
 }
