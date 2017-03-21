@@ -64,6 +64,10 @@ public class JobCreator {
 	}
 	
 	public JobCreator() {
+		
+		System.setProperty("git.maxdiff", "200000");
+		System.setProperty("git.maxcommit", "400");
+		
 		System.err.println("JobCreator initialized!");
 	}
 	

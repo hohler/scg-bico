@@ -35,9 +35,9 @@ public class ChangeMetricsTasklet implements Tasklet {
 	public RepeatStatus execute(StepContribution contribution,
 			ChunkContext chunkContext) throws Exception {
 		
-		ChangeMetrics cm = new ChangeMetrics(Paths.get("C:/eclipse/target/repositories/flume"));
+		ChangeMetrics cm = new ChangeMetrics(Paths.get(path));
 		CMRepository results = cm.analyze();
-		Commit commit = project.getCommits().stream().findFirst().get(); 
+		Commit commit = project.getCommits().stream().findFirst().get();
 		
 		changeMetricsService.removeAllByCommit(commit);
 		
