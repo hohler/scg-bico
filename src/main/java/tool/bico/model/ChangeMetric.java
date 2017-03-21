@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import ch.unibe.scg.metrics.changemetrics.domain.CMFile;
+
 @Entity
 @Table(name = "changemetrics")
 public class ChangeMetric {
@@ -26,16 +28,33 @@ public class ChangeMetric {
 	private int revisions;
 	private int refactorings;
 	private int bugfixes;
-	private ArrayList<String> authors;
+	private int authors;
 	private long locAdded;
 	private long locRemoved;
 	private long maxLocAdded;
 	private long maxLocRemoved;
 	private long codeChurn;
 	private int maxChangeset;
-	private long totalChangeset;
+	private double avgChangeset;
 	private Calendar firstCommit;
 	private Calendar lastCommit;
+	
+	public ChangeMetric(CMFile f) {
+		file = f.getFile();
+		revisions = f.getRevisions();
+		refactorings = f.getRefactorings();
+		bugfixes = f.getBugfixes();
+		authors = f.getUniqueAuthorsQuantity();
+		locAdded = f.getLocAdded();
+		locRemoved = f.getLocRemoved();
+		maxLocAdded = f.getMaxLocAdded();
+		maxLocRemoved = f.getMaxLocRemoved();
+		codeChurn = f.getCodeChurn();
+		maxChangeset = f.getMaxChangeset();
+		avgChangeset = f.getAvgChangeset();	
+		firstCommit = f.getFirstCommit();
+		lastCommit = f.getLastCommit();
+	}
 	
 	public Long getId() {
 		return id;
@@ -73,10 +92,10 @@ public class ChangeMetric {
 	public void setBugfixes(int bugfixes) {
 		this.bugfixes = bugfixes;
 	}
-	public ArrayList<String> getAuthors() {
+	public int getAuthors() {
 		return authors;
 	}
-	public void setAuthors(ArrayList<String> authors) {
+	public void setAuthors(int authors) {
 		this.authors = authors;
 	}
 	public long getLocAdded() {
@@ -115,11 +134,11 @@ public class ChangeMetric {
 	public void setMaxChangeset(int maxChangeset) {
 		this.maxChangeset = maxChangeset;
 	}
-	public long getTotalChangeset() {
-		return totalChangeset;
+	public double getAvgChangeset() {
+		return avgChangeset;
 	}
-	public void setTotalChangeset(long totalChangeset) {
-		this.totalChangeset = totalChangeset;
+	public void setAvgChangeset(double avgChangeset) {
+		this.avgChangeset = avgChangeset;
 	}
 	public Calendar getFirstCommit() {
 		return firstCommit;
