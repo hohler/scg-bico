@@ -131,10 +131,15 @@ public class JobCreator {
 		}
 	}
 	
-	private void createMetricsJob(Project project) {
+	public void removeMetricsJob(Project project) {
+		String jobName = project.getId().toString() + "_" + project.getName() + "_metrics";
+		jobRegistry.unregister(jobName);
+	}
+	
+	public void createMetricsJob(Project project) {
 		String jobName = project.getId().toString() + "_" + project.getName() + "_metrics";
 		
-		Tasklet tasklet = new ChangeMetricsTasklet(project, changeMetricsService);
+		Tasklet tasklet = new ChangeMetricsTasklet(project, changeMetricsService, commitService);
 		
 		Step step = stepBuilderFactory.get(jobName+"_changeMetrics")
 				.tasklet(tasklet)

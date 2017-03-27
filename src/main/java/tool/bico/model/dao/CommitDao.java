@@ -53,4 +53,10 @@ public class CommitDao implements CommitDaoInterface {
 	public void flush() {
 		em.flush();
 	}
+
+	@Override
+	public Commit getCommitByRef(String ref) {
+		return (Commit) em.createQuery("SELECT c FROM Commit c WHERE c.ref = :ref")
+				.setParameter("ref", ref).getSingleResult();
+	}
 }

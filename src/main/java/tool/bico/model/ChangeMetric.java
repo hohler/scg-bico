@@ -251,4 +251,9 @@ public class ChangeMetric {
 		String[] fileName = file.split("/");
 		return (fileName.length-3 > 0 ? fileName[fileName.length-3] + "/": "") + (fileName.length-2 > 0 ? fileName[fileName.length-2] + "/" : "") + fileName[fileName.length-1];
 	}
+	
+	public String toString() {
+		return "ChangeMetric ["+file+", revisions: "+revisions+", refactorings: "+refactorings+", bugfixes: "+bugfixes+", authors: "
+				+ authors +", locAdded: "+locAdded+", locRemoved: "+locRemoved+" codeChurn: "+codeChurn+", avgChangeset: "+avgChangeset;
+	}
 }

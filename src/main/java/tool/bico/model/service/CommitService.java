@@ -2,6 +2,7 @@ package tool.bico.model.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,5 +66,10 @@ public class CommitService {
 	@Transactional
 	public void flush() {
 		commitDao.flush();
+	}
+	
+	@Transactional
+	public Commit getCommitByRef(String ref) {
+		return commitDao.getCommitByRef(ref);
 	}
 }

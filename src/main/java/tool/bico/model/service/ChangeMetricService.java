@@ -66,4 +66,14 @@ public class ChangeMetricService {
 	public void removeAllByCommit(Commit commit) {
 		changeMetricDao.removeAllByCommit(commit);
 	}
+
+
+	public List<ChangeMetric> getChangeMetricsByCommit(Commit commit) {
+		return changeMetricDao.getChangeMetricsByCommit(commit);
+	}
+
+
+	public void removeAllByProject(Project project) {
+		changeMetricDao.removeAllByProject(project);		
+	}
 }

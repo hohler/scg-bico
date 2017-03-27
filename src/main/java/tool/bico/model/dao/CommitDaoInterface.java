@@ -20,4 +20,6 @@ public interface CommitDaoInterface {
 	List<Commit> getProjectCommits(Project project);
 
 	void flush();
+
+	Commit getCommitByRef(String ref);
 }

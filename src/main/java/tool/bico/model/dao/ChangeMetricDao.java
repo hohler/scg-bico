@@ -60,4 +60,20 @@ public class ChangeMetricDao implements ChangeMetricDaoInterface {
 			em.remove(c);
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ChangeMetric> getChangeMetricsByCommit(Commit commit) {
+		return em.createQuery("SELECT c FROM ChangeMetric c WHERE c.commit = :commit")
+				.setParameter("commit", commit).getResultList();
+	}
+
+	@Override
+	public void removeAllByProject(Project project) {
+		List<ChangeMetric> list = getProjectChangeMetrics(project);
+		
+		for(ChangeMetric c : list) {
+			em.remove(c);
+		}
+	}
 }
