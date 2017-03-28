@@ -1,9 +1,9 @@
 package tool.bico.job;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -41,7 +41,7 @@ public class ChangeMetricsTasklet implements Tasklet {
 		if(path == null) System.err.println("Could not clone repository of project: "+project);
 		
 		changeMetricsService.removeAllByProject(project);
-		commitService.flush();
+		changeMetricsService.flush();
 		
 		ChangeMetrics cm = new ChangeMetrics(Paths.get(path));
 		if(project.getChangeMetricStartDate() != null && project.getChangeMetricEndDate() != null) {
@@ -66,20 +66,18 @@ public class ChangeMetricsTasklet implements Tasklet {
         	
         	Commit commit = commitService.getCommitByRef(ref);
         	
-        	if(commit == null) System.err.println("commit is NULL");
+        	if(commit == null) System.err.println("commit is NULL: " + ref);
+        	else System.err.println("cm-commit: "+commit.getRef());
 		
-		//CMRepository results = cm.analyze();
-		//Commit commit = project.getCommits().stream().findFirst().get();
-		
-		
+        	List<ChangeMetric> toPersist = new ArrayList<>();
+        	
 			for(CMFile f : results.all()) {
-				//System.out.println(f);
-				
 				ChangeMetric c = new ChangeMetric(f);
 				c.setCommit(commit);
-				changeMetricsService.add(c);
-				System.out.println(c);
+				toPersist.add(c);
 			}
+			
+			changeMetricsService.addAll(toPersist);
 		}
 		
         return RepeatStatus.FINISHED;

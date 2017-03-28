@@ -1,5 +1,6 @@
 package tool.bico.model.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -75,5 +76,18 @@ public class ChangeMetricDao implements ChangeMetricDaoInterface {
 		for(ChangeMetric c : list) {
 			em.remove(c);
 		}
+	}
+
+	@Override
+	public void persistAll(Collection<ChangeMetric> changeMetrics) {
+		for(ChangeMetric cm : changeMetrics) {
+			em.persist(cm);
+		}
+		em.flush();
+	}
+
+	@Override
+	public void flush() {
+		em.flush();
 	}
 }

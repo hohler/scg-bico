@@ -31,9 +31,11 @@ public class ChangeMetricService {
 
 	@Transactional
 	public void addAll(Collection<ChangeMetric> changeMetrics) {
-		for (ChangeMetric changeMetric : changeMetrics) {
+		/*for (ChangeMetric changeMetric : changeMetrics) {
 			changeMetricDao.persist(changeMetric);
-		}
+		}*/
+		
+		changeMetricDao.persistAll(changeMetrics);
 	}
 
 	@Transactional(readOnly = true)
@@ -66,13 +68,19 @@ public class ChangeMetricService {
 	public void removeAllByCommit(Commit commit) {
 		changeMetricDao.removeAllByCommit(commit);
 	}
+	
+	@Transactional
+	public void flush() {
+		changeMetricDao.flush();
+	}
 
-
+	@Transactional(readOnly = true)
 	public List<ChangeMetric> getChangeMetricsByCommit(Commit commit) {
 		return changeMetricDao.getChangeMetricsByCommit(commit);
 	}
 
 
+	@Transactional
 	public void removeAllByProject(Project project) {
 		changeMetricDao.removeAllByProject(project);		
 	}

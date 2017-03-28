@@ -1,5 +1,6 @@
 package tool.bico.model.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import tool.bico.model.ChangeMetric;
@@ -25,4 +26,8 @@ public interface ChangeMetricDaoInterface {
 	List<ChangeMetric> getChangeMetricsByCommit(Commit commit);
 
 	void removeAllByProject(Project project);
+
+	void persistAll(Collection<ChangeMetric> changeMetrics);
+	
+	void flush();
 }
