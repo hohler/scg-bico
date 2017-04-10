@@ -90,4 +90,12 @@ public class ChangeMetricDao implements ChangeMetricDaoInterface {
 	public void flush() {
 		em.flush();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ChangeMetric> findByFileAndProject(String file, Project project) {
+		return em.createQuery("SELECT DISTINCT c from ChangeMetric c LEFT JOIN c.commit i WHERE i.project = :project AND c.file = :file")
+				.setParameter("project", project)
+				.setParameter("file", file).getResultList();
+	}
 }

@@ -114,6 +114,8 @@ public class GitRepository implements IRepository {
 				int commitAdditions = 0;
 				int commitDeletions = 0;
 				
+				c.setTimestamp(commit.getCommitTime());
+				
 				parent = c;
 				
 				System.out.println("commit: "+commit.getShortMessage());

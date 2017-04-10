@@ -1,9 +1,7 @@
 package tool.bico.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -31,8 +29,7 @@ public class Project {
 	private String issueTrackerUrlPattern;
 	
 	// change metric
-	private Date changeMetricStartDate;
-	private Date changeMetricEndDate;
+	private int changeMetricTimeWindow;
 	private int changeMetricEveryCommits;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="project", orphanRemoval = true)
@@ -161,27 +158,19 @@ public class Project {
 		return count;
 	}
 
-	public Date getChangeMetricStartDate() {
-		return changeMetricStartDate;
-	}
-
-	public void setChangeMetricStartDate(Date changeMetricStartDate) {
-		this.changeMetricStartDate = changeMetricStartDate;
-	}
-
-	public Date getChangeMetricEndDate() {
-		return changeMetricEndDate;
-	}
-
-	public void setChangeMetricEndDate(Date changeMetricEndDate) {
-		this.changeMetricEndDate = changeMetricEndDate;
-	}
-
 	public int getChangeMetricEveryCommits() {
 		return changeMetricEveryCommits;
 	}
 
 	public void setChangeMetricEveryCommits(int changeMetricEveryCommits) {
 		this.changeMetricEveryCommits = changeMetricEveryCommits;
+	}
+
+	public int getChangeMetricTimeWindow() {
+		return changeMetricTimeWindow;
+	}
+
+	public void setChangeMetricTimeWindow(int changeMetricTimeWindow) {
+		this.changeMetricTimeWindow = changeMetricTimeWindow;
 	}
 }

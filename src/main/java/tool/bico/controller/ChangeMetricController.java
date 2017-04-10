@@ -1,8 +1,6 @@
 package tool.bico.controller;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -75,14 +74,8 @@ public class ChangeMetricController {
 		
 		boolean modified = false;
 		
-		if(project.getChangeMetricStartDate() == null) {
-			project.setChangeMetricEndDate(new Date());
-			
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.MONTH, -1);
-			Date result = cal.getTime();
-			
-			project.setChangeMetricStartDate(result);
+		if(project.getChangeMetricTimeWindow() == 0) {
+			project.setChangeMetricTimeWindow(12);
 			modified = true;
 		}
 		
@@ -94,8 +87,7 @@ public class ChangeMetricController {
 		if(modified) projectService.update(project);
 		
 		ChangeMetricFormData cmf = new ChangeMetricFormData();
-		cmf.setStartRange(project.getChangeMetricStartDate());
-		cmf.setEndRange(project.getChangeMetricEndDate());
+		cmf.setTimeWindow(project.getChangeMetricTimeWindow());
 		cmf.setEveryCommits(project.getChangeMetricEveryCommits());
 		
 		model.addAttribute("cmf", cmf);
@@ -109,8 +101,7 @@ public class ChangeMetricController {
 		
 		//project.setChangeMetricTimeRange()
 		
-		project.setChangeMetricStartDate(cmf.getStartRange());
-		project.setChangeMetricEndDate(cmf.getEndRange());
+		project.setChangeMetricTimeWindow(cmf.getTimeWindow());
 		project.setChangeMetricEveryCommits(cmf.getEveryCommits());
 		
 		this.projectService.update(project);
@@ -137,4 +128,20 @@ public class ChangeMetricController {
 		
 		return new ModelAndView("projects/metrics/changemetrics/view", model.asMap());
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value="file")
+	public ModelAndView viewFileHistory(Model model, @PathVariable("id") Long id, @RequestParam("file") String file) {
+		Project project = projectService.findById(id);
+		List<ChangeMetric> changeMetrics = changeMetricService.findByFileAndProject(file, project);
+		
+		Commit commit = changeMetrics.get(0).getCommit();
+		
+		model.addAttribute("project", project);
+		model.addAttribute("changeMetrics", changeMetrics);
+		model.addAttribute("commit", commit);
+		model.addAttribute("newLineChar", "\n");
+		
+		return new ModelAndView("projects/metrics/changemetrics/file_view", model.asMap());
+	}
+	
 }

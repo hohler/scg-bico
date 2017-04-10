@@ -84,4 +84,9 @@ public class ChangeMetricService {
 	public void removeAllByProject(Project project) {
 		changeMetricDao.removeAllByProject(project);		
 	}
+
+	@Transactional(readOnly = true)
+	public List<ChangeMetric> findByFileAndProject(String file, Project project) {
+		return changeMetricDao.findByFileAndProject(file, project);
+	}
 }

@@ -30,4 +30,6 @@ public interface ChangeMetricDaoInterface {
 	void persistAll(Collection<ChangeMetric> changeMetrics);
 	
 	void flush();
+
+	List<ChangeMetric> findByFileAndProject(String file, Project project);
 }

@@ -37,51 +37,10 @@
 		  </div>
 		  
 		  <div class="form-group">
-		    <label for="url">Time range back</label>
-		    
-		    
-		    <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-			    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
-			    <span></span> <b class="caret"></b>
-			</div>
-			<input type="hidden" id="startRange" th:field="${cmf.startRange}" />
-			<input type="hidden" id="endRange" th:field="${cmf.endRange}" />
-			
-			<script type="text/javascript">
-			$(function() {
-			
-				var startVal = "[[${cmf.getStartRangeString()}]]";
-				var endVal = "[[${cmf.getEndRangeString()}]]";
-				
-				var start = startVal != "" ? moment(startVal, "MM/DD/YYYY") : moment().subtract(29, 'days');
-			    var end = endVal != "" ? moment(endVal, "MM/DD/YYYY") : moment();
-			
-			    function cb(start, end) {
-			        $('#reportrange span').html(start.format('L') + ' - ' + end.format('L'));
-			        $('#startRange').val(start.format('MM/DD/YYYY'));
-			        $('#endRange').val(end.format('MM/DD/YYYY'));
-			    }
-			
-			    $('#reportrange').daterangepicker({
-			        startDate: start,
-			        endDate: end,
-			        ranges: {
-			           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-			           'Last 14 Days': [moment().subtract(13, 'days'), moment()],
-			           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-			           'Last 3 Months': [moment().subtract(3, 'months'), moment()],
-			           'Last 6 Months': [moment().subtract(6, 'months'), moment()],
-			           'Last 12 Months': [moment().subtract(12, 'months'), moment()],
-			           'Last 18 Months': [moment().subtract(18, 'months'), moment()],
-			           'Last 2 Years': [moment().subtract(2, 'years'), moment()],
-			           'Last 3 Years': [moment().subtract(3, 'years'), moment()]
-			        }
-			    }, cb);
-			
-			    cb(start, end);
-			    
-			});
-			</script>
+		    <label for="url">Sliding time window</label>
+	    	<select name="everycommits" th:field="${cmf.timeWindow}">
+		    	<option th:each="e : ${cmf.timeWindows}" th:value="${e.key}" th:text="${e.value}"></option>
+		    </select>
 		  </div>
 			  
 		  <div class="form-group">

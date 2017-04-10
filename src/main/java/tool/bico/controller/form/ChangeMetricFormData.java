@@ -1,25 +1,23 @@
 package tool.bico.controller.form;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChangeMetricFormData {
 
 	private List<Integer> commitRanges;
+	private Map<Integer, String> timeWindows;
 	
 	private int everyCommits = 75;
-	
-	private Date startRange;
-	private Date endRange;
-	
-	SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
+	private int timeWindow = 12;
 	
 	public ChangeMetricFormData() {
 		commitRanges = new ArrayList<>();
+		timeWindows = new LinkedHashMap<>();
 		populateCommitRanges();
+		populateTimeWindows();
 	}
 	
 	private void populateCommitRanges() {
@@ -32,6 +30,16 @@ public class ChangeMetricFormData {
 		commitRanges.add(200);
 		commitRanges.add(500);
 		commitRanges.add(1000);
+	}
+	
+	private void populateTimeWindows() {
+		timeWindows.put(1, "1 week");
+		timeWindows.put(4, "1 month");
+		timeWindows.put(12, "3 months");
+		timeWindows.put(24, "6 months");
+		timeWindows.put(52, "1 year");
+		timeWindows.put(104, "2 years");
+		timeWindows.put(156, "3 years");
 	}
 
 	public List<Integer> getCommitRanges() {
@@ -50,45 +58,19 @@ public class ChangeMetricFormData {
 		this.everyCommits = everyCommits;
 	}
 
-	public Date getStartRange() {
-		return startRange;
+	public int getTimeWindow() {
+		return timeWindow;
 	}
 
-	public void setStartRange(Date startRange) {
-		this.startRange = startRange;
-	}
-	
-	public void setStartRange(String startRange) {
-		try {
-			this.startRange = dateFormatter.parse(startRange);
-		} catch (ParseException e) {
-			this.startRange = null;
-		}
+	public void setTimeWindow(int timeWindow) {
+		this.timeWindow = timeWindow;
 	}
 
-	public Date getEndRange() {
-		return endRange;
+	public Map<Integer, String> getTimeWindows() {
+		return timeWindows;
 	}
 
-	public void setEndRange(Date endRange) {
-		this.endRange = endRange;
-	}
-	
-	public void setEndRange(String endRange) {
-		try {
-			this.endRange = dateFormatter.parse(endRange);
-		} catch (ParseException e) {
-			this.endRange = null;
-		}
-	}
-	
-	public String getEndRangeString() {
-		if(endRange == null) return "";
-		return dateFormatter.format(endRange);
-	}
-	
-	public String getStartRangeString() {
-		if(startRange == null) return "";
-		return dateFormatter.format(startRange);
+	public void setTimeWindows(Map<Integer, String> timeWindows) {
+		this.timeWindows = timeWindows;
 	}
 }

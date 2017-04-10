@@ -64,6 +64,8 @@ public class Commit {
 	
 	protected boolean isMergeCommit = false;
 	
+	protected int timestamp;
+	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="commit", orphanRemoval = true)
 	@OrderBy("id")
 	private Set<ChangeMetric> changeMetrics;
@@ -191,5 +193,13 @@ public class Commit {
 	public String toString() {
 		return String.format("Commit[id=%d, name='%s', additions='%d', deletions='%d']",
 				id, firstLineOfMessage(), additions, deletions);
+	}
+
+	public void setTimestamp(int timestamp) {
+		this.timestamp = timestamp;	
+	}
+	
+	public int getTimestamp() {
+		return timestamp;
 	}
 }
