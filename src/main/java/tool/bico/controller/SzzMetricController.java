@@ -104,8 +104,13 @@ public class SzzMetricController {
 		
 		String fileName = szzMetrics.get(0).getFile();
 		
+		List<SzzMetric> szz_sorted = szzMetrics.stream()
+                .sorted((e1,e2) -> e1.getCommit().getId().compareTo(e2.getCommit().getId()))
+                .collect(Collectors.toList());
+		
+		
 		model.addAttribute("project", project);
-		model.addAttribute("szzMetrics", szzMetrics);
+		model.addAttribute("szzMetrics", szz_sorted);
 		model.addAttribute("file", fileName);
 		model.addAttribute("newLineChar", "\n");
 		

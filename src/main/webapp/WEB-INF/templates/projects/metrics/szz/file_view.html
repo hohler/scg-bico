@@ -37,10 +37,12 @@
 		<h2>SZZ metrics</h2>
 		<table class="table table-bordered table-striped table-condensed" th:unless="${szzMetrics.isEmpty()}">
 			<tr>
+				<th></th>
 				<th>Commit</th>
 				<th>Bugs</th>
 			</tr>
 			<tr th:each="szz : ${szzMetrics}">
+				<td><span class="label label-success" th:if="${szz.isBugfix()}">BUGFIX</span>
 				<td><a th:href="@{'/projects/' + ${project.id} + '/commits/' + ${szz.getCommit().id}}" th:text="${szz.getCommit().firstLineOfMessage()}">Go to commit</a></td>
 				<td th:text="${szz.bugs}">bugs</td>
 			</tr>

@@ -51,6 +51,9 @@ public class SZZTasklet implements Tasklet {
 		//changeMetricsService.removeAllByProject(project);
 		//changeMetricsService.flush();
 		
+		szzMetricService.removeAllByProject(project);
+		szzMetricService.flush();
+		
 		//ChangeMetrics cm = new ChangeMetrics(Paths.get(path));
 		SZZ szz = new SZZ(Paths.get(path));
 		
@@ -74,8 +77,13 @@ public class SZZTasklet implements Tasklet {
 		
 		Set<String> commits = new HashSet<>();
 		for(CommitIssue i : issues) {
-			i.getCommits().stream().map(c -> commits.add(c.getRef()));
+			for(Commit c : i.getCommits()) {
+				commits.add(c.getRef());
+			}
 		}
+		
+		
+		if(commits.size() == 0) commits = null;
         /*String[] commits = {
 	        "96a4c30f29e1e66f9a5351ec1130eda6789ea7c9",
 	        //"a6726ddd15cd048cec1765500675e2aa9a5432d2",
@@ -95,7 +103,7 @@ public class SZZTasklet implements Tasklet {
         	
         	contribution.incrementReadCount();
         	for(SZZCommit c : f.getCommits()) {
-        		//System.out.println(c);	
+        		//System.out.println(c);
         		Commit commit = commitService.getCommitByRef(c.getHash());
         		SzzMetric sz = new SzzMetric();
         		sz.setFile(f.getFile());

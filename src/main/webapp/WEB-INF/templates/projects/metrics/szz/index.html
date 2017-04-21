@@ -56,13 +56,11 @@
 		<tr>
 			<th>File</th>
 			<th>Commits</th>
-			<th>Bugs</th>
 			<th>Bugfixes</th>
 		</tr>
 		<tr th:each="e : ${szz}">
 			<td><a th:href="@{'/projects/' + ${project.id} + '/metrics/szz/file'(file=${e.key.file})}" th:text="${e.key.file}">file</a></td>
 			<td th:text="${e.value.size()}">commits</td>
-			<td th:text="${e.key.bugs}">bugs</td>
 			<td th:text="${e.key.bugfixes}">bugfixes</td>
 		</tr>
 		</table>
