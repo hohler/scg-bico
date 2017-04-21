@@ -1,5 +1,6 @@
 package tool.bico.model;
 
+import java.util.Date;
 import java.util.HashSet;
 
 import java.util.Set;
@@ -201,5 +202,9 @@ public class Commit {
 	
 	public int getTimestamp() {
 		return timestamp;
+	}
+	
+	public Date getDate() {
+		return new Date((long)timestamp * 1000);
 	}
 }

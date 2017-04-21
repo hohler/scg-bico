@@ -83,7 +83,7 @@
 		</tr>
 		<tr th:each="e : ${cm}">
 			<td><a th:text="${e.key.id}" href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/changemetrics/' + ${e.key.id}}">id</a></td>
-			<td></td>
+			<td th:text="${#dates.format(e.key.getDate(), 'dd-MM-yyyy HH:mm')}">date</td>
 			<td th:text="${e.key.firstLineOfMessage()}">firstLineOfMessage</td>
 			<td th:text="${e.value.size()}">amount of metrics</td>
 		</tr>
