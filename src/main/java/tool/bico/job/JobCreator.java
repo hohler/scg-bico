@@ -132,16 +132,52 @@ public class JobCreator {
 	}
 	
 	public void removeMetricsJob(Project project) {
-		String jobName = project.getId().toString() + "_" + project.getName() + "_metrics";
+		String jobName = project.getId().toString() + "_" + project.getName() + "_changemetrics";
+		jobRegistry.unregister(jobName);
+		
+		jobName = project.getId().toString() + "_" + project.getName() + "_szz";
 		jobRegistry.unregister(jobName);
 	}
 	
 	public void createMetricsJob(Project project) {
-		String jobName = project.getId().toString() + "_" + project.getName() + "_metrics";
+		createChangeMetricsJob(project);
+		createSZZJob(project);
+	}
+	
+	private void createChangeMetricsJob(Project project) {
+		String jobName = project.getId().toString() + "_" + project.getName() + "_changemetrics";
 		
 		Tasklet tasklet = new ChangeMetricsTasklet(project, changeMetricsService, commitService);
 		
 		Step step = stepBuilderFactory.get(jobName+"_changeMetrics")
+				.tasklet(tasklet)
+				.build();
+		
+		// TODO: Add source code metrics step
+		
+		Job builder = jobBuilderFactory.get(jobName)
+				.incrementer(new RunIdIncrementer())
+				.start(step)
+				.build();
+		
+		
+		try {
+			jobRegistry.getJob(jobName);
+		} catch (NoSuchJobException e) {
+			try {
+				jobRegistry.register(new ReferenceJobFactory(builder));
+			} catch (DuplicateJobException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	private void createSZZJob(Project project) {
+		String jobName = project.getId().toString() + "_" + project.getName() + "_szz";
+		
+		Tasklet tasklet = new SZZTasklet(project, changeMetricsService, commitService);
+		
+		Step step = stepBuilderFactory.get(jobName+"_szz")
 				.tasklet(tasklet)
 				.build();
 		
