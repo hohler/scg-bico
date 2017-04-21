@@ -2,8 +2,10 @@ package tool.bico.job;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.repodriller.filter.range.CommitRange;
@@ -13,12 +15,15 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 
 import ch.unibe.scg.metrics.changemetrics.ChangeMetrics;
+import ch.unibe.scg.metrics.changemetrics.domain.CMBugRepository;
 import ch.unibe.scg.metrics.changemetrics.domain.CMFile;
 import ch.unibe.scg.metrics.changemetrics.domain.CMRepository;
 import tool.bico.model.ChangeMetric;
 import tool.bico.model.Commit;
+import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
 import tool.bico.model.service.ChangeMetricService;
+import tool.bico.model.service.CommitIssueService;
 import tool.bico.model.service.CommitService;
 import tool.bico.repository.GitRepository;
 
@@ -26,12 +31,14 @@ public class ChangeMetricsTasklet implements Tasklet {
 	
 	private ChangeMetricService changeMetricsService;
 	private CommitService commitService;
+	private CommitIssueService commitIssueService;
 	private Project project;
 	private String path;
 	
-	public ChangeMetricsTasklet(Project project, ChangeMetricService changeMetricsService, CommitService commitService) {
+	public ChangeMetricsTasklet(Project project, ChangeMetricService changeMetricsService, CommitService commitService, CommitIssueService commitIssueService) {
 		this.project = project;
 		this.changeMetricsService = changeMetricsService;
+		this.commitIssueService = commitIssueService;
 		this.commitService = commitService;
 	}
 
@@ -59,6 +66,19 @@ public class ChangeMetricsTasklet implements Tasklet {
 			cm.setRange(start, end);
 		}*/
 		
+		
+		// get all "BUG"-FIX issues and add them to the bug repository
+		CMBugRepository bugRepo = new CMBugRepository();
+        
+		List<CommitIssue> issues = commitIssueService.findAllByProjectAndType(project, CommitIssue.Type.BUG);
+		
+		Set<String> commits = new HashSet<>();
+		for(CommitIssue i : issues) {
+			i.getCommits().stream().map(c -> commits.add(c.getRef()));
+		}
+		bugRepo.setBugCommits(commits);
+        cm.setBugRepository(bugRepo);
+        
 		
 		Map<String, CommitRange> list = cm.generateCommitListWithWeeks(project.getChangeMetricTimeWindow());
         // cm.generateCommitList();

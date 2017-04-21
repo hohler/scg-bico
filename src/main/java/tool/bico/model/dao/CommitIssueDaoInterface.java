@@ -3,6 +3,7 @@ package tool.bico.model.dao;
 import java.util.List;
 
 import tool.bico.model.CommitIssue;
+import tool.bico.model.CommitIssue.Type;
 import tool.bico.model.Project;
 
 public interface CommitIssueDaoInterface {
@@ -22,5 +23,7 @@ public interface CommitIssueDaoInterface {
 	List<CommitIssue> findAllByProject(Project project);
 
 	CommitIssue findByProjectAndIssueName(Project project, String name);
+
+	List<CommitIssue> findAllByProjectAndType(Project project, Type type);
 
 }

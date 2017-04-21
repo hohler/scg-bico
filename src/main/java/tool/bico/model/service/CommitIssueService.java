@@ -71,4 +71,9 @@ public class CommitIssueService {
 	public CommitIssue findByProjectAndIssueName(Project project, String name) {
 		return commitIssueDao.findByProjectAndIssueName(project, name);
 	}
+	
+	@Transactional
+	public List<CommitIssue> findAllByProjectAndType(Project project, CommitIssue.Type type) {
+		return commitIssueDao.findAllByProjectAndType(project, type);
+	}
 }

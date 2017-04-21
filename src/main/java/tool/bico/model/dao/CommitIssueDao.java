@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import tool.bico.model.CommitIssue;
+import tool.bico.model.CommitIssue.Type;
 import tool.bico.model.Project;
 
 @Repository
@@ -61,7 +62,7 @@ public class CommitIssueDao implements CommitIssueDaoInterface {
 				.setParameter("project", project).getResultList();
 	}
 	
-	@SuppressWarnings("unchecked")	
+	@SuppressWarnings("unchecked")
 	@Override
 	public CommitIssue findByProjectAndIssueName(Project project, String name) {
 		List<CommitIssue> result;
@@ -71,5 +72,13 @@ public class CommitIssueDao implements CommitIssueDaoInterface {
 		
 		if(result == null || result.isEmpty()) return null;
 		return result.get(0);				
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CommitIssue> findAllByProjectAndType(Project project, Type type) {
+		return em.createQuery("SELECT DISTINCT c from CommitIssue c LEFT JOIN c.commits i WHERE i.project = :project AND c.type = :type")
+				.setParameter("project", project)
+				.setParameter("type",  type).getResultList();
 	}
 }

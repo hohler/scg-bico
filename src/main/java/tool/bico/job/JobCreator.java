@@ -23,6 +23,7 @@ import tool.bico.model.service.ChangeMetricService;
 import tool.bico.model.service.CommitIssueService;
 import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
+import tool.bico.model.service.SzzMetricService;
 import tool.bico.processor.CommitProcessor;
 import tool.bico.processor.RepositoryProcessor;
 import tool.bico.reader.CommitReader2;
@@ -52,6 +53,9 @@ public class JobCreator {
 	
 	@Autowired
 	private ChangeMetricService changeMetricsService;
+	
+	@Autowired
+	private SzzMetricService szzMetricService;
 	
 	@Autowired
 	private EntityManagerFactory entityManagerFactory;
@@ -147,7 +151,7 @@ public class JobCreator {
 	private void createChangeMetricsJob(Project project) {
 		String jobName = project.getId().toString() + "_" + project.getName() + "_changemetrics";
 		
-		Tasklet tasklet = new ChangeMetricsTasklet(project, changeMetricsService, commitService);
+		Tasklet tasklet = new ChangeMetricsTasklet(project, changeMetricsService, commitService, commitIssueService);
 		
 		Step step = stepBuilderFactory.get(jobName+"_changeMetrics")
 				.tasklet(tasklet)
@@ -175,7 +179,7 @@ public class JobCreator {
 	private void createSZZJob(Project project) {
 		String jobName = project.getId().toString() + "_" + project.getName() + "_szz";
 		
-		Tasklet tasklet = new SZZTasklet(project, changeMetricsService, commitService);
+		Tasklet tasklet = new SZZTasklet(project, commitIssueService, commitService, szzMetricService);
 		
 		Step step = stepBuilderFactory.get(jobName+"_szz")
 				.tasklet(tasklet)
