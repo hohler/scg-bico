@@ -22,6 +22,8 @@ public class SzzMetric {
 	private String file;
 	
 	private int bugs;
+	
+	private boolean bugfix;
 
 	public Long getId() {
 		return id;
@@ -53,5 +55,13 @@ public class SzzMetric {
 
 	public void setBugs(int bugs) {
 		this.bugs = bugs;
+	}
+
+	public boolean isBugfix() {
+		return bugfix;
+	}
+
+	public void setBugfix(boolean bugfix) {
+		this.bugfix = bugfix;
 	}
 }

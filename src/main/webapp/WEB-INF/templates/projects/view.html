@@ -51,7 +51,8 @@
 			</tr>
 			<tr>
 				<th>Metrics</th>
-				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/changemetrics'}">Change metrics</a></td>
+				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/changemetrics'}">Change metrics</a> |&nbsp;
+				<a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/szz'}">SZZ</a></td>
 			</tr>
 		</table>
 		
@@ -72,6 +73,8 @@
 			<td th:text="${commit.firstLineOfMessage()}">firstLineOfMessage</td>
 		</tr>
 		</table>
+		
+		<div class="alert alert-info" role="alert" th:if="${project.commits.isEmpty()}">No commits available. First start the job.</div>
 
 	</div>
 </body>

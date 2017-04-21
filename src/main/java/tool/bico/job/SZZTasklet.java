@@ -99,8 +99,9 @@ public class SZZTasklet implements Tasklet {
         		Commit commit = commitService.getCommitByRef(c.getHash());
         		SzzMetric sz = new SzzMetric();
         		sz.setFile(f.getFile());
-        		sz.setBugs(f.getBugfixes());
+        		sz.setBugs(c.getBugs());
         		sz.setCommit(commit);
+        		sz.setBugfix(c.isBugfix());
         		
         		toPersist.add(sz);
         		

@@ -1,0 +1,50 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<title>Metrics : SZZ : metrics history of a file</title>
+
+<link href="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html.min.css"
+          th:href="@{/webjars/diff2html/2.0.10/dist/diff2html.min.css}"
+          rel="stylesheet" media="screen" />
+          
+<script src="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html.min.js"
+            th:src="@{/webjars/diff2html/2.0.10/dist/diff2html.min.js}"></script>
+       
+<script src="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html-ui.min.js"
+            th:src="@{/webjars/diff2html/2.0.10/dist/diff2html-ui.min.js}"></script>
+            
+</head>
+<body>
+	<h1 layout:fragment="header"><span th:text="${project.name}"></span></h1>
+	<div layout:fragment="content" class="container">
+
+		<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+		
+		<div class="pull-right" style="margin-bottom:10px;">
+			<a href="projects" class="btn btn-default" th:href="@{'/projects/' + ${project.id} + '/metrics/szz'}">
+				back to overview </a>
+		</div>
+		
+		<table class="table table-bordered table-striped">
+			<tr>
+				<th>File</th>
+				<td th:text="${file}">file</td>
+			</tr>
+		</table>
+
+		<h2>SZZ metrics</h2>
+		<table class="table table-bordered table-striped table-condensed" th:unless="${szzMetrics.isEmpty()}">
+			<tr>
+				<th>Commit</th>
+				<th>Bugs</th>
+			</tr>
+			<tr th:each="szz : ${szzMetrics}">
+				<td><a th:href="@{'/projects/' + ${project.id} + '/commits/' + ${szz.getCommit().id}}" th:text="${szz.getCommit().firstLineOfMessage()}">Go to commit</a></td>
+				<td th:text="${szz.bugs}">bugs</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

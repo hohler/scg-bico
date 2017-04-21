@@ -1,0 +1,73 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<title>Metrics : SZZ metrics : View</title>
+
+<link href="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html.min.css"
+          th:href="@{/webjars/diff2html/2.0.10/dist/diff2html.min.css}"
+          rel="stylesheet" media="screen" />
+          
+<script src="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html.min.js"
+            th:src="@{/webjars/diff2html/2.0.10/dist/diff2html.min.js}"></script>
+       
+<script src="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html-ui.min.js"
+            th:src="@{/webjars/diff2html/2.0.10/dist/diff2html-ui.min.js}"></script>
+            
+</head>
+<body>
+	<h1 layout:fragment="header"><span th:text="${project.name}"></span></h1>
+	<div layout:fragment="content" class="container">
+
+		<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+		
+		<div class="pull-right" style="margin-bottom:10px;">
+			<a href="projects" class="btn btn-default" th:href="@{'/projects/' + ${project.id}}">
+				back to project </a>
+		</div>
+		
+			
+		<table class="table table-bordered table-striped">
+			<tr>
+				<th>ID</th>
+				<td th:text="${project.id}">id</td>
+			</tr>
+			<tr>
+				<th>Name</th>
+				<td th:text="${project.name}">name</td>
+			</tr>
+			<tr>
+				<th>Number of entries</th>
+				<td th:text="${szzMetrics.size()}">number of files</td>
+			</tr>
+			<!-- <tr>
+				<th>Number of commits involved in analysis</th>
+				<td th:text="${cm.size()}">Number of commits</td>
+			</tr> -->
+			<tr>
+				<th>Job to calculate SZZ metrics</th>
+				<td><a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name} + '_szz'}" target="_blank">Batch Job</a></td>
+			</tr>
+		</table>
+		
+		<h2>SZZ files (<span th:text="${szz.size()}"></span>)</h2>
+		<table class="table table-bordered table-striped table-condensed" dt:table="true">
+		<tr>
+			<th>File</th>
+			<th>Commits</th>
+			<th>Bugs</th>
+			<th>Bugfixes</th>
+		</tr>
+		<tr th:each="e : ${szz}">
+			<td><a th:href="@{'/projects/' + ${project.id} + '/metrics/szz/file'(file=${e.key.file})}" th:text="${e.key.file}">file</a></td>
+			<td th:text="${e.value.size()}">commits</td>
+			<td th:text="${e.key.bugs}">bugs</td>
+			<td th:text="${e.key.bugfixes}">bugfixes</td>
+		</tr>
+		</table>
+		
+		<div class="alert alert-info" role="alert" th:if="${szz.isEmpty()}">No SZZ metrics available. First start the job.</div>
+	</div>
+</body>
+</html>
