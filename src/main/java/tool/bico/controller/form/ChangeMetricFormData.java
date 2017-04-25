@@ -40,6 +40,7 @@ public class ChangeMetricFormData {
 		timeWindows.put(52, "1 year");
 		timeWindows.put(104, "2 years");
 		timeWindows.put(156, "3 years");
+		timeWindows.put(999999, "all");
 	}
 
 	public List<Integer> getCommitRanges() {
