@@ -1,0 +1,54 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:dt="http://www.thymeleaf.org/dandelion/datatables"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<title>Project : Metrics</title>
+</head>
+<body>
+	<h1 layout:fragment="header"><span th:text="${project.name}"></span> : Details</h1>
+	<div layout:fragment="content" class="container">
+		<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+		
+		<div class="pull-right" style="margin-bottom:10px;">
+			<a href="projects" class="btn btn-primary" th:href="@{'/projects/modify/' + ${project.id}}">
+				modify </a>
+			<a href="projects" class="btn btn-danger" th:href="@{'/projects/delete/' + ${project.id}}">
+				delete </a>
+			<a href="projects" class="btn btn-default" th:href="@{'/projects'}">
+				back </a>
+		</div>
+		
+		<table class="table table-bordered table-striped">
+			<tr>
+				<th>ID</th>
+				<td th:text="${project.id}">id</td>
+			</tr>
+			<tr>
+				<th>Name</th>
+				<td th:text="${project.name}">name</td>
+			</tr>
+			<tr>
+				<th>Change metrics entries</th>
+				<td th:text="${changeMetrics.size()}">amount</td>
+			</tr>
+			<tr>
+				<th>SZZ metrics entries</th>
+				<td th:text="${szzMetrics.size()}">amount</td>
+			</tr>
+			<tr>
+				<th>Metrics</th>
+			<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/changemetrics'}">Change metrics</a> |&nbsp;
+				<a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/szz'}">SZZ</a></td>
+			</tr>
+			<tr>
+				<th>Options</th>
+				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/download'}">Download as CSV</a></td>
+			</tr>
+			
+		</table>
+
+	</div>
+</body>
+</html>

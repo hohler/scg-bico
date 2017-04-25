@@ -71,6 +71,10 @@ public class Commit {
 	@OrderBy("id")
 	private Set<ChangeMetric> changeMetrics;
 	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="commit", orphanRemoval = true)
+	@OrderBy("id")
+	private Set<SzzMetric> szzMetrics;
+	
 	public Commit() {
 		files = new HashSet<CommitFile>();
 		commitIssues = new HashSet<CommitIssue>();
@@ -206,5 +210,21 @@ public class Commit {
 	
 	public Date getDate() {
 		return new Date((long)timestamp * 1000);
+	}
+
+	public Set<SzzMetric> getSzzMetrics() {
+		return szzMetrics;
+	}
+
+	public void setSzzMetrics(Set<SzzMetric> szzMetrics) {
+		this.szzMetrics = szzMetrics;
+	}
+
+	public Set<ChangeMetric> getChangeMetrics() {
+		return changeMetrics;
+	}
+
+	public void setChangeMetrics(Set<ChangeMetric> changeMetrics) {
+		this.changeMetrics = changeMetrics;
 	}
 }
