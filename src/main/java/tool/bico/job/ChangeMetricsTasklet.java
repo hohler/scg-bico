@@ -74,8 +74,13 @@ public class ChangeMetricsTasklet implements Tasklet {
 		
 		Set<String> commits = new HashSet<>();
 		for(CommitIssue i : issues) {
-			i.getCommits().stream().map(c -> commits.add(c.getRef()));
+			for(Commit c : i.getCommits()) {
+				commits.add(c.getRef());
+			}
 		}
+		
+		
+		if(commits.size() == 0) commits = null;
 		bugRepo.setBugCommits(commits);
         cm.setBugRepository(bugRepo);
         
