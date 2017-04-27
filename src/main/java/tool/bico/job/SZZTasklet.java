@@ -104,7 +104,7 @@ public class SZZTasklet implements Tasklet {
         	contribution.incrementReadCount();
         	for(SZZCommit c : f.getCommits()) {
         		//System.out.println(c);
-        		Commit commit = commitService.getCommitByRef(c.getHash());
+        		Commit commit = commitService.getCommitByProjectAndRef(project, c.getHash());
         		SzzMetric sz = new SzzMetric();
         		sz.setFile(f.getFile());
         		sz.setBugs(c.getBugs());

@@ -68,7 +68,7 @@ public class CommitService {
 	}
 	
 	@Transactional
-	public Commit getCommitByRef(String ref) {
-		return commitDao.getCommitByRef(ref);
+	public Commit getCommitByProjectAndRef(Project project, String ref) {
+		return commitDao.getCommitByProjectAndRef(project, ref);
 	}
 }

@@ -56,9 +56,10 @@ public class CommitDao implements CommitDaoInterface {
 	}
 
 	@Override
-	public Commit getCommitByRef(String ref) {
+	public Commit getCommitByProjectAndRef(Project project, String ref) {
 		try {
-			return (Commit) em.createQuery("SELECT c FROM Commit c WHERE c.ref = :ref")
+			return (Commit) em.createQuery("SELECT c FROM Commit c WHERE c.ref = :ref AND c.project = :project")
+					.setParameter("project", project)
 					.setParameter("ref", ref).getSingleResult();
 		} catch(NoResultException e) {
 			return null;

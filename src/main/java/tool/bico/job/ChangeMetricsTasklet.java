@@ -83,7 +83,6 @@ public class ChangeMetricsTasklet implements Tasklet {
 		if(commits.size() == 0) commits = null;
 		bugRepo.setBugCommits(commits);
         cm.setBugRepository(bugRepo);
-        
 		
 		Map<String, CommitRange> list = cm.generateCommitListWithWeeks(project.getChangeMetricTimeWindow());
         // cm.generateCommitList();
@@ -104,7 +103,7 @@ public class ChangeMetricsTasklet implements Tasklet {
         	
         	//logger.debug(repo.all());
         	
-        	Commit commit = commitService.getCommitByRef(ref);
+        	Commit commit = commitService.getCommitByProjectAndRef(project, ref);
         	
         	if(commit == null) {
         		System.err.println("commit is NULL: " + ref);

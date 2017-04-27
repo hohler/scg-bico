@@ -21,5 +21,5 @@ public interface CommitDaoInterface {
 
 	void flush();
 
-	Commit getCommitByRef(String ref);
+	Commit getCommitByProjectAndRef(Project project, String ref);
 }
