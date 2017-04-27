@@ -23,6 +23,7 @@ import tool.bico.model.service.ChangeMetricService;
 import tool.bico.model.service.CommitIssueService;
 import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
+import tool.bico.model.service.SourceMetricService;
 import tool.bico.model.service.SzzMetricService;
 import tool.bico.processor.CommitProcessor;
 import tool.bico.processor.RepositoryProcessor;
@@ -56,6 +57,9 @@ public class JobCreator {
 	
 	@Autowired
 	private SzzMetricService szzMetricService;
+	
+	@Autowired
+	private SourceMetricService sourceMetricService;
 	
 	@Autowired
 	private EntityManagerFactory entityManagerFactory;
@@ -141,11 +145,15 @@ public class JobCreator {
 		
 		jobName = project.getId().toString() + "_" + project.getName() + "_szz";
 		jobRegistry.unregister(jobName);
+		
+		jobName = project.getId().toString() + "_" + project.getName() + "_sourcemetrics";
+		jobRegistry.unregister(jobName);
 	}
 	
 	public void createMetricsJob(Project project) {
 		createChangeMetricsJob(project);
 		createSZZJob(project);
+		createSourceMetricsJob(project);
 	}
 	
 	private void createChangeMetricsJob(Project project) {
@@ -156,14 +164,11 @@ public class JobCreator {
 		Step step = stepBuilderFactory.get(jobName+"_changeMetrics")
 				.tasklet(tasklet)
 				.build();
-		
-		// TODO: Add source code metrics step
-		
+
 		Job builder = jobBuilderFactory.get(jobName)
 				.incrementer(new RunIdIncrementer())
 				.start(step)
 				.build();
-		
 		
 		try {
 			jobRegistry.getJob(jobName);
@@ -185,13 +190,35 @@ public class JobCreator {
 				.tasklet(tasklet)
 				.build();
 		
-		// TODO: Add source code metrics step
-		
 		Job builder = jobBuilderFactory.get(jobName)
 				.incrementer(new RunIdIncrementer())
 				.start(step)
 				.build();
 		
+		try {
+			jobRegistry.getJob(jobName);
+		} catch (NoSuchJobException e) {
+			try {
+				jobRegistry.register(new ReferenceJobFactory(builder));
+			} catch (DuplicateJobException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	private void createSourceMetricsJob(Project project) {
+		String jobName = project.getId().toString() + "_" + project.getName() + "_sourcemetrics";
+		
+		Tasklet tasklet = new SourceMetricsTasklet(project, commitService, sourceMetricService);
+		
+		Step step = stepBuilderFactory.get(jobName+"_sourcemetrics")
+				.tasklet(tasklet)
+				.build();
+		
+		Job builder = jobBuilderFactory.get(jobName)
+				.incrementer(new RunIdIncrementer())
+				.start(step)
+				.build();
 		
 		try {
 			jobRegistry.getJob(jobName);

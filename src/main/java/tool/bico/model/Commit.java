@@ -75,6 +75,10 @@ public class Commit {
 	@OrderBy("id")
 	private Set<SzzMetric> szzMetrics;
 	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="commit", orphanRemoval = true)
+	@OrderBy("id")
+	private Set<SourceMetric> sourceMetrics;
+	
 	public Commit() {
 		files = new HashSet<CommitFile>();
 		commitIssues = new HashSet<CommitIssue>();
