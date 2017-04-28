@@ -231,4 +231,12 @@ public class Commit {
 	public void setChangeMetrics(Set<ChangeMetric> changeMetrics) {
 		this.changeMetrics = changeMetrics;
 	}
+
+	public Set<SourceMetric> getSourceMetrics() {
+		return sourceMetrics;
+	}
+
+	public void setSourceMetrics(Set<SourceMetric> sourceMetrics) {
+		this.sourceMetrics = sourceMetrics;
+	}
 }

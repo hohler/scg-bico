@@ -31,6 +31,7 @@ public class Project {
 	// change metric
 	private int changeMetricTimeWindow;
 	private int changeMetricEveryCommits;
+	private int sourceMetricEveryCommits;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="project", orphanRemoval = true)
 	@OrderBy("id")
@@ -172,5 +173,13 @@ public class Project {
 
 	public void setChangeMetricTimeWindow(int changeMetricTimeWindow) {
 		this.changeMetricTimeWindow = changeMetricTimeWindow;
+	}
+
+	public int getSourceMetricEveryCommits() {
+		return sourceMetricEveryCommits;
+	}
+
+	public void setSourceMetricEveryCommits(int sourceMetricEveryCommits) {
+		this.sourceMetricEveryCommits = sourceMetricEveryCommits;
 	}
 }

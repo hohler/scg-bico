@@ -44,7 +44,7 @@ public class SZZTasklet implements Tasklet {
 	public RepeatStatus execute(StepContribution contribution,
 			ChunkContext chunkContext) throws Exception {
 		
-		GitRepository repo = new GitRepository(project);
+		GitRepository repo = new GitRepository(project, false);
 		path = repo.getRepositoryPath();
 		if(path == null) System.err.println("Could not clone repository of project: "+project);
 		

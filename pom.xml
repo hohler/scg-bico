@@ -250,6 +250,11 @@
 			<artifactId>sourcemetrics</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.mauricioaniche</groupId>
+			<artifactId>ck</artifactId>
+			<version>0.2.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

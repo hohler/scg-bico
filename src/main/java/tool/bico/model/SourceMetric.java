@@ -216,4 +216,14 @@ public class SourceMetric {
 		this.loc = loc;
 	}
 	
+	public String getShortFile() {
+		if(file == null) return "";
+		String[] fileName = file.split("/");
+		return (fileName.length-3 > 0 ? fileName[fileName.length-3] + "/": "") + (fileName.length-2 > 0 ? fileName[fileName.length-2] + "/" : "") + fileName[fileName.length-1];
+	}
+	
+	public String toString() {
+		return "SourceMetric ["+file+", cbo: "+cbo+", dit: "+dit+", noc: " + noc + ", nof: " + nof + ", nopf: " + nopf + ", nosf: " + nosf + ", nom: " + nom + ", nopm: " + nopm + ", nosm: " + nosm
+				+ ", nosi: " + nosi + ", rfc: " + rfc + ", wmc: " + wmc + ", loc: " + loc + ", lcom: " + lcom;
+	}
 }

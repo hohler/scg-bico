@@ -37,8 +37,8 @@ public class SourceMetricsTasklet implements Tasklet {
 	public RepeatStatus execute(StepContribution contribution,
 			ChunkContext chunkContext) throws Exception {
 		
-		GitRepository repo = new GitRepository(project);
-		path = repo.getRepositoryPath();
+		GitRepository repo = new GitRepository(project, false);
+		path = repo.getRepositoryPath().replace("\\.git",  "").replace("/.git", "");
 		if(path == null) System.err.println("Could not clone repository of project: "+project);
 		
 		sourceMetricService.removeAllByProject(project);
@@ -46,8 +46,7 @@ public class SourceMetricsTasklet implements Tasklet {
 		
 		SourceMetrics sourceMetrics = new SourceMetrics(Paths.get(path));
 		
-		//sourceMetrics.setEveryNthCommit(project.getChangeMetricEveryCommits());
-		sourceMetrics.setEveryNthCommit(0);
+		sourceMetrics.setEveryNthCommit(project.getSourceMetricEveryCommits());
 		sourceMetrics.generateCommitList();
         
         SMRepository results = sourceMetrics.analyze(sourceMetrics.getCommitList());
