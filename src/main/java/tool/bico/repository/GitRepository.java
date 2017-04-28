@@ -27,8 +27,17 @@ public class GitRepository implements IRepository {
 	
 	public GitRepository(Project project) {
 		this.project = project;
+		constructor(true);
+	}
+	
+	public GitRepository(Project project, boolean pull) {
+		this.project = project;
+		constructor(pull);
+	}
+	
+	private void constructor(boolean pull) {
 		GitLoader gitLoader = new GitLoader(project.getUrl(), project.getBranch());
-		boolean result = gitLoader.init();
+		boolean result = gitLoader.init(pull);
 		if(result) init(gitLoader);
 		else System.err.println("Could not load git repository");
 	}
