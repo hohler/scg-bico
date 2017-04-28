@@ -24,6 +24,8 @@ public class SzzMetric {
 	private int bugs;
 	
 	private boolean bugfix;
+	
+	private boolean deleted;
 
 	public Long getId() {
 		return id;
@@ -63,5 +65,13 @@ public class SzzMetric {
 
 	public void setBugfix(boolean bugfix) {
 		this.bugfix = bugfix;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 }

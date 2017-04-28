@@ -16,7 +16,6 @@ import ch.unibe.scg.metrics.szz.domain.SZZBugRepository;
 import ch.unibe.scg.metrics.szz.domain.SZZCommit;
 import ch.unibe.scg.metrics.szz.domain.SZZFile;
 import ch.unibe.scg.metrics.szz.domain.SZZRepository;
-import tool.bico.model.ChangeMetric;
 import tool.bico.model.Commit;
 import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
@@ -110,6 +109,7 @@ public class SZZTasklet implements Tasklet {
         		sz.setBugs(c.getBugs());
         		sz.setCommit(commit);
         		sz.setBugfix(c.isBugfix());
+        		sz.setDeleted(c.isDeleted());
         		
         		toPersist.add(sz);
         		

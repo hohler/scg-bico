@@ -43,6 +43,7 @@
 			</tr>
 			<tr th:each="szz : ${szzMetrics}">
 				<td><span class="label label-success" th:if="${szz.isBugfix()}">BUGFIX</span>
+				<span class="label label-danger" th:if="${szz.isDeleted()}">DELETED</span>
 				<td><a th:href="@{'/projects/' + ${project.id} + '/commits/' + ${szz.getCommit().id}}" th:text="${szz.getCommit().firstLineOfMessage()}">Go to commit</a></td>
 				<td th:text="${szz.bugs}">bugs</td>
 			</tr>
