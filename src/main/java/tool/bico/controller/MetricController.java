@@ -78,7 +78,7 @@ public class MetricController {
 		Project project = projectService.findById(id);
 		Set<Commit> commits = project.getCommits();
 		
-		String fileName = project.getName()+"_metrics.csv";
+		String fileName = project.getId()+"_"+project.getName()+"_metrics.csv";
 		
 		StringWriter writer = new StringWriter();
 		CSVUtils csv = new CSVUtils(';');
