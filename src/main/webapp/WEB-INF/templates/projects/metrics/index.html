@@ -38,6 +38,10 @@
 				<td th:text="${szzMetrics.size()}">amount</td>
 			</tr>
 			<tr>
+				<th>Source metrics entries</th>
+				<td th:text="${sourceMetrics.size()}">amount</td>
+			</tr>
+			<tr>
 				<th>Metrics</th>
 			<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/changemetrics'}">Change metrics</a> |&nbsp;
 			<a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/sourcemetrics'}">Source metrics</a> |&nbsp;

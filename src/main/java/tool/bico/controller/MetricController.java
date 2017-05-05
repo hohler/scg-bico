@@ -35,10 +35,12 @@ import tool.bico.job.JobCreator;
 import tool.bico.model.ChangeMetric;
 import tool.bico.model.Commit;
 import tool.bico.model.Project;
+import tool.bico.model.SourceMetric;
 import tool.bico.model.SzzMetric;
 import tool.bico.model.service.ChangeMetricService;
 import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
+import tool.bico.model.service.SourceMetricService;
 import tool.bico.model.service.SzzMetricService;
 import tool.bico.utils.CSVUtils;
 
@@ -56,16 +58,21 @@ public class MetricController {
 	
 	@Autowired
 	private SzzMetricService szzMetricService;
+	
+	@Autowired
+	private SourceMetricService sourceMetricService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView index(Model model, @PathVariable("id") Long id) {
 		Project project = projectService.findById(id);
 		List<ChangeMetric> changeMetrics = changeMetricService.getProjectChangeMetrics(project);
 		List<SzzMetric> szzMetrics = szzMetricService.getProjectSzzMetrics(project);
+		List<SourceMetric> sourceMetrics = sourceMetricService.getProjectSourceMetrics(project);
 		
 		model.addAttribute("project", project);
 		model.addAttribute("changeMetrics", changeMetrics);
 		model.addAttribute("szzMetrics", szzMetrics);
+		model.addAttribute("sourceMetrics", sourceMetrics);
 		
 		return new ModelAndView("projects/metrics/index", model.asMap());
 	}
@@ -105,7 +112,27 @@ public class MetricController {
 			"Avg Changeset",
 			"Age",
 			"Weighted Age",
-			"# SZZ Bugs"
+			"# SZZ Bugs",
+			"className",
+			"Type",
+			"CBO",
+			"WMC",
+			"DIT",
+			"NOC",
+			"RFC",
+			"LCOM",
+			"NOM",
+			"NOPM",
+			"NOSM",
+			"NOF",
+			"NOPF",
+			"NOSF",
+			"NOSI",
+			"LOC",
+			"NOCB",
+			"NONC",
+			"NONA",
+			"NOMWMOP"
 		};
 		
 		
@@ -130,6 +157,15 @@ public class MetricController {
 				mh.szzMetric = szz;
 			}
 			
+			for(SourceMetric sm : c.getSourceMetrics()) {
+				MetricHolder mh = metrics.get(sm.getFile());
+				if(mh == null) {
+					mh = new MetricHolder();
+					metrics.put(sm.getFile(), mh);
+				}
+				mh.sourceMetric = sm;
+			}
+			
 			Map<String, MetricHolder> metrics_sorted = metrics.entrySet().stream()
 	                .sorted((e1,e2) -> e1.getKey().compareTo(e2.getKey()))
 	                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedHashMap::new));
@@ -139,6 +175,8 @@ public class MetricController {
 			for(Entry<String, MetricHolder> entry : metrics_sorted.entrySet()) {
 				ChangeMetric cm = entry.getValue().changeMetric;
 				SzzMetric szz = entry.getValue().szzMetric;
+				SourceMetric sm = entry.getValue().sourceMetric;
+				
 				String file = entry.getKey();
 				
 				String[] in = {
@@ -163,7 +201,27 @@ public class MetricController {
 					cm != null ? ""+cm.getAvgChangeset() : "0",
 					cm != null ? ""+cm.getAge() : "0",
 					cm != null ? ""+cm.getWeightedAge() : "0",
-					szz != null ? ""+szz.getBugs() : "0"					
+					szz != null ? ""+szz.getBugs() : "0",
+					sm != null ? sm.getClassName() : "",
+					sm != null ? sm.getType() : "",
+					sm != null ? ""+sm.getCbo() : "0",
+					sm != null ? ""+sm.getWmc() : "0",
+					sm != null ? ""+sm.getDit() : "0",
+					sm != null ? ""+sm.getNoc() : "0",
+					sm != null ? ""+sm.getRfc() : "0",
+					sm != null ? ""+sm.getLcom() : "0",
+					sm != null ? ""+sm.getNom() : "0",
+					sm != null ? ""+sm.getNopm() : "0",
+					sm != null ? ""+sm.getNosm() : "0",
+					sm != null ? ""+sm.getNof() : "0",
+					sm != null ? ""+sm.getNopf() : "0",
+					sm != null ? ""+sm.getNosf() : "0",
+					sm != null ? ""+sm.getNosi() : "0",
+					sm != null ? ""+sm.getLoc() : "0",
+					sm != null ? ""+sm.getNocb() : "0",
+					sm != null ? ""+sm.getNonc() : "0",
+					sm != null ? ""+sm.getNona() : "0",
+					sm != null ? ""+sm.getNomwmop() : "0"
 				};
 				
 				csv.writeLine(writer,  Arrays.asList(in));
@@ -184,5 +242,6 @@ public class MetricController {
 	class MetricHolder {
 		SzzMetric szzMetric;
 		ChangeMetric changeMetric;
+		SourceMetric sourceMetric;
 	}
 }
