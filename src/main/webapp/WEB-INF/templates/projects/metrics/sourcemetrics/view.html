@@ -95,6 +95,10 @@
 				<th>NOSF</th>
 				<th>NOSI</th>
 				<th>LOC</th>
+				<th>NOCB</th>
+				<th>NONC</th>
+				<th>NONA</th>
+				<th>NOMWMOP</th>
 			</tr>
 			<tr th:each="sm : ${sourceMetrics}">
 				<td th:text="${sm.getShortFile()}" th:title="${sm.file}" style="cursor:help;">file</td>
@@ -114,6 +118,10 @@
 				<td th:text="${sm.nosf}">nosf</td>
 				<td th:text="${sm.nosi}">nosi</td>
 				<td th:text="${sm.loc}">loc</td>
+				<td th:text="${sm.nocb}">nocb</td>
+				<td th:text="${sm.nonc}">nonc</td>
+				<td th:text="${sm.nona}">nona</td>
+				<td th:text="${sm.nomwmop}">nomwmop</td>
 			</tr>
 		</table>
 	</div>

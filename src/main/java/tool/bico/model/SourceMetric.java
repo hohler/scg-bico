@@ -42,6 +42,11 @@ public class SourceMetric {
 	private int nosi;
 	private int loc;
 	
+	private int nocb; // number of catch blocks
+	private int nonc; // number of null checks
+	private int nona; // number of null assignments
+	private int nomwmop; // number of methods with more than 1 parameter	public SourceMetric() {}
+	
 	public SourceMetric() {}
 	
 	public SourceMetric(SMFile f) {
@@ -62,6 +67,10 @@ public class SourceMetric {
 		nosf = f.getNosf();
 		nosi = f.getNosi();
 		loc = f.getLoc();
+		nocb = f.getNocb();
+		nonc = f.getNonc();
+		nona = f.getNona();
+		nomwmop = f.getNomwmop();
 	}
 
 	public Long getId() {
@@ -216,6 +225,38 @@ public class SourceMetric {
 		this.loc = loc;
 	}
 	
+	public int getNocb() {
+		return nocb;
+	}
+
+	public void setNocb(int nocb) {
+		this.nocb = nocb;
+	}
+
+	public int getNonc() {
+		return nonc;
+	}
+
+	public void setNonc(int nonc) {
+		this.nonc = nonc;
+	}
+
+	public int getNona() {
+		return nona;
+	}
+
+	public void setNona(int nona) {
+		this.nona = nona;
+	}
+
+	public int getNomwmop() {
+		return nomwmop;
+	}
+
+	public void setNomwmop(int nomwmop) {
+		this.nomwmop = nomwmop;
+	}
+
 	public String getShortFile() {
 		if(file == null) return "";
 		String[] fileName = file.split("/");
@@ -224,6 +265,6 @@ public class SourceMetric {
 	
 	public String toString() {
 		return "SourceMetric ["+file+", cbo: "+cbo+", dit: "+dit+", noc: " + noc + ", nof: " + nof + ", nopf: " + nopf + ", nosf: " + nosf + ", nom: " + nom + ", nopm: " + nopm + ", nosm: " + nosm
-				+ ", nosi: " + nosi + ", rfc: " + rfc + ", wmc: " + wmc + ", loc: " + loc + ", lcom: " + lcom;
+				+ ", nosi: " + nosi + ", rfc: " + rfc + ", wmc: " + wmc + ", loc: " + loc + ", lcom: " + lcom + ", nocb: " + nocb + ", nonc: " + nonc + ", nona: " + nona + ", nomwmop: " + nomwmop;
 	}
 }

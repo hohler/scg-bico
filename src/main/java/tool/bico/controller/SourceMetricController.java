@@ -169,7 +169,11 @@ public class SourceMetricController {
 			"NOPF",
 			"NOSF",
 			"NOSI",
-			"LOC"
+			"LOC",
+			"NOCB",
+			"NONC",
+			"NONA",
+			"NOMWMOP"
 		};
 		
 		
@@ -205,7 +209,11 @@ public class SourceMetricController {
 				""+s.getNopf(),
 				""+s.getNosf(),
 				""+s.getNosi(),
-				""+s.getLoc()
+				""+s.getLoc(),
+				""+s.getNocb(),
+				""+s.getNonc(),
+				""+s.getNona(),
+				""+s.getNomwmop()
 			};
 			
 			csv.writeLine(writer,  Arrays.asList(in));
