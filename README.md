@@ -3,14 +3,14 @@
 ## Environment of developer ##
 - Eclipse Java EE 4.6
 - Tomcat Server 9.0
-- MySQL Server 5.7
+- PostgreSQL Server
 - Java Version 1.8
 
 ## Setup ##
 
-You need a MySQL and a Tomcat Server.
+You need a PostgreSQL and a Tomcat Server.
 
-Additional MySQL configuration variables: see chapter 8.
+If you want to use MySQL, additional MySQL configuration variables: see chapter 8.
 
 ### Outline ###
 
@@ -22,7 +22,7 @@ Additional MySQL configuration variables: see chapter 8.
 6. How to use the tool
 6.1 Spring Batch Admin
 7. Example repositories
-8. MySQL configuration
+8. PostgreSQL configuration
 9. Deployment for production environment
 10. Ready-to-use VirtualBox VM
 
@@ -33,10 +33,10 @@ Adapt database parameters in file
 `/src/main/resources/application.properties`
 
 
-	bico.db.url = jdbc:mysql://localhost:3306/bico?autoReconnect=true
+	bico.db.url = jdbc:postgresql://localhost:5432/bico?autoReconnect=true
 	bico.db.username = bico
 	bico.db.password = bico
-	bico.db.driverClassName = com.mysql.jdbc.Driver
+	bico.db.driverClassName = org.postgresql.Driver
 
 
 Adapt path for cloning repositories in file
