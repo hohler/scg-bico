@@ -2,6 +2,7 @@ package tool.bico.job;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.batch.core.StepContribution;
@@ -48,31 +49,37 @@ public class SourceMetricsTasklet implements Tasklet {
 		
 		sourceMetrics.setEveryNthCommit(project.getSourceMetricEveryCommits());
 		sourceMetrics.generateCommitList();
+		
+		for(String commitRef : sourceMetrics.getCommitList()) {
         
-        SMRepository results = sourceMetrics.analyze(sourceMetrics.getCommitList());
-        
-        for(SMCommit c : results.all()) {
-        	
-        	List<SourceMetric> toPersist = new ArrayList<>();
-        	
-        	contribution.incrementReadCount();
-        	
-        	Commit commit = commitService.getCommitByProjectAndRef(project, c.getHash());
-        	
-        	for(SMFile f : c.getFiles().values()) {
-
-        		SourceMetric sm = new SourceMetric(f);
-        		sm.setCommit(commit);
-        		        		
-        		toPersist.add(sm);
-        		
-        		contribution.incrementWriteCount(1);
-        	}
-        	
-        	sourceMetricService.addAll(toPersist);
-        	
-        	chunkContext.getStepContext().getStepExecution().incrementCommitCount();
-        }
+	        SMRepository results = sourceMetrics.analyze(Arrays.asList(commitRef));
+	        
+	        for(SMCommit c : results.all()) {
+	        	
+	        	List<SourceMetric> toPersist = new ArrayList<>();
+	        	
+	        	contribution.incrementReadCount();
+	        	
+	        	Commit commit = commitService.getCommitByProjectAndRef(project, c.getHash());
+	        	
+	        	if(commit == null) continue;
+	        	
+	        	for(SMFile f : c.getFiles().values()) {
+	
+	        		SourceMetric sm = new SourceMetric(f);
+	        		sm.setCommit(commit);
+	        		        		
+	        		toPersist.add(sm);
+	        		
+	        		contribution.incrementWriteCount(1);
+	        	}
+	        	
+	        	sourceMetricService.addAll(toPersist);
+	        	
+	        	chunkContext.getStepContext().getStepExecution().incrementCommitCount();
+	        }
+	        
+		}
 		  
         return RepeatStatus.FINISHED;
 		
