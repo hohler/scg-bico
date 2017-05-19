@@ -98,11 +98,6 @@ public class ChangeMetricsTasklet implements Tasklet {
         	
         	String ref = e.getKey();
         	
-        	cm.setRange(e.getValue());
-        	CMRepository results = cm.analyze();
-        	
-        	//logger.debug(repo.all());
-        	
         	Commit commit = commitService.getCommitByProjectAndRef(project, ref);
         	
         	if(commit == null) {
@@ -110,7 +105,12 @@ public class ChangeMetricsTasklet implements Tasklet {
         		continue;
         	}
         	else System.err.println("cm-commit: "+commit.getRef());
-		
+        	
+        	cm.setRange(e.getValue());
+        	CMRepository results = cm.analyze();
+        	
+        	//logger.debug(repo.all());
+        	        
         	List<ChangeMetric> toPersist = new ArrayList<>();
         	
 			for(CMFile f : results.all()) {
