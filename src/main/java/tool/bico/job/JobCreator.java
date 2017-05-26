@@ -82,16 +82,16 @@ public class JobCreator {
 	
 	public void removeJob(Project project) {
 		String jobName = project.getId().toString() + "_" + project.getName();
-		String jobNameMetrics = jobName + "_metrics";
+		// String jobNameMetrics = jobName + "_metrics";
 		jobRegistry.unregister(jobName);
-		jobRegistry.unregister(jobNameMetrics);
+		// jobRegistry.unregister(jobNameMetrics);
 	}
 	
 	public void removeJob(Long id, String name) {
 		String jobName = id.toString() + "_" + name;
-		String jobNameMetrics = jobName + "_metrics";
+		// String jobNameMetrics = jobName + "_metrics";
 		jobRegistry.unregister(jobName);
-		jobRegistry.unregister(jobNameMetrics);
+		// jobRegistry.unregister(jobNameMetrics);
 	}
 	
 	public void createJob(Project project) {
