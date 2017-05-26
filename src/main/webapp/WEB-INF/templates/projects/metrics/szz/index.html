@@ -13,7 +13,22 @@
        
 <script src="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html-ui.min.js"
             th:src="@{/webjars/diff2html/2.0.10/dist/diff2html-ui.min.js}"></script>
-            
+
+<script src="/resources/js/job_control.js" th:src="@{/resources/js/job_control.js}"></script>
+
+<script th:inline="javascript">
+var path = [[@{'/batch/jobs/'}]];
+var jobControl = new JobControl(path);
+var jobName = [[${project.id + '_' + project.name + '_szz'}]];
+
+$(document).ready(function() {
+	jobControl.getJobStatus(jobName);
+	setInterval(function() {
+		jobControl.getJobStatus(jobName);
+	}, 10000);
+});
+</script>
+
 </head>
 <body>
 	<h1 layout:fragment="header"><span th:text="${project.name}"></span></h1>
@@ -45,6 +60,14 @@
 				<th>Number of commits involved in analysis</th>
 				<td th:text="${cm.size()}">Number of commits</td>
 			</tr> -->
+			<tr>
+				<th>Job control (Status automatically updated)</th>
+				<td>
+					<span id="jobStatus" class="label label-default">Retrieving status...</span>
+					<button id="jobStart" onclick="jobControl.startJob(jobName);" type="button" class="btn btn-primary btn-sm hidden">Start</button>
+					<span id="jobDuration"></span>
+				</td>
+			</tr>
 			<tr>
 				<th>Job to calculate SZZ metrics</th>
 				<td><a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name} + '_szz'}" target="_blank">Batch Job</a></td>
