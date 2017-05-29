@@ -45,6 +45,8 @@ public class ChangeMetricsTasklet implements Tasklet {
 	public RepeatStatus execute(StepContribution contribution,
 			ChunkContext chunkContext) throws Exception {
 		
+		System.setProperty("git.maxdiff", "1000000"); // default was 100'000
+		
 		GitRepository repo = new GitRepository(project, false);
 		path = repo.getRepositoryPath();
 		if(path == null) System.err.println("Could not clone repository of project: "+project);

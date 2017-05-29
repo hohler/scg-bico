@@ -1,5 +1,7 @@
 package tool.bico.repository;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,11 +45,15 @@ public class GitLoader {
 		
 		if(repoDir.exists()) {
 			try {
+				
+				// File f = new File(REPOSITORY_PATH + repoName + "/.git/index.lock");
+				// if(f.exists()) f.delete();
+				
 				Git git = Git.open(repoDir);
 				
 				git.reset().setMode(ResetType.HARD).call();
 				
-				git.checkout().setName("origin/"+branch).call();
+				git.checkout().setName(branch).call();
 				// delete "mm" branch
 				git.branchDelete().setBranchNames("mm").call();
 				
