@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 
@@ -43,7 +44,15 @@ public class GitLoader {
 		if(repoDir.exists()) {
 			try {
 				Git git = Git.open(repoDir);
+				
+				git.reset().setMode(ResetType.HARD).call();
+				
+				git.checkout().setName("origin/"+branch).call();
+				// delete "mm" branch
+				git.branchDelete().setBranchNames("mm").call();
+				
 				if(pull) git.pull().call();
+				
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -61,7 +70,6 @@ public class GitLoader {
 						.setURI( gitUrl )
 						.setDirectory( repoDir )
 						.call();
-				git.checkout().setName(branch).call();
 				
 				return true;
 				
