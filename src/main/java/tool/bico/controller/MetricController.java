@@ -221,7 +221,7 @@ public class MetricController {
 		
 		for(Commit c : commits) {
 			
-			if(c.getChangeMetrics().size() == 0 || c.getSourceMetrics().size() == 0 || c.getSzzMetrics().size() == 0) continue;
+			if(c.getChangeMetrics().size() == 0 || c.getSourceMetrics().size() == 0) continue;
 			
 			Map<String, MetricHolder> metrics = new LinkedHashMap<>();
 			
