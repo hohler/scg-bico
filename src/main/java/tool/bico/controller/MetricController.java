@@ -42,9 +42,11 @@ import ch.unibe.scg.metrics.sourcemetrics.SourceMetrics;
 import ch.unibe.scg.metrics.sourcemetrics.domain.SMCommit;
 import ch.unibe.scg.metrics.sourcemetrics.domain.SMFile;
 import ch.unibe.scg.metrics.sourcemetrics.domain.SMRepository;
+import tool.bico.analysis.CommitAnalyzer;
 import tool.bico.controller.form.ChangeMetricFormData;
 import tool.bico.controller.form.SingleMetricFormData;
 import tool.bico.job.JobCreator;
+import tool.bico.model.BigCommit;
 import tool.bico.model.ChangeMetric;
 import tool.bico.model.Commit;
 import tool.bico.model.CommitIssue;
@@ -125,10 +127,14 @@ public class MetricController {
 			redirect.addFlashAttribute("globalMessage", "Failed to download metrics of " + ref);
 			return new ModelAndView("redirect:/projects/{project.id}/metrics", "project.id", id);
 		} else {
+			
+			if(singleMetricHolder.getIncludeBigCommits()) {
+				analyzeBigCommits(project);
+			}
 					
 			Commit refCommit = commitService.getCommitByProjectAndRef(project, ref);
 			
-			List<ChangeMetric> cm = getChangeMetrics(project, path, ref, singleMetricHolder.getTimeWindow());
+			List<ChangeMetric> cm = getChangeMetrics(project, path, ref, singleMetricHolder.getTimeWindow(), singleMetricHolder.getIncludeBigCommits());
 			
 			// wait between, so the repo can be reset
 			try {
@@ -334,7 +340,7 @@ public class MetricController {
 		return new HttpEntity<byte[]>(documentBody, header);	
 	}
 	
-	private List<ChangeMetric> getChangeMetrics(Project project, String path, String ref, int timeWindow) {
+	private List<ChangeMetric> getChangeMetrics(Project project, String path, String ref, int timeWindow, boolean includeBigCommits) {
 		List<ChangeMetric> result = new ArrayList<>();
 		
 		ChangeMetrics cm = new ChangeMetrics(Paths.get(path));
@@ -359,6 +365,8 @@ public class MetricController {
         
         // range to only 1 commit!
         cm.setRange(ref, ref);
+        
+        if(includeBigCommits) cm.excludeCommits( project.getBigCommits().stream().map(b -> b.getCommit().getRef()).collect(Collectors.toList()) );
 		
 		Map<String, CommitRange> list = cm.generateCommitListWithWeeks(timeWindow);
 
@@ -412,5 +420,40 @@ public class MetricController {
         	}
         }
         return result;
+	}
+	
+	private void analyzeBigCommits(Project project) {
+		
+		List<CommitIssue.Type> typeSet = new ArrayList<>();
+	
+		// init type set to analyze
+		typeSet.add(CommitIssue.Type.BUG);
+		typeSet.add(CommitIssue.Type.FEATURE);
+		typeSet.add(CommitIssue.Type.IMPROVEMENT);
+		typeSet.add(CommitIssue.Type.REFACTOR);
+		typeSet.add(CommitIssue.Type.DOCUMENTATION);
+	
+		CommitAnalyzer ca = new CommitAnalyzer(project, new HashSet<CommitIssue.Type>(typeSet));
+		ca.setCommitService(commitService);
+		ca.load();
+		ca.analyze();
+		
+		List<String> commitRefs = new ArrayList<>();
+		for(BigCommit b : project.getBigCommits()) {
+			commitRefs.add(b.getCommit().getRef());
+		}
+		
+		List<BigCommit> toAdd = new ArrayList<>();
+		
+		for(Entry<CommitIssue.Type, List<Commit>> e : ca.getPossibleBigCommits().entrySet()) {
+			for(Commit c : e.getValue()) {
+				if(!commitRefs.contains(c.getRef())) {
+					BigCommit b = new BigCommit();
+					b.setCommit(c);
+					b.setIssueType(e.getKey());
+					toAdd.add(b);
+				}
+			}
+		}
 	}
 }
