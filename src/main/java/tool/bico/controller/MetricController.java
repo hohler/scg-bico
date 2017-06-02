@@ -106,6 +106,8 @@ public class MetricController {
 	public Object singleMetrics(SingleMetricFormData singleMetricHolder, @PathVariable("id") Long id, BindingResult result,
 			RedirectAttributes redirect) throws IOException {
 		
+		System.setProperty("git.maxdiff", "1000000"); // default was 100'000
+		
 		Project project = projectService.findById(id);
 		
 		String ref = singleMetricHolder.getRef();
@@ -127,6 +129,14 @@ public class MetricController {
 			Commit refCommit = commitService.getCommitByProjectAndRef(project, ref);
 			
 			List<ChangeMetric> cm = getChangeMetrics(project, path, ref, singleMetricHolder.getTimeWindow());
+			
+			// wait between, so the repo can be reset
+			try {
+				Thread.sleep(1000 * 5);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
 			List<SourceMetric> sm = getSourceMetrics(project, path, ref);
 			
 			Commit c = new Commit();
@@ -213,7 +223,8 @@ public class MetricController {
 			"NOCB",
 			"NONC",
 			"NONA",
-			"NOMWMOP"
+			"NOMWMOP",
+			"deleted"
 		};
 		
 		
@@ -304,7 +315,8 @@ public class MetricController {
 					sm != null ? ""+sm.getNocb() : "0",
 					sm != null ? ""+sm.getNonc() : "0",
 					sm != null ? ""+sm.getNona() : "0",
-					sm != null ? ""+sm.getNomwmop() : "0"
+					sm != null ? ""+sm.getNomwmop() : "0",
+					sm == null ? "yes" : "no"
 				};
 				
 				csv.writeLine(writer,  Arrays.asList(in));
