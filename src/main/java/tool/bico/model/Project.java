@@ -2,6 +2,7 @@ package tool.bico.model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -36,6 +37,10 @@ public class Project {
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="project", orphanRemoval = true)
 	@OrderBy("id")
 	private Set<Commit> commits;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="project", orphanRemoval = true)
+	@OrderBy("id")
+	private Set<BigCommit> bigCommits;
 	
 	public enum Type {
 		GITHUB("GitHub"), GIT("Git"), JIRA("Jira"), BUGZILLA("Bugzilla");
@@ -107,6 +112,25 @@ public class Project {
 	public void addCommits(ArrayList<Commit> list) {
 		list.forEach(c -> c.setProject(this));
 		this.commits.addAll(list);
+	}
+	
+	public Set<BigCommit> getBigCommits() {
+		return bigCommits;
+	}
+	
+	public void addCommit(BigCommit bigCommit) {
+		bigCommit.setProject(this);
+		this.bigCommits.add(bigCommit);
+	}
+	
+	public void removeBigCommit(BigCommit bigCommit) {
+		this.bigCommits.remove(bigCommit);
+		bigCommit.setProject(null);
+	}
+	
+	public void addBigCommits(List<BigCommit> toAdd) {
+		toAdd.forEach(c -> c.setProject(this));
+		this.bigCommits.addAll(toAdd);
 	}
 	
 	public String getBranch() {

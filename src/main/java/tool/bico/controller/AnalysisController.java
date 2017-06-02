@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import tool.bico.analysis.CommitAnalyzer;
 import tool.bico.analysis.ResultsContainer;
+import tool.bico.model.BigCommit;
+import tool.bico.model.Commit;
 import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
 import tool.bico.model.service.CommitService;
@@ -66,6 +69,27 @@ public class AnalysisController {
 		ca.setCommitService(commitService);
 		ca.load();
 		ca.analyze();
+		
+		List<String> commitRefs = new ArrayList<>();
+		for(BigCommit b : project.getBigCommits()) {
+			commitRefs.add(b.getCommit().getRef());
+		}
+		
+		List<BigCommit> toAdd = new ArrayList<>();
+		
+		for(Entry<CommitIssue.Type, List<Commit>> e : ca.getPossibleBigCommits().entrySet()) {
+			for(Commit c : e.getValue()) {
+				if(!commitRefs.contains(c.getRef())) {
+					BigCommit b = new BigCommit();
+					b.setCommit(c);
+					b.setIssueType(e.getKey());
+					toAdd.add(b);
+				}
+			}
+		}
+		
+		project.addBigCommits(toAdd);
+		projectService.update(project);
 		
 		model.addAttribute("commits", ca.getPossibleBigCommits());
 		model.addAttribute("project", project);
