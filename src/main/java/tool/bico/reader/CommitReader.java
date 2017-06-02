@@ -10,6 +10,7 @@ import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
 import tool.bico.model.service.CommitIssueService;
 
+@Deprecated
 public class CommitReader implements ItemReader<CommitIssue> {
 
 	private List<CommitIssue> commitIssues;

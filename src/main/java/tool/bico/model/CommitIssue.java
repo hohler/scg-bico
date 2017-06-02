@@ -104,6 +104,8 @@ public class CommitIssue {
 	@Column(nullable = true, columnDefinition = "TEXT")
 	private String description = "";
 	
+	private boolean processed = false;
+	
 	public CommitIssue() {
 		this.commits = new HashSet<Commit>();
 	}
@@ -199,6 +201,14 @@ public class CommitIssue {
 		return "Issue[id="+id+", name="+name+", type="+type+", priority="+priority+"]";
 	}
 	
+	public boolean isProcessed() {
+		return processed;
+	}
+
+	public void setProcessed(boolean processed) {
+		this.processed = processed;
+	}
+
 	@Override
 	public boolean equals(Object other) {
 	    if (other == null) return false;

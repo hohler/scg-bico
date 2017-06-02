@@ -51,6 +51,17 @@ public class RepositoryWriter implements ItemWriter<Commit> {
 			for(CommitIssue t : tempNewCommitIssues) {
 				commit.addCommitIssueSilently(t);
 			}
+			if(commit.getParentCommit() != null && commit.getParentCommit().getId() == null) {
+				Commit parent = commitService.getCommitByProjectAndRef(commit.getProject(), commit.getParentCommit().getRef());
+				if(parent != null) {
+					commit.setParentCommit(parent);
+					System.err.println("PARENT COMMIT DOES NOT HAVE ID!!! LOOKED FOR RIGHT COMMIT");
+				} else {
+					commit.setParentCommit(null);
+					System.err.println("PARENT COMMIT DOES NOT HAVE ID !!! DID NOT FIND THE RIGHT COMMIT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				}
+				
+			}
 			commitService.add(commit);
 		}
 	}
