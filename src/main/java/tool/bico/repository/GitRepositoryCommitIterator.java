@@ -41,7 +41,10 @@ public class GitRepositoryCommitIterator implements Iterator<Commit> {
 		RevCommit commit = data.pop();
 		
 		// branch itself, get another commit from the stack
-		if(commit.getParentCount() == 0) commit = data.pop();
+		/*if(commit.getParentCount() == 0) {
+			System.out.println(commit);
+			commit = data.pop();
+		}*/
 		
 		Commit c = new Commit();
 		c.setMessage(commit.getFullMessage().replaceAll("\\x00",  ""));
@@ -58,13 +61,14 @@ public class GitRepositoryCommitIterator implements Iterator<Commit> {
 		
 		System.out.println("commit: "+commit.getShortMessage());
 
-		RevCommit parentCommit = commit.getParent(0);
+		RevCommit parentCommit = commit.getParentCount() != 0 ? commit.getParent(0) : null;
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		
 	    try (DiffFormatter diffFormatter = new DiffFormatter(out)) {
 	        diffFormatter.setRepository(repository);
 	        diffFormatter.setDetectRenames(true);
+	        
 	        for (DiffEntry entry : diffFormatter.scan(parentCommit, commit)) {
 	            //diffFormatter.format(diffFormatter.toFileHeader(entry));
 	            diffFormatter.format(entry);
