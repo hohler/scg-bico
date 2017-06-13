@@ -50,7 +50,7 @@ class JobControl {
 			$("#jobStart").removeClass("hidden");
 		} else
 		if(status == "COMPLETED") {
-			if($("#jobStatus").html() == "Job running...") {
+			if($("#jobStatus").html() == "Job running..." || $("#jobStatus").html() == "Job starting...") {
 				location.reload();
 			} else {
 				$("#jobStatus").removeClass().addClass("label label-success").html("Job finished");
