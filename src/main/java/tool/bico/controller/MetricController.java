@@ -128,13 +128,13 @@ public class MetricController {
 			return new ModelAndView("redirect:/projects/{project.id}/metrics", "project.id", id);
 		} else {
 			
-			if(singleMetricHolder.getIncludeBigCommits()) {
+			if(singleMetricHolder.getExcludeBigCommits()) {
 				analyzeBigCommits(project);
 			}
 					
 			Commit refCommit = commitService.getCommitByProjectAndRef(project, ref);
 			
-			List<ChangeMetric> cm = getChangeMetrics(project, path, ref, singleMetricHolder.getTimeWindow(), singleMetricHolder.getIncludeBigCommits());
+			List<ChangeMetric> cm = getChangeMetrics(project, path, ref, singleMetricHolder.getTimeWindow(), singleMetricHolder.getExcludeBigCommits());
 			
 			// wait between, so the repo can be reset
 			try {
@@ -340,7 +340,7 @@ public class MetricController {
 		return new HttpEntity<byte[]>(documentBody, header);	
 	}
 	
-	private List<ChangeMetric> getChangeMetrics(Project project, String path, String ref, int timeWindow, boolean includeBigCommits) {
+	private List<ChangeMetric> getChangeMetrics(Project project, String path, String ref, int timeWindow, boolean excludeBigCommits) {
 		List<ChangeMetric> result = new ArrayList<>();
 		
 		ChangeMetrics cm = new ChangeMetrics(Paths.get(path));
@@ -366,7 +366,7 @@ public class MetricController {
         // range to only 1 commit!
         cm.setRange(ref, ref);
         
-        if(includeBigCommits) cm.excludeCommits( project.getBigCommits().stream().map(b -> b.getCommit().getRef()).collect(Collectors.toList()) );
+        if(excludeBigCommits) cm.excludeCommits( project.getBigCommits().stream().map(b -> b.getCommit().getRef()).collect(Collectors.toList()) );
 		
 		Map<String, CommitRange> list = cm.generateCommitListWithWeeks(timeWindow);
 
@@ -455,5 +455,8 @@ public class MetricController {
 				}
 			}
 		}
+		
+		project.addBigCommits(toAdd);
+		projectService.update(project);
 	}
 }

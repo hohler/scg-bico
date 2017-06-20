@@ -3,12 +3,12 @@ package tool.bico.controller.form;
 public class SingleMetricFormData {
 	private String ref;
 	private int timeWindow;
-	private boolean includeBigCommits;
+	private boolean excludeBigCommits;
 	
 	public SingleMetricFormData() {}
 	public String getRef() { return ref; }
 	public int getTimeWindow() { return timeWindow; }
-	public boolean getIncludeBigCommits() { return includeBigCommits; }
+	public boolean getExcludeBigCommits() { return excludeBigCommits; }
 	
 	public void setRef(String ref) {
 		this.ref = ref;
@@ -18,7 +18,7 @@ public class SingleMetricFormData {
 		this.timeWindow = timeWindow;
 	}
 	
-	public void setIncludeBigCommits(boolean include) {
-		includeBigCommits = include;
+	public void setExcludeBigCommits(boolean exclude) {
+		excludeBigCommits = exclude;
 	}
 }
