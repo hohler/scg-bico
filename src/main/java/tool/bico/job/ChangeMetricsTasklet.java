@@ -56,7 +56,7 @@ public class ChangeMetricsTasklet implements Tasklet {
 		
 		ChangeMetrics cm = new ChangeMetrics(Paths.get(path));
 		
-		cm.setThreads(20);
+		// cm.setThreads(20);
 		if(project.getChangeMetricEveryCommits() != 0) cm.setEveryNthCommit(project.getChangeMetricEveryCommits());
 		
 		/*if(project.getChangeMetricStartDate() != null && project.getChangeMetricEndDate() != null) {
