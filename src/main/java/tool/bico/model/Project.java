@@ -35,7 +35,7 @@ public class Project {
 	private int sourceMetricEveryCommits;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="project", orphanRemoval = true)
-	@OrderBy("id")
+	@OrderBy("timestamp")
 	private Set<Commit> commits;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="project", orphanRemoval = true)
