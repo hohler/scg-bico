@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import tool.bico.controller.form.ChangeMetricFormData;
+import tool.bico.analysis.BigCommitAnalyzer;
 import tool.bico.controller.form.SourceMetricFormData;
 import tool.bico.job.JobCreator;
 import tool.bico.model.Commit;
@@ -83,6 +83,7 @@ public class SourceMetricController {
 		
 		SourceMetricFormData smf = new SourceMetricFormData();
 		smf.setEveryCommits(project.getSourceMetricEveryCommits());
+		smf.setExcludeBigCommits(project.getSourceMetricsExcludeBigCommits());
 		
 		model.addAttribute("smf", smf);
 
@@ -90,10 +91,16 @@ public class SourceMetricController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ModelAndView sourceMetricVariables(ChangeMetricFormData smf, @PathVariable("id") Long id, BindingResult result, RedirectAttributes redirect) {
+	public ModelAndView sourceMetricVariables(SourceMetricFormData smf, @PathVariable("id") Long id, BindingResult result, RedirectAttributes redirect) {
 		Project project = projectService.findById(id);
 		
 		project.setSourceMetricEveryCommits(smf.getEveryCommits());
+		
+		project.setSourceMetricsExcludeBigCommits(smf.getExcludeBigCommits());
+		
+		if(smf.getExcludeBigCommits()) {
+			BigCommitAnalyzer.analyzeBigCommits(project, projectService, commitService);
+		}
 		
 		this.projectService.update(project);
 		

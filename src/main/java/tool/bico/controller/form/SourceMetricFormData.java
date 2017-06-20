@@ -9,6 +9,8 @@ public class SourceMetricFormData {
 	
 	private int everyCommits = 0;
 	
+	private boolean excludeBigCommits = false;
+	
 	public SourceMetricFormData() {
 		commitRanges = new ArrayList<>();
 		populateCommitRanges();
@@ -41,5 +43,13 @@ public class SourceMetricFormData {
 
 	public void setEveryCommits(int everyCommits) {
 		this.everyCommits = everyCommits;
+	}
+	
+	public boolean getExcludeBigCommits() {
+		return excludeBigCommits;
+	}
+
+	public void setExcludeBigCommits(boolean excludeBigCommits) {
+		this.excludeBigCommits = excludeBigCommits;
 	}
 }

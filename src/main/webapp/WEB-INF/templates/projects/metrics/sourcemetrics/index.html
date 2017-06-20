@@ -40,6 +40,11 @@ $(document).ready(function() {
 		    	<option th:each="range : ${smf.commitRanges}" th:value="${range}" th:text="${ range == 0 ? 'Only newest commit' : 'Every ' + range + 'th commit'}"></option>
 		    </select>
 		  </div>
+		  
+		  <div class="form-group">
+	  		<label for="excludeBigCommits">Exclude big commits</label>
+	  		<input type="checkbox" class="form-control" id="excludeBigCommits" th:field="${smf.excludeBigCommits}" />
+  		  </div>
 			  
 		  <div class="form-group">
 			<input type="submit" class="btn btn-success" value="Save" />

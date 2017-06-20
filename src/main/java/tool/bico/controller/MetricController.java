@@ -42,6 +42,7 @@ import ch.unibe.scg.metrics.sourcemetrics.SourceMetrics;
 import ch.unibe.scg.metrics.sourcemetrics.domain.SMCommit;
 import ch.unibe.scg.metrics.sourcemetrics.domain.SMFile;
 import ch.unibe.scg.metrics.sourcemetrics.domain.SMRepository;
+import tool.bico.analysis.BigCommitAnalyzer;
 import tool.bico.analysis.CommitAnalyzer;
 import tool.bico.controller.form.ChangeMetricFormData;
 import tool.bico.controller.form.SingleMetricFormData;
@@ -129,7 +130,7 @@ public class MetricController {
 		} else {
 			
 			if(singleMetricHolder.getExcludeBigCommits()) {
-				analyzeBigCommits(project);
+				BigCommitAnalyzer.analyzeBigCommits(project, projectService, commitService);
 			}
 					
 			Commit refCommit = commitService.getCommitByProjectAndRef(project, ref);
@@ -422,7 +423,7 @@ public class MetricController {
         return result;
 	}
 	
-	private void analyzeBigCommits(Project project) {
+	/*private void analyzeBigCommits(Project project) {
 		
 		List<CommitIssue.Type> typeSet = new ArrayList<>();
 	
@@ -458,5 +459,5 @@ public class MetricController {
 		
 		project.addBigCommits(toAdd);
 		projectService.update(project);
-	}
+	}*/
 }

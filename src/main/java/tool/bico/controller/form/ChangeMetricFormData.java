@@ -13,6 +13,8 @@ public class ChangeMetricFormData {
 	private int everyCommits = 75;
 	private int timeWindow = 12;
 	
+	private boolean excludeBigCommits = false;
+	
 	public ChangeMetricFormData() {
 		commitRanges = new ArrayList<>();
 		timeWindows = new LinkedHashMap<>();
@@ -73,5 +75,13 @@ public class ChangeMetricFormData {
 
 	public void setTimeWindows(Map<Integer, String> timeWindows) {
 		this.timeWindows = timeWindows;
+	}
+
+	public boolean getExcludeBigCommits() {
+		return excludeBigCommits;
+	}
+
+	public void setExcludeBigCommits(boolean excludeBigCommits) {
+		this.excludeBigCommits = excludeBigCommits;
 	}
 }

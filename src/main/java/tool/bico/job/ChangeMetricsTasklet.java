@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.repodriller.filter.range.CommitRange;
 import org.springframework.batch.core.StepContribution;
@@ -85,6 +86,8 @@ public class ChangeMetricsTasklet implements Tasklet {
 		if(commits.size() == 0) commits = null;
 		bugRepo.setBugCommits(commits);
         cm.setBugRepository(bugRepo);
+        
+        if(project.getChangeMetricsExcludeBigCommits()) cm.excludeCommits( project.getBigCommits().stream().map(b -> b.getCommit().getRef()).collect(Collectors.toList()) );
 		
 		Map<String, CommitRange> list = cm.generateCommitListWithWeeks(project.getChangeMetricTimeWindow());
         // cm.generateCommitList();

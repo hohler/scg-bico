@@ -4,6 +4,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -50,6 +51,9 @@ public class SourceMetricsTasklet implements Tasklet {
 		SourceMetrics sourceMetrics = new SourceMetrics(Paths.get(path));
 		
 		sourceMetrics.setEveryNthCommit(project.getSourceMetricEveryCommits());
+		
+		if(project.getSourceMetricsExcludeBigCommits()) sourceMetrics.excludeCommits( project.getBigCommits().stream().map(b -> b.getCommit().getRef()).collect(Collectors.toList()) );
+		
 		sourceMetrics.generateCommitList();
 		
 		for(String commitRef : sourceMetrics.getCommitList()) {

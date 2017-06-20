@@ -32,7 +32,9 @@ public class Project {
 	// change metric
 	private int changeMetricTimeWindow;
 	private int changeMetricEveryCommits;
+	private boolean changeMetricsExcludeBigCommits;
 	private int sourceMetricEveryCommits;
+	private boolean sourceMetricsExcludeBigCommits;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="project", orphanRemoval = true)
 	@OrderBy("timestamp")
@@ -205,5 +207,21 @@ public class Project {
 
 	public void setSourceMetricEveryCommits(int sourceMetricEveryCommits) {
 		this.sourceMetricEveryCommits = sourceMetricEveryCommits;
+	}
+
+	public void setSourceMetricsExcludeBigCommits(boolean excludeBigCommits) {
+		this.sourceMetricsExcludeBigCommits = excludeBigCommits;		
+	}
+	
+	public boolean getSourceMetricsExcludeBigCommits() {
+		return this.sourceMetricsExcludeBigCommits;
+	}
+	
+	public void setChangeMetricsExcludeBigCommits(boolean excludeBigCommits) {
+		this.changeMetricsExcludeBigCommits = excludeBigCommits;
+	}
+	
+	public boolean getChangeMetricsExcludeBigCommits() {
+		return this.changeMetricsExcludeBigCommits;
 	}
 }
