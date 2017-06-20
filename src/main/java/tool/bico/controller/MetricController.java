@@ -345,7 +345,7 @@ public class MetricController {
 		
 		ChangeMetrics cm = new ChangeMetrics(Paths.get(path));
 		
-		cm.setThreads(20);		
+		// cm.setThreads(20);		
 		
 		// get all "BUG"-FIX issues and add them to the bug repository
 		CMBugRepository bugRepo = new CMBugRepository();
