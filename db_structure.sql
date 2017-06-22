@@ -370,9 +370,11 @@ CREATE TABLE projects (
     branch character varying(255),
     changemetriceverycommits integer NOT NULL,
     changemetrictimewindow integer NOT NULL,
+    changemetricsexcludebigcommits boolean DEFAULT false NOT NULL,
     issuetrackerurlpattern character varying(255),
     name character varying(255),
     sourcemetriceverycommits integer NOT NULL,
+    sourcemetricsexcludebigcommits boolean DEFAULT false NOT NULL,
     type integer,
     url character varying(255)
 );
