@@ -35,6 +35,7 @@ public class Project {
 	private boolean changeMetricsExcludeBigCommits;
 	private int sourceMetricEveryCommits;
 	private boolean sourceMetricsExcludeBigCommits;
+	private boolean szzMetricsExcludeBigCommits;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="project", orphanRemoval = true)
 	@OrderBy("timestamp")
@@ -223,5 +224,13 @@ public class Project {
 	
 	public boolean getChangeMetricsExcludeBigCommits() {
 		return this.changeMetricsExcludeBigCommits;
+	}
+
+	public boolean getSzzMetricsExcludeBigCommits() {
+		return szzMetricsExcludeBigCommits;
+	}
+
+	public void setSzzMetricsExcludeBigCommits(boolean szzMetricsExcludeBigCommits) {
+		this.szzMetricsExcludeBigCommits = szzMetricsExcludeBigCommits;
 	}
 }

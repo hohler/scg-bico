@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -58,7 +59,7 @@ public class SZZTasklet implements Tasklet {
 		//ChangeMetrics cm = new ChangeMetrics(Paths.get(path));
 		SZZ szz = new SZZ(Paths.get(path));
 		
-		szz.setThreads(20);
+		//szz.setThreads(20);
 		
 		//if(project.getChangeMetricEveryCommits() != 0) cm.setEveryNthCommit(project.getChangeMetricEveryCommits());
 		
@@ -96,7 +97,10 @@ public class SZZTasklet implements Tasklet {
 		bugRepo.setBugCommits(commits);
         szz.setBugRepository(bugRepo);
         
-        SZZRepository results = szz.analyze();
+        if(project.getSzzMetricsExcludeBigCommits()) szz.excludeCommits( project.getBigCommits().stream().map(b -> b.getCommit().getRef()).collect(Collectors.toList()) );
+        
+        szz.generateCommitList();
+        SZZRepository results = szz.analyze(szz.getCommitList());
         
         for(SZZFile f : results.all()) {
         	

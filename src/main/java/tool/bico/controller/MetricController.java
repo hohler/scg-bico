@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,11 @@ import ch.unibe.scg.metrics.sourcemetrics.SourceMetrics;
 import ch.unibe.scg.metrics.sourcemetrics.domain.SMCommit;
 import ch.unibe.scg.metrics.sourcemetrics.domain.SMFile;
 import ch.unibe.scg.metrics.sourcemetrics.domain.SMRepository;
+import ch.unibe.scg.metrics.szz.SZZ;
+import ch.unibe.scg.metrics.szz.domain.SZZBugRepository;
+import ch.unibe.scg.metrics.szz.domain.SZZCommit;
+import ch.unibe.scg.metrics.szz.domain.SZZFile;
+import ch.unibe.scg.metrics.szz.domain.SZZRepository;
 import tool.bico.analysis.BigCommitAnalyzer;
 import tool.bico.analysis.CommitAnalyzer;
 import tool.bico.controller.form.ChangeMetricFormData;
@@ -146,13 +152,21 @@ public class MetricController {
 			
 			List<SourceMetric> sm = getSourceMetrics(project, path, ref);
 			
+			try {
+				Thread.sleep(1000 * 5);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			List<SzzMetric> szz = getSzzMetrics(project, path, ref, singleMetricHolder.getExcludeBigCommits());
+			
 			Commit c = new Commit();
 			c.setRef(ref);
 			c.setTimestamp(refCommit.getTimestamp());
 			c.setChangeMetrics(new HashSet<ChangeMetric>(cm));
 			c.setSourceMetrics(new HashSet<SourceMetric>(sm));
 			
-			List<SzzMetric> szz = szzMetricService.getSzzMetricsByCommit(refCommit);
+			//List<SzzMetric> szz = szzMetricService.getSzzMetricsByCommit(refCommit);
 			c.setSzzMetrics(new HashSet<SzzMetric>(szz));
 			
 			String fileName = project.getId()+"_"+project.getName()+"_"+ref+"_metrics.csv";
@@ -339,6 +353,56 @@ public class MetricController {
 		header.setContentLength(documentBody.length);
 		
 		return new HttpEntity<byte[]>(documentBody, header);	
+	}
+	
+	private List<SzzMetric> getSzzMetrics(Project project, String path, String ref, boolean excludeBigCommits) {
+		
+		List<SzzMetric> result = new ArrayList<>();
+		
+		SZZ szz = new SZZ(Paths.get(path));
+		
+		SZZBugRepository bugRepo = new SZZBugRepository();
+        
+		List<CommitIssue> issues = commitIssueService.findAllByProjectAndType(project, CommitIssue.Type.BUG);
+		
+		Set<String> commits = new HashSet<>();
+		for(CommitIssue i : issues) {
+			for(Commit c : i.getCommits()) {
+				commits.add(c.getRef());
+			}
+		}
+		
+		if(commits.size() == 0) commits = null;
+        
+		bugRepo.setBugCommits(commits);
+        szz.setBugRepository(bugRepo);
+        
+        if(project.getSzzMetricsExcludeBigCommits()) szz.excludeCommits( project.getBigCommits().stream().map(b -> b.getCommit().getRef()).collect(Collectors.toList()) );
+        
+        szz.generateCommitList();
+        SZZRepository results = szz.analyze(szz.getCommitList());
+        
+        long highestCommitId = 0;
+        
+        for(SZZFile f : results.all()) {
+        	
+        	for(SZZCommit c : f.getCommits()) {
+        		if(c.getHash().equals(ref)) {
+	        		Commit commit = commitService.getCommitByProjectAndRef(project, c.getHash());
+	        		if(c.getHash().equals(ref)) highestCommitId = commit.getId();
+	        		SzzMetric sz = new SzzMetric();
+	        		sz.setFile(f.getFile());
+	        		sz.setBugs(c.getBugs());
+	        		sz.setCommit(commit);
+	        		sz.setBugfix(c.isBugfix());
+	        		sz.setDeleted(c.isDeleted());
+	        		
+	        		result.add(sz);
+        		}
+        	}
+        }
+		
+		return result;
 	}
 	
 	private List<ChangeMetric> getChangeMetrics(Project project, String path, String ref, int timeWindow, boolean excludeBigCommits) {

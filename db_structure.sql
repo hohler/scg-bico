@@ -375,6 +375,7 @@ CREATE TABLE projects (
     name character varying(255),
     sourcemetriceverycommits integer NOT NULL,
     sourcemetricsexcludebigcommits boolean DEFAULT false NOT NULL,
+    szzmetricsexcludebigcommits boolean DEFAULT false NOT NULL,
     type integer,
     url character varying(255)
 );

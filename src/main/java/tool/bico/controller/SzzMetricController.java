@@ -19,13 +19,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import tool.bico.controller.form.ChangeMetricFormData;
+import tool.bico.analysis.BigCommitAnalyzer;
+import tool.bico.controller.form.SzzMetricFormData;
 import tool.bico.job.JobCreator;
-import tool.bico.model.ChangeMetric;
-import tool.bico.model.Commit;
 import tool.bico.model.Project;
 import tool.bico.model.SzzMetric;
-import tool.bico.model.service.ChangeMetricService;
 import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
 import tool.bico.model.service.SzzMetricService;
@@ -40,6 +38,13 @@ public class SzzMetricController {
 	
 	@Autowired
 	private ProjectService projectService;
+	
+	@Autowired
+	private CommitService commitService;
+	
+	@Autowired
+	@Lazy
+	private JobCreator jobCreator;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView index(Model model, @PathVariable("id") Long id) {
@@ -73,30 +78,37 @@ public class SzzMetricController {
                 .sorted((e1,e2) -> e1.getKey().file.compareTo(e2.getKey().file))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2) -> e1, LinkedHashMap::new));
 		
+		SzzMetricFormData smf = new SzzMetricFormData();
+		smf.setExcludeBigCommits(project.getSzzMetricsExcludeBigCommits());
 		
 		model.addAttribute("szz", szz_sorted);
 		model.addAttribute("szzMetrics", szzMetrics);
 		model.addAttribute("project", project);
+		model.addAttribute("smf", smf);
 		
 	
 		return new ModelAndView("projects/metrics/szz/index", model.asMap());
 	}
 	
-	
-	/*@RequestMapping(method = RequestMethod.GET, value="{cid}")
-	public ModelAndView view(Model model, @PathVariable("id") Long id, @PathVariable("cid") Long cid) {
+	@RequestMapping(method = RequestMethod.POST)
+	public ModelAndView szzVariables(SzzMetricFormData smf, @PathVariable("id") Long id, BindingResult result, RedirectAttributes redirect) {
 		Project project = projectService.findById(id);
-		Commit commit = commitService.findById(cid);
-		List <ChangeMetric> changeMetrics = changeMetricService.getChangeMetricsByCommit(commit);
 		
-		model.addAttribute("project", project);
-		model.addAttribute("commit", commit);
-		model.addAttribute("changeMetrics", changeMetrics);
-		model.addAttribute("newLineChar", "\n");
+		project.setSzzMetricsExcludeBigCommits(smf.getExcludeBigCommits());
 		
-		return new ModelAndView("projects/metrics/changemetrics/view", model.asMap());
+		if(smf.getExcludeBigCommits()) {
+			BigCommitAnalyzer.analyzeBigCommits(project, projectService, commitService);
+		}
+		
+		this.projectService.update(project);
+		
+		this.jobCreator.removeMetricsJob(project);
+		this.jobCreator.createMetricsJob(project);
+		
+		redirect.addFlashAttribute("globalMessage", "Successfully updated the variables");
+		return new ModelAndView("redirect:/projects/{project.id}/metrics/szz", "project.id", project.getId());
 	}
-	*/
+	
 	@RequestMapping(method = RequestMethod.GET, value="file")
 	public ModelAndView viewFileHistory(Model model, @PathVariable("id") Long id, @RequestParam("file") String file) {
 		Project project = projectService.findById(id);
