@@ -74,7 +74,10 @@ $(document).ready(function() {
 					<span id="jobDuration"></span>
 				</td>
 			</tr>
-			
+			<tr>
+				<th>Export</th>
+				<td><a th:href="@{'/projects/' + ${project.id} + '/export'}">Export as CSV</a></td>
+			</tr>
 			<tr>
 				<th>Options</th>
 				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/analyze'}">Analyze</a> |&nbsp;

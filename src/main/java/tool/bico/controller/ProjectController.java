@@ -1,11 +1,22 @@
 package tool.bico.controller;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,10 +27,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import tool.bico.controller.MetricController.MetricHolder;
 import tool.bico.job.JobCreator;
 import tool.bico.model.Project;
+import tool.bico.model.SourceMetric;
+import tool.bico.model.SzzMetric;
+import tool.bico.model.ChangeMetric;
 import tool.bico.model.Commit;
 import tool.bico.model.service.ProjectService;
+import tool.bico.utils.CSVUtils;
 
 @Controller
 @RequestMapping("/projects")
@@ -132,6 +148,59 @@ public class ProjectController {
 		
 		redirect.addFlashAttribute("globalMessage", "Successfully updated project");
 		return new ModelAndView("redirect:/projects/{project.id}", "project.id", dbProject.getId());
+	}
+	
+	
+	@RequestMapping(method = RequestMethod.GET, value = "{id}/export")
+	public HttpEntity<byte[]> downloadCommitAnalysis(RedirectAttributes redirect, @PathVariable("id") Long id) throws IOException {
+
+		Project project = projectService.findById(id);
+		Set<Commit> commits = project.getCommits();
+		
+		String fileName = project.getName()+".csv";
+		
+		StringWriter writer = new StringWriter();
+		CSVUtils csv = new CSVUtils(';');
+		
+		String[] csvHeader = {
+			"Hash",
+			"parentCommit",
+			"Issues",
+			"Additions",
+			"Deletions",
+			"isMergeCommit",
+			"date",
+			"commitMessageFirstLine"
+		};
+		
+		csv.writeLine(writer, Arrays.asList(csvHeader));
+		
+		for(Commit c : commits) {
+			
+			String[] in = {
+				c.getRef(),
+				c.getParentCommit() != null ? c.getParentCommit().getRef() : "",
+				""+ c.getCommitIssues().size(),
+				""+ c.getAdditions(),
+				""+ c.getDeletions(),
+				c.isMergeCommit() ? "yes" : "no",
+				c.getDate().toString(),
+				c.firstLineOfMessage()
+			};
+				
+			//csv.writeLine(writer, Arrays.asList(in), ',', '\'');
+			csv.writeLine(writer, Arrays.asList(in));
+		}
+		
+		byte[] documentBody = writer.toString().getBytes();
+		
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set(HttpHeaders.CONTENT_DISPOSITION,
+		              "attachment; filename=" + fileName.replace(" ", "_"));
+		header.setContentLength(documentBody.length);
+		
+		return new HttpEntity<byte[]>(documentBody, header);	
 	}
 
 }
