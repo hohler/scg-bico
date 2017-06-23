@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import tool.bico.job.JobCreator;
 import tool.bico.model.Project;
+import tool.bico.model.Commit;
 import tool.bico.model.service.ProjectService;
 
 @Controller
@@ -40,7 +42,7 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value="{id}")
-	public ModelAndView view(@PathVariable("id") Long id, RedirectAttributes redirect) {
+	public ModelAndView view(Model model, @PathVariable("id") Long id, RedirectAttributes redirect) {
 		Project project = projectService.findById(id);
 		
 		if(project == null) {
@@ -48,7 +50,17 @@ public class ProjectController {
 			return new ModelAndView("redirect:/projects");
 		}
 		
-		return new ModelAndView("projects/view", "project", project);
+		int commitAmountWithoutIssue = 0;
+		int commitAmountWithIssues = 0;
+		for(Commit c : project.getCommits()) {
+			if(c.getCommitIssues().size() == 0) commitAmountWithoutIssue++;
+			else commitAmountWithIssues++;
+		}
+		
+		model.addAttribute("project", project);
+		model.addAttribute("commitAmountWithoutIssue", commitAmountWithoutIssue);
+		model.addAttribute("commitAmountWithIssues", commitAmountWithIssues);
+		return new ModelAndView("projects/view", model.asMap());
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "create")

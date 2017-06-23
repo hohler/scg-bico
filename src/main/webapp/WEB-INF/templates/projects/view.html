@@ -58,7 +58,14 @@ $(document).ready(function() {
 				<th>Issue Tracker URL (with pattern)</th>
 				<td th:text="${project.issueTrackerUrlPattern}">trackerurl</td>
 			</tr>
-			
+			<tr>
+				<th>Commits without an issue</th>
+				<td th:text="${commitAmountWithoutIssue}">commitsWithoutIssue</td>
+			</tr>
+			<tr>
+				<th>Commits with one or more issues related</th>
+				<td th:text="${commitAmountWithIssues}">commitsWithIssues</td>
+			</tr>
 			<tr>
 				<th>Job control (Status automatically updated)</th>
 				<td>
