@@ -24,7 +24,7 @@ public class RepositoryProcessor implements ItemProcessor<Commit, Commit> {
 		List<String> identifiers = new ArrayList<>();
 		
 		if(type == Project.Type.JIRA) {
-			IssueStringParser issueParser = new IssueStringParser("(^|\\s+|#)\\[?(\\w+-\\d+)\\]?(\\s|.)+");
+			IssueStringParser issueParser = new IssueStringParser("(^|\\s+|#)\\[?(\\w+-\\d+)\\]?(\\s|\\.|:|;|,)+");
 			identifiers = issueParser.parseAll(input.getMessage(), 2);
 		} else
 		if(type == Project.Type.GITHUB) {
