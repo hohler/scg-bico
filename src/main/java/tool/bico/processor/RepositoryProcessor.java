@@ -24,20 +24,20 @@ public class RepositoryProcessor implements ItemProcessor<Commit, Commit> {
 		List<String> identifiers = new ArrayList<>();
 		
 		if(type == Project.Type.JIRA) {
-			IssueStringParser issueParser = new IssueStringParser("^\\[?(\\w+-\\d+)\\]?");
-			identifiers = issueParser.parseAll(input.getMessage());
+			IssueStringParser issueParser = new IssueStringParser("(^|\\s+|#)\\[?(\\w+-\\d+)\\]?(\\s|.)+");
+			identifiers = issueParser.parseAll(input.getMessage(), 2);
 		} else
 		if(type == Project.Type.GITHUB) {
 			IssueStringParser issueParser = new IssueStringParser("\\(?#(\\d+)\\)?");
-			identifiers = issueParser.parseAll(input.getMessage());
+			identifiers = issueParser.parseAll(input.getMessage(), 1);
 		} else
 		if(type == Project.Type.BUGZILLA) {
 			IssueStringParser issueParser = new IssueStringParser("bug\\s(\\d+)");
-			identifiers = issueParser.parseAll(input.getMessage());
+			identifiers = issueParser.parseAll(input.getMessage(), 1);
 		}
 		
 		for(String i : identifiers) {
-			input.initIssue(i.toUpperCase());
+			if(i != null && !i.isEmpty()) input.initIssue(i.toUpperCase());
 		}
 		
 		return input;
