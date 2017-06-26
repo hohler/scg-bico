@@ -63,7 +63,9 @@ public class CommitAnalyzer {
 				Set<CommitFile> files = c.getFiles();			
 				Set<ResultsContainer.FileHolder> fileList = new HashSet<>();
 				for(CommitFile f : files) {
-					fileList.add(rc.new FileHolder(f.getChangeType(), f.getAdditions(), f.getDeletions()));
+					if(f.isSrc()) {
+						fileList.add(rc.new FileHolder(f.getChangeType(), f.getAdditions(), f.getDeletions()));
+					}
 				}
 				
 				rc.addResult(new Long(c.getId()), c.getFiles().size(), c.getAdditions(), c.getDeletions(), fileList);
