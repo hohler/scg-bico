@@ -41,26 +41,34 @@ public class GitRepositoryCommitIterator implements Iterator<Commit> {
 		RevCommit commit = data.pop();
 		
 		// branch itself, get another commit from the stack
-		if(commit.getParentCount() == 0) commit = data.pop();
+		/*if(commit.getParentCount() == 0) {
+			System.out.println(commit);
+			commit = data.pop();
+		}*/
 		
 		Commit c = new Commit();
-		c.setMessage(commit.getFullMessage());
+		c.setMessage(commit.getFullMessage().replaceAll("\\x00",  ""));
 		c.setParentCommit(parentCommit);
 		c.setRef(commit.getName());
 		int commitAdditions = 0;
 		int commitDeletions = 0;
 		
+		c.setTimestamp(commit.getCommitTime());
+		
+		if(commit.getParentCount() > 1) c.setMergeCommit(true);
+		
 		parentCommit = c;
 		
 		System.out.println("commit: "+commit.getShortMessage());
 
-		RevCommit parentCommit = commit.getParent(0);
+		RevCommit parentCommit = commit.getParentCount() != 0 ? commit.getParent(0) : null;
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		
 	    try (DiffFormatter diffFormatter = new DiffFormatter(out)) {
 	        diffFormatter.setRepository(repository);
 	        diffFormatter.setDetectRenames(true);
+	        
 	        for (DiffEntry entry : diffFormatter.scan(parentCommit, commit)) {
 	            //diffFormatter.format(diffFormatter.toFileHeader(entry));
 	            diffFormatter.format(entry);
@@ -81,7 +89,8 @@ public class GitRepositoryCommitIterator implements Iterator<Commit> {
 	            
 	            CommitFile cf = new CommitFile();
 	            cf.setChangeType(entry.getChangeType());
-	            cf.setPatch(patch);
+	            //if(!entry.getOldPath().matches("\\.(pdf|ai|psd|tiff|jpg|png|jpeg|gif|bmp|ico)$") && !entry.getNewPath().matches("\\.(pdf|ai|psd|tiff|jpg|png|jpeg|gif|bmp|ico)$")) cf.setPatch(patch);
+	            cf.setPatch(patch.replaceAll("\\x00",  ""));
 	            cf.setOldPath(entry.getOldPath());
 	            cf.setNewPath(entry.getNewPath());
 	            cf.setAdditions(linesAdded);

@@ -15,7 +15,7 @@ You need a PostgreSQL and a Tomcat Server.
 1. Clone repo
 2. Import in Eclipse
 3. Update configuration
-4. Set up a local Tomcat Server Version >= 6 (Version <= 7 with Eclipse) and add it in the Run Configurations in Eclipse
+4. Set up a local Tomcat Server Version >= 6 (Eclipse only provides Version <=7) and add it in the Run Configurations in Eclipse
 5. Deploy the project to the Tomcat server
 6. How to use the tool
 6.1 Spring Batch Admin
@@ -30,10 +30,10 @@ Adapt database parameters in file
 `/src/main/resources/application.properties`
 
 
-	bico.db.url = jdbc:mysql://localhost:3306/bico?autoReconnect=true
+	bico.db.url = jdbc:postgresql://localhost:5432/bico?autoReconnect=true
 	bico.db.username = bico
 	bico.db.password = bico
-	bico.db.driverClassName = com.mysql.jdbc.Driver
+	bico.db.driverClassName = org.postgresql.Driver
 
 
 Adapt path for cloning repositories in file
@@ -63,6 +63,9 @@ After deploying, navigate to [http://localhost:8080/bico/](http://localhost:8080
 3. You can check the status of the batch job in the `Batch Admin` where you started it.
 
 4. After successful execution, go back to the BiCo interface and open the project with `Details`. You can now do the analysis with `Analyze` and look for `Possible Big Commits`.
+Also you can go to `Metrics` and mine source and change metrics. The SZZ algorithm is also available.
+
+**Important: For metrics don't use "Every 1th commit" in big projects, because this will need hours to calculate.**
 
 ### Job Control ###
 In each analysis page, there is a dedicated job control button where you can start the analysis batch job and observe when it finishes. For more details about the batch jobs such as pausing, resuming, and stopping, you can use the dedicated Batch Admin UI explained in the following subsection.

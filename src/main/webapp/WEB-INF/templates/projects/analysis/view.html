@@ -186,7 +186,7 @@
   <!-- Nav tabs -->
 	  <ul class="nav nav-tabs" id="analysisTabs" data-tabs="tabs">
 	    <li th:each="type : ${types}">
-	    	<a th:href="${'#' + type.toString()}" th:text="${type}" data-toggle="tab">text</a>
+	    	<a th:href="${'#' + type.toString()}" th:text="${type.toString() == 'Na' ? 'Unknown' : type.toString()}" data-toggle="tab">text</a>	
     	</li>
 	  </ul>
 

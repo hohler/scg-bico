@@ -1,0 +1,68 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<title>Issue : View</title>
+
+<link href="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html.min.css"
+          th:href="@{/webjars/diff2html/2.0.10/dist/diff2html.min.css}"
+          rel="stylesheet" media="screen" />
+          
+<script src="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html.min.js"
+            th:src="@{/webjars/diff2html/2.0.10/dist/diff2html.min.js}"></script>
+       
+<script src="http://cdn.jsdelivr.net/webjars/org.webjars.bower/diff2html/2.0.10/dist/diff2html-ui.min.js"
+            th:src="@{/webjars/diff2html/2.0.10/dist/diff2html-ui.min.js}"></script>
+            
+</head>
+<body>
+	<h1 layout:fragment="header"><span th:text="${issue.getName()}"></span></h1>
+	<div layout:fragment="content" class="container">
+
+		<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+		
+		<div class="pull-right" style="margin-bottom:10px;">
+			<a href="projects" class="btn btn-default" th:href="@{'/projects/' + ${project.id}}">
+				back to project </a>
+		</div>
+			
+		<table class="table table-bordered table-striped">
+			<tr>
+				<th>ID</th>
+				<td th:text="${issue.id}">id</td>
+			</tr>
+			<tr>
+				<th>Name</th>
+				<td th:text="${issue.name}">name</td>
+			</tr>
+			<tr>
+				<th>Link</th>
+				<td><a th:if="${issue.link}" th:href="${issue.link}" target="_blank" th:text="${issue.link}">link</a></td>
+			</tr>
+			<tr>
+				<th>Number of commits assigned to this issue</th>
+				<td th:text="${issue.getCommits().size()}">count</td>
+			</tr>
+			<tr>
+				<th colspan="2">Description</th>
+			</tr>
+			<tr>
+				<td colspan="2" th:utext="${#strings.replace(issue.description, newLineChar, '&lt;br /&gt;')}">description</td>
+			</tr>
+		</table>
+		
+		<h2>Commit list</h2>
+		<table class="table table-bordered table-striped table-condensed">
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+			</tr>
+			<tr th:each="commit : ${issue.getCommits()}">
+				<td><a th:href="@{'/projects/' + ${commit.project.id} + '/commits/' + ${commit.id}}" th:text="${commit.id}">id</a></td>
+				<td th:text="${commit.firstLineOfMessage()}">name</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

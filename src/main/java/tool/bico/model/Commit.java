@@ -1,5 +1,6 @@
 package tool.bico.model;
 
+import java.util.Date;
 import java.util.HashSet;
 
 import java.util.Set;
@@ -11,6 +12,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ForeignKey;
+import javax.persistence.ConstraintMode;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -22,17 +28,27 @@ import javax.persistence.Table;
 public class Commit {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	protected Long id;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "commit", orphanRemoval = true)
 	@OrderBy("id")
 	protected Set<CommitFile> files;
 	
-	@OneToOne(cascade = CascadeType.DETACH, optional=true, fetch = FetchType.LAZY)
+	@OneToOne(cascade = {CascadeType.DETACH}, optional=true, fetch = FetchType.LAZY)
 	protected Commit parentCommit;
 	
-	@OneToMany(mappedBy = "commit", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@ManyToMany(targetEntity = CommitIssue.class, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+	@JoinTable(name = "commits_commitissues",
+    inverseJoinColumns = @JoinColumn(name = "commitissue_id",
+            nullable = false,
+            updatable = false),
+    joinColumns = @JoinColumn(name = "commit_id",
+            nullable = false,
+            updatable = false),
+    foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT),
+    inverseForeignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
+	@OrderBy("id ASC")
 	protected Set<CommitIssue> commitIssues;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -46,6 +62,22 @@ public class Commit {
 	
 	@Column(columnDefinition = "TEXT")
 	protected String message;
+	
+	protected boolean isMergeCommit = false;
+	
+	protected int timestamp;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="commit", orphanRemoval = true)
+	@OrderBy("id")
+	private Set<ChangeMetric> changeMetrics;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="commit", orphanRemoval = true)
+	@OrderBy("id")
+	private Set<SzzMetric> szzMetrics;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="commit", orphanRemoval = true)
+	@OrderBy("id")
+	private Set<SourceMetric> sourceMetrics;
 	
 	public Commit() {
 		files = new HashSet<CommitFile>();
@@ -127,17 +159,26 @@ public class Commit {
 	public void initIssue(String issue) {
 		if(issue == null) return;
 		CommitIssue i = new CommitIssue(issue);
-		i.setCommit(this);
+		//i.setCommit(this);
 		this.addCommitIssue(i);
 	}
 	
 	public void addCommitIssue(CommitIssue commitIssue) {
-		commitIssue.setCommit(this);
+		//commitIssue.addCommit(this);
+		this.commitIssues.add(commitIssue);
+	}
+	
+	public void addCommitIssueSilently(CommitIssue commitIssue) {
+		//commitIssue.setCommit(this);
 		this.commitIssues.add(commitIssue);
 	}
 	
 	public void removeCommitIssue(CommitIssue commitIssue) {
-		commitIssue.setCommit(null);
+		//commitIssue.removeCommit(this);
+		this.commitIssues.remove(commitIssue);
+	}
+	
+	public void removeCommitIssueSilently(CommitIssue commitIssue) {
 		this.commitIssues.remove(commitIssue);
 	}
 
@@ -149,8 +190,53 @@ public class Commit {
 		return additions + deletions;
 	}
 	
+	
+	public boolean isMergeCommit() {
+		return isMergeCommit;
+	}
+
+	public void setMergeCommit(boolean isMergeCommit) {
+		this.isMergeCommit = isMergeCommit;
+	}
+
 	public String toString() {
 		return String.format("Commit[id=%d, name='%s', additions='%d', deletions='%d']",
 				id, firstLineOfMessage(), additions, deletions);
+	}
+
+	public void setTimestamp(int timestamp) {
+		this.timestamp = timestamp;	
+	}
+	
+	public int getTimestamp() {
+		return timestamp;
+	}
+	
+	public Date getDate() {
+		return new Date((long)timestamp * 1000);
+	}
+
+	public Set<SzzMetric> getSzzMetrics() {
+		return szzMetrics;
+	}
+
+	public void setSzzMetrics(Set<SzzMetric> szzMetrics) {
+		this.szzMetrics = szzMetrics;
+	}
+
+	public Set<ChangeMetric> getChangeMetrics() {
+		return changeMetrics;
+	}
+
+	public void setChangeMetrics(Set<ChangeMetric> changeMetrics) {
+		this.changeMetrics = changeMetrics;
+	}
+
+	public Set<SourceMetric> getSourceMetrics() {
+		return sourceMetrics;
+	}
+
+	public void setSourceMetrics(Set<SourceMetric> sourceMetrics) {
+		this.sourceMetrics = sourceMetrics;
 	}
 }

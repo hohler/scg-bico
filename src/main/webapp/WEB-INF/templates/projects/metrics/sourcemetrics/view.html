@@ -1,0 +1,118 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+	<title>Metrics : Source metrics : Detail view of commit</title>            
+</head>
+<body>
+	<h1 layout:fragment="header"><span th:text="${project.name}"></span></h1>
+	<div layout:fragment="content" class="container">
+
+		<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+		
+		<div class="pull-right" style="margin-bottom:10px;">
+			<a href="projects" class="btn btn-default" th:href="@{'/projects/' + ${project.id} + '/metrics/sourcemetrics'}">
+				back to overview </a>
+		</div>
+		
+		<table class="table table-bordered table-striped">
+			<tr>
+				<th>ID</th>
+				<td th:text="${commit.id}">id</td>
+			</tr>
+			<tr>
+				<th>Name</th>
+				<td th:text="${commit.firstLineOfMessage()}">name</td>
+			</tr>
+			<tr>
+				<th>Changes</th>
+				<td th:text="${commit.getChanges()}">changes</td>
+			</tr>
+			<tr>
+				<th>Additions</th>
+				<td th:text="${commit.additions}">additions</td>
+			</tr>
+			<tr>
+				<th>Deletions</th>
+				<td th:text="${commit.deletions}">deletions</td>
+			</tr>
+			<tr>
+				<th>Files changed</th>
+				<td th:text="${commit.files.size()}">files changed</td>
+			</tr>
+			<tr>
+				<th>Ref</th>
+				<td th:text="${commit.ref}">ref</td>
+			</tr>
+			<tr>
+				<th>Number of issues assigned to this commit</th>
+				<td th:text="${commit.getCommitIssues().size()}">count</td>
+			</tr>
+			<tr>
+				<th>Commit detail view</th>
+				<td><a th:href="@{'/projects/' + ${project.id} + '/commits/' + ${commit.id}}">Go to commit</a></td>
+			<tr>
+				<th colspan="2">Message</th>
+			</tr>
+			<tr>
+				<td colspan="2" th:utext="${#strings.replace(commit.message, newLineChar, '&lt;br /&gt;')}">message</td>
+			</tr>
+			<tr>
+				<th>Export</th>
+				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/sourcemetrics/' + ${commit.id} + '/download'}">Download as CSV</a></td>
+			</tr>
+		</table>
+
+		<h2>Source metrics (<span th:text="${sourceMetrics.size()}">size</span>)</h2>
+		<table class="table table-bordered table-striped table-condensed" th:unless="${sourceMetrics.isEmpty()}">
+			<tr>
+				<th>File</th>
+				<th>className</th>
+				<th>Type</th>
+				<th>CBO</th>
+				<th>WMC</th>
+				<th>DIT</th>
+				<th>NOC</th>
+				<th>RFC</th>
+				<th>LCOM</th>
+				<th>NOM</th>
+				<th>NOPM</th> 
+				<th>NOSM</th>
+				<th>NOF</th>
+				<th>NOPF</th> 
+				<th>NOSF</th>
+				<th>NOSI</th>
+				<th>LOC</th>
+				<th>NOCB</th>
+				<th>NONC</th>
+				<th>NONA</th>
+				<th>NOMWMOP</th>
+			</tr>
+			<tr th:each="sm : ${sourceMetrics}">
+				<td th:text="${sm.getShortFile()}" th:title="${sm.file}" style="cursor:help;">file</td>
+				<td th:text="${sm.className}">className</td>
+				<td th:text="${sm.type}">type</td>
+				<td th:text="${sm.cbo}">cbo</td>
+				<td th:text="${sm.wmc}">wmc</td>
+				<td th:text="${sm.dit}">dit</td>
+				<td th:text="${sm.noc}">noc</td>
+				<td th:text="${sm.rfc}">rfc</td>
+				<td th:text="${sm.lcom}">lcom</td>
+				<td th:text="${sm.nom}">nom</td>
+				<td th:text="${sm.nopm}">nopm</td>
+				<td th:text="${sm.nosm}">nosm</td>
+				<td th:text="${sm.nof}">nof</td>
+				<td th:text="${sm.nopf}">nopf</td>
+				<td th:text="${sm.nosf}">nosf</td>
+				<td th:text="${sm.nosi}">nosi</td>
+				<td th:text="${sm.loc}">loc</td>
+				<td th:text="${sm.nocb}">nocb</td>
+				<td th:text="${sm.nonc}">nonc</td>
+				<td th:text="${sm.nona}">nona</td>
+				<td th:text="${sm.nomwmop}">nomwmop</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

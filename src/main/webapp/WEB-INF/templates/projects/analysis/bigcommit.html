@@ -57,6 +57,7 @@
 			<table class="table table-bordered table-striped table-condensed" dt:table="true">
 			<tr>
 				<th>ID</th>
+				<th>Type</th>
 				<th>Issues</th>
 				<th>Additions</th>
 				<th>Deletions</th>
@@ -65,6 +66,10 @@
 			</tr>
 			<tr th:each="commit : ${map.value}">
 				<td><a th:text="${commit.id}" href="projects" th:href="@{'/projects/' + ${project.id} + '/commits/' + ${commit.id}}">id</a></td>
+				<td>
+					<span th:if="${commit.isMergeCommit()}" class="label label-success">MERGE</span>
+					<span th:if="${!commit.isMergeCommit()}" class="label label-default">OUTLIER</span>
+				</td>
 				<td th:text="${commit.getCommitIssues().size()}">issues</td>
 				<td th:text="${commit.additions}">additions</td>
 				<td th:text="${commit.deletions}">deletions</td>

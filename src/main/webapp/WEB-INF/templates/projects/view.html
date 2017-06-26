@@ -4,6 +4,23 @@
 	layout:decorate="layout">
 <head>
 <title>Projects : View</title>
+
+<script src="/resources/js/job_control.js" th:src="@{/resources/js/job_control.js}"></script>
+
+<script th:inline="javascript">
+var path = [[@{'/batch/jobs/'}]];
+var jobControl = new JobControl(path);
+var jobName = [[${project.id + '_' + project.name}]];
+
+$(document).ready(function() {
+	jobControl.getJobStatus(jobName);
+	setInterval(function() {
+		jobControl.getJobStatus(jobName);
+	}, 10000);
+});
+</script>
+
+
 </head>
 <body>
 	<h1 layout:fragment="header"><span th:text="${project.name}"></span> : Details</h1>
@@ -13,7 +30,7 @@
 		
 		<div class="pull-right" style="margin-bottom:10px;">
 			<a href="projects" class="btn btn-primary" th:href="@{'/projects/modify/' + ${project.id}}">
-				delete </a>
+				modify </a>
 			<a href="projects" class="btn btn-danger" th:href="@{'/projects/delete/' + ${project.id}}">
 				delete </a>
 			<a href="projects" class="btn btn-default" th:href="@{'/projects'}">
@@ -42,12 +59,39 @@
 				<td th:text="${project.issueTrackerUrlPattern}">trackerurl</td>
 			</tr>
 			<tr>
+				<th>Commits without an issue</th>
+				<td th:text="${commitAmountWithoutIssue}">commitsWithoutIssue</td>
+			</tr>
+			<tr>
+				<th>Commits with one or more issues related</th>
+				<td th:text="${commitAmountWithIssues}">commitsWithIssues</td>
+			</tr>
+			<tr>
+				<th>Job control (Status automatically updated)</th>
+				<td>
+					<span id="jobStatus" class="label label-default">Retrieving status...</span>
+					<button id="jobStart" onclick="jobControl.startJob(jobName);" type="button" class="btn btn-primary btn-sm hidden">Start</button>
+					<span id="jobDuration"></span>
+				</td>
+			</tr>
+			<tr>
+				<th>Export</th>
+				<td><a th:href="@{'/projects/' + ${project.id} + '/export'}">Export as CSV</a></td>
+			</tr>
+			<tr>
 				<th>Options</th>
 				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/analyze'}">Analyze</a> |&nbsp;
-					<a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name}}">Batch Job</a> |&nbsp;
+					<a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name}}" target="_blank">Batch Job</a> |&nbsp;
 					<a href="projects" th:href="@{'/projects/' + ${project.id} + '/issues'}">Issues</a> |&nbsp;
 					<a href="projects" th:href="@{'/projects/' + ${project.id} + '/analyze/bigcommits'}">Possible Big Commits</a>
 					</td>
+			</tr>
+			<tr>
+				<th>Metrics</th>
+				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics'}">Metrics</a> |&nbsp;
+				<a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/changemetrics'}">Change metrics</a> |&nbsp;
+				<a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/sourcemetrics'}">Source metrics</a> |&nbsp;
+				<a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/szz'}">SZZ</a></td>
 			</tr>
 		</table>
 		
@@ -68,6 +112,8 @@
 			<td th:text="${commit.firstLineOfMessage()}">firstLineOfMessage</td>
 		</tr>
 		</table>
+		
+		<div class="alert alert-info" role="alert" th:if="${project.commits.isEmpty()}">No commits available. First start the job.</div>
 
 	</div>
 </body>

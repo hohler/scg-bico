@@ -32,7 +32,7 @@ public class JiraParser implements Parser {
 
 	@Override
 	public String formatUrl(String url, String issue) {
-		return String.format(url+"?field=type&field=priority&field=title",  issue, issue);
+		return String.format(url+"?field=type&field=priority&field=title&field=link&field=description",  issue, issue);
 	}
 
 	@Override
@@ -57,6 +57,9 @@ public class JiraParser implements Parser {
 			Node node = items.item(0);
 			Element element = (Element) node;	
 			
+			String link = element.getElementsByTagName("link").item(0).getTextContent();
+			String description = element.getElementsByTagName("description").item(0).getTextContent();
+			
 			String key = element.getElementsByTagName("key").item(0).getTextContent();
 			String type = element.getElementsByTagName("type").item(0).getTextContent();
 			String priority = element.getElementsByTagName("priority").item(0).getTextContent();
@@ -64,6 +67,8 @@ public class JiraParser implements Parser {
 			String title = element.getElementsByTagName("title").item(0).getTextContent();
 			
 			result.setName(key);
+			result.setLink(link);
+			result.setDescription(description);
 
 			System.out.println("["+key+"] type: "+type + " priority: " + priority);
 			

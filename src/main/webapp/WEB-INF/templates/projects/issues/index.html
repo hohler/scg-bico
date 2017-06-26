@@ -35,7 +35,7 @@
 							<th>Name</th>
 							<th>Type</th>
 							<th>Priority</th>
-							<th>Commit</th>
+							<th>Commits</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -44,7 +44,9 @@
 							<td th:text="${issue.name}">name</td>
 							<td th:text="${issue.type}">Type</td>
 							<td th:text="${issue.priority}">Type</td>
-							<td><a th:href="@{'/projects/' + ${project.id} + '/commits/' + ${issue.commit.id}}" th:text="${issue.commit.id}">commit</a></td>
+							<td>
+								<a th:each="commit, iterStat : ${issue.getCommits()}" th:href="@{'/projects/' + ${project.id} + '/commits/' + ${commit.id}}" th:text="!${iterStat.last} ? ${commit.id} + ', ' : ${commit.id}">commit</a>
+							</td>
 						</tr>
 					</tbody>
 				</table>

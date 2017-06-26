@@ -1,0 +1,71 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+	<title>Metrics : Change metrics : metrics history of a file</title>
+</head>
+<body>
+	<h1 layout:fragment="header"><span th:text="${project.name}"></span></h1>
+	<div layout:fragment="content" class="container">
+
+		<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+		
+		<div class="pull-right" style="margin-bottom:10px;">
+			<a href="projects" class="btn btn-default" th:href="@{'/projects/' + ${project.id} + '/metrics/changemetrics'}">
+				back to overview </a>
+		</div>
+		
+		<table class="table table-bordered table-striped">
+			<tr>
+				<th>File</th>
+				<td th:text="${changeMetrics.get(0).getFile()}">id</td>
+			</tr>
+		</table>
+
+		<h2>Change metrics</h2>
+		<table class="table table-bordered table-striped table-condensed" th:unless="${changeMetrics.isEmpty()}">
+			<tr>
+				<th>Commit</th>
+				<th>Revisions</th>
+				<th>Refactorings</th>
+				<th>Bugfixes</th>
+				<th>Authors</th>
+				<th>LOC+</th>
+				<th>LOC-</th>
+				<th>avgLOC+</th>
+				<th>avgLOC-</th>
+				<th>maxLOC+</th>
+				<th>maxLOC-</th>
+				<th>codeChurn</th>
+				<th>maxCodechurn</th>
+				<th>avgCodechurn</th>
+				<th>maxChangeset</th>
+				<th>avgChangeset</th>
+				<th>Age (W)</th>
+				<th>weightedAge (W)</th>
+			</tr>
+			<tr th:each="cm : ${changeMetrics}">
+				<td><a th:href="@{'/projects/' + ${project.id} + '/commits/' + ${cm.getCommit().id}}" th:text="${cm.getCommit().firstLineOfMessage()}">Go to commit</a></td>
+				<td th:text="${cm.revisions}">revs</td>
+				<td th:text="${cm.refactorings}">refactorings</td>
+				<td th:text="${cm.bugfixes}">bugfixes</td>
+				<td th:text="${cm.authors}">authors</td>
+				<td th:text="${cm.locAdded}">locAdded</td>
+				<td th:text="${cm.locRemoved}">locRemoved</td>
+				<td th:text="${cm.avgLocAdded != 0 ? #numbers.formatDecimal(cm.avgLocAdded, 1, 2) : 0}">avgLocAdded</td>
+				<td th:text="${cm.avgLocRemoved != 0 ? #numbers.formatDecimal(cm.avgLocRemoved, 1, 2) : 0}">avgLocRemoved</td>
+				<td th:text="${cm.maxLocAdded}">maxLocAdded</td>
+				<td th:text="${cm.maxLocRemoved}">maxLocRemoved</td>
+				<td th:text="${cm.codeChurn}">codechurn</td>
+				<td th:text="${cm.maxCodeChurn}">maxCodechurn</td>
+				<td th:text="${cm.avgCodeChurn != 0 ? #numbers.formatDecimal(cm.avgCodeChurn, 1, 2) : 0}">avgCodechurn</td>
+				<td th:text="${cm.maxChangeset}">maxChangeset</td>
+				<td th:text="${cm.avgChangeset != 0 ? #numbers.formatDecimal(cm.avgChangeset, 1, 2) : 0}">avgChangeset</td>
+				<td th:text="${cm.age}">weeks</td>
+				<td th:text="${cm.weightedAge != 0 ? #numbers.formatDecimal(cm.weightedAge, 1, 2) : 0}">weighted Age</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

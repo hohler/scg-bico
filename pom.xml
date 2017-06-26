@@ -168,11 +168,6 @@
 			<artifactId>hibernate-entitymanager</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.thymeleaf</groupId>
 			<artifactId>thymeleaf</artifactId>
 			<version>3.0.2.RELEASE</version>
@@ -221,6 +216,88 @@
 			<artifactId>d3-tip</artifactId>
 			<version>0.7.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4.1212</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>org.eclipse.jdt.core</artifactId>
+			<version>3.10.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+		
+		<dependency>
+		  <groupId>org.repodriller</groupId>
+		  <artifactId>repodriller</artifactId>
+		  <version>1.2.3-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>ch.unibe.scg.metrics</groupId>
+		  <artifactId>changemetrics</artifactId>
+		  <version>1.8</version>
+		</dependency>
+		
+		
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>momentjs</artifactId>
+			<version>2.17.1</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.unibe.scg.metrics</groupId>
+			<artifactId>szz</artifactId>
+			<version>1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.unibe.scg.metrics</groupId>
+			<artifactId>sourcemetrics</artifactId>
+			<version>1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.mauricioaniche</groupId>
+			<artifactId>ck</artifactId>
+			<version>0.2.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+		  <groupId>org.wickedsource</groupId>
+		  <artifactId>diffparser</artifactId>
+		  <version>1.1</version>
+		</dependency>
+	
 	</dependencies>
 	<build>
 		<plugins>
@@ -240,15 +317,22 @@
 			</plugin>
 			
 			<plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <!-- or whatever version you use -->
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-			
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-compiler-plugin</artifactId>
+		        <configuration>
+		          <!-- or whatever version you use -->
+		          <source>1.8</source>
+		          <target>1.8</target>
+		        </configuration>
+      		</plugin>
+      		
+      		<plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-eclipse-plugin</artifactId>
+	            <configuration>
+	                <useProjectReferences>false</useProjectReferences>
+	            </configuration>
+        	</plugin>
 		</plugins>
 	</build>
 	<repositories>
@@ -266,6 +350,12 @@
 			<name>repo.spring.io-milestones</name>
 			<url>http://repo.spring.io/libs-milestone</url>
 		</repository>
+		
+	  <repository>
+	    <id>data-local</id>
+	    <name>data</name>
+	    <url>file://${basedir}/local_maven_repository</url>
+	  </repository>
 
 	</repositories>
 	<packaging>war</packaging>

@@ -22,7 +22,13 @@ public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> 
 
 	@Override
 	public CommitIssue process(CommitIssue input) throws Exception {
-		System.out.println("commit process: " + input.getName());
+		
+		if(input.isProcessed()) {
+			System.out.println("commit already processed: "+input.getName());
+			return input;
+		} else {
+			System.out.println("commit process: " + input.getName());
+		}
 
 		try {
 			IssueInfoHolder result = null;
@@ -37,6 +43,9 @@ public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> 
 				input.setName(result.getName());
 				input.setPriority(result.getPriority());
 				input.setType(result.getType());
+				input.setLink(result.getLink());
+				input.setDescription(result.getDescription());
+				input.setProcessed(true);
 			} else {
 				input.setName(null);
 			}

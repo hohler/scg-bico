@@ -38,12 +38,12 @@ public class IssueStringParser {
 		return null;
 	}
 	
-	public List<String> parseAll(String commitMessage) {
+	public List<String> parseAll(String commitMessage, int groupNumber) {
 		Matcher m = regex.matcher(commitMessage.trim());
 		List<String> result = new ArrayList<String>();
 		while(m.find()) {
 			if(m.group() == null) System.err.println("general error: "+commitMessage.split("\\r?\\n")[0]);
-			result.add(m.group(1));
+			result.add(m.group(groupNumber));
 		}
 		if(result.size() == 0) {
 			System.err.println("Can't parse issue "+commitMessage.split("\\r?\\n")[0]);

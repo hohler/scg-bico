@@ -1,10 +1,13 @@
 package tool.bico.repository;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 
@@ -23,7 +26,7 @@ public class GitLoader {
 		this.branch = branch;
 		
 		ArrayList<String> branches = new ArrayList<String>();
-		branches.add("refs/origin"+branch);
+		branches.add("refs/origin/"+branch);
 		
 		// if repo does not exist, create; else pull
 		String[] url_splitted = gitUrl.split("/");
@@ -35,11 +38,27 @@ public class GitLoader {
 	}
 	
 	public boolean init() {
+		return init(true);
+	}
+	
+	public boolean init(boolean pull) {
 		
 		if(repoDir.exists()) {
 			try {
+				
+				// File f = new File(REPOSITORY_PATH + repoName + "/.git/index.lock");
+				// if(f.exists()) f.delete();
+				
 				Git git = Git.open(repoDir);
-				git.pull().call();
+				
+				git.reset().setMode(ResetType.HARD).call();
+				
+				git.checkout().setName(branch).call();
+				// delete "mm" branch
+				git.branchDelete().setBranchNames("mm").call();
+				
+				if(pull) git.pull().call();
+				
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -47,28 +66,24 @@ public class GitLoader {
 				return false;
 			} catch (GitAPIException e) {
 				System.err.println("Could not pull from repo");
-			}
-		}/* else {
-			if(!repoDir.mkdirs()) {
-				System.err.println("Could not create repo dir");
 				return false;
 			}
-		}*/
+		} else {
 		
-		try {
-			Git git = Git.cloneRepository()
-					.setBranchesToClone(branches)
-					.setURI( gitUrl )
-					.setDirectory( repoDir )
-					.call();
-			git.checkout().setName(branch).call();
-			
-			return true;
-			
-		} catch (GitAPIException e) {
-			e.printStackTrace();
-			System.err.println("Could not clone repo");
-			return false;
+			try {
+				Git git = Git.cloneRepository()
+						.setBranchesToClone(branches)
+						.setURI( gitUrl )
+						.setDirectory( repoDir )
+						.call();
+				
+				return true;
+				
+			} catch (GitAPIException e) {
+				e.printStackTrace();
+				System.err.println("Could not clone repo");
+				return false;
+			}
 		}
 	}
 	

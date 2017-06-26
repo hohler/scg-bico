@@ -34,7 +34,8 @@
 					<td><a href="view.html" th:href="@{'/projects/' + ${project.id}}">Details</a> |&nbsp;
 						<a href="view.html" th:href="@{'/projects/' + 'modify/' + ${project.id}}">Modify</a> |&nbsp;
 						<a href="view.html" th:href="@{'/projects/' + ${project.id} + '/analyze'}">Analyze</a> |&nbsp;
-						<a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name}}">Batch Job</a> |&nbsp;
+						<a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name}}" target="_blank">Batch Job</a> |&nbsp;
+						<a href="view.html" th:href="@{'/projects/' + ${project.id} + '/metrics'}">Metrics</a> |&nbsp;
 						<a href="projects" th:href="@{'/projects/' + ${project.id} + '/issues'}">Issues</a> |&nbsp;
 						<a href="projects" th:href="@{'/projects/' + 'delete/' + ${project.id}}">Remove</a>
 						</td>

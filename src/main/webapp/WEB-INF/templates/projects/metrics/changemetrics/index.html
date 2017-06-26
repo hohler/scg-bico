@@ -1,0 +1,113 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<title>Metrics : Change metrics : View</title>
+
+<script src="/resources/js/job_control.js" th:src="@{/resources/js/job_control.js}"></script>
+
+<script th:inline="javascript">
+var path = [[@{'/batch/jobs/'}]];
+var jobControl = new JobControl(path);
+var jobName = [[${project.id + '_' + project.name + '_changemetrics'}]];
+
+$(document).ready(function() {
+	jobControl.getJobStatus(jobName);
+	setInterval(function() {
+		jobControl.getJobStatus(jobName);
+	}, 10000);
+});
+</script>
+
+</head>
+<body>
+	<h1 layout:fragment="header"><span th:text="${project.name}"></span></h1>
+	<div layout:fragment="content" class="container">
+
+		<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+		
+		<div class="pull-right" style="margin-bottom:10px;">
+			<a href="projects" class="btn btn-default" th:href="@{'/projects/' + ${project.id}}">
+				back to project </a>
+		</div>
+		
+		
+		<form th:action="@{'/projects/'+${project.id}+'/metrics/changemetrics'}" action="#" method="post" class="form-inline">
+		  <div class="form-group">
+		    <label for="commitranges">For which commits in the project</label>
+		    <select name="commitranges" id="commitranges" th:field="${cmf.everyCommits}">
+		    	<option th:each="range : ${cmf.commitRanges}" th:value="${range}" th:text="${'Every ' + range + 'th commit'}"></option>
+		    </select>
+		  </div>
+		  
+		  <div class="form-group">
+		    <label for="timeWindow">Sliding time window</label>
+	    	<select name="timeWindow" id="timeWindow" th:field="${cmf.timeWindow}">
+		    	<option th:each="e : ${cmf.timeWindows}" th:value="${e.key}" th:text="${e.value}"></option>
+		    </select>
+		  </div>
+		  
+		  <div class="form-group">
+	  		<label for="excludeBigCommits">Exclude big commits</label>
+	  		<input type="checkbox" class="form-control" id="excludeBigCommits" th:field="${cmf.excludeBigCommits}" />
+  		  </div>
+			  
+		  <div class="form-group">
+			<input type="submit" class="btn btn-success" value="Save" />
+		  </div>
+
+		</form>	
+
+			
+		<table class="table table-bordered table-striped">
+			<tr>
+				<th>ID</th>
+				<td th:text="${project.id}">id</td>
+			</tr>
+			<tr>
+				<th>Name</th>
+				<td th:text="${project.name}">name</td>
+			</tr>
+			<tr>
+				<th>Number of change metrics</th>
+				<td th:text="${changeMetrics.size()}">number of files</td>
+			</tr>
+			<tr>
+				<th>Number of commits involved in analysis</th>
+				<td th:text="${cm.size()}">Number of commits</td>
+			</tr>
+			<tr>
+				<th>Job control (Status automatically updated)</th>
+				<td>
+					<span id="jobStatus" class="label label-default">Retrieving status...</span>
+					<button id="jobStart" onclick="jobControl.startJob(jobName);" type="button" class="btn btn-primary btn-sm hidden">Start</button>
+					<span id="jobDuration"></span>
+				</td>
+			</tr>
+			<tr>
+				<th>Job to calculate change metrics</th>
+				<td><a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name} + '_changemetrics'}" target="_blank">Batch Job</a></td>
+			</tr>
+		</table>
+		
+		<h2>Change metrics commits (<span th:text="${cm.size()}"></span>)</h2>
+		<table class="table table-bordered table-striped table-condensed" dt:table="true">
+		<tr>
+			<th>ID</th>
+			<th>Commit date</th>
+			<th>FirstLineOfMessage</th>
+			<th>Amount of metrics</th>
+		</tr>
+		<tr th:each="e : ${cm}">
+			<td><a th:text="${e.key.id}" href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/changemetrics/' + ${e.key.id}}">id</a></td>
+			<td th:text="${#dates.format(e.key.getDate(), 'dd-MM-yyyy HH:mm')}">date</td>
+			<td th:text="${e.key.firstLineOfMessage()}">firstLineOfMessage</td>
+			<td th:text="${e.value.size()}">amount of metrics</td>
+		</tr>
+		</table>
+		
+		<div class="alert alert-info" role="alert" th:if="${changeMetrics.isEmpty()}">No change metrics available. First start the job.</div>
+	</div>
+</body>
+</html>

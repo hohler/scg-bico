@@ -54,18 +54,22 @@ public class CommitAnalyzer {
 		}		
 	}
 	
-	public void analyze() {		
+	public void analyze() {
 		for(CommitIssue i : toAnalyze) {
-			Commit c = i.getCommit();
-			ResultsContainer rc = typeResults.get(i.getType());
-			
-			Set<CommitFile> files = c.getFiles();			
-			Set<ResultsContainer.FileHolder> fileList = new HashSet<>();
-			for(CommitFile f : files) {
-				fileList.add(rc.new FileHolder(f.getChangeType(), f.getAdditions(), f.getDeletions()));
+			for(Commit c : i.getCommits()) {
+				//System.out.println(""+count+": "+c.getRef());
+				ResultsContainer rc = typeResults.get(i.getType());
+				
+				Set<CommitFile> files = c.getFiles();			
+				Set<ResultsContainer.FileHolder> fileList = new HashSet<>();
+				for(CommitFile f : files) {
+					if(f.isSrc()) {
+						fileList.add(rc.new FileHolder(f.getChangeType(), f.getAdditions(), f.getDeletions()));
+					}
+				}
+				
+				rc.addResult(new Long(c.getId()), c.getFiles().size(), c.getAdditions(), c.getDeletions(), fileList);
 			}
-			
-			rc.addResult(new Long(c.getId()), c.getFiles().size(), c.getAdditions(), c.getDeletions(), fileList);
 		}
 	}
 	

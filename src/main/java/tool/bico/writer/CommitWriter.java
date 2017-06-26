@@ -17,7 +17,7 @@ public class CommitWriter implements ItemWriter<CommitIssue> {
 	
 	@Override
 	public void write(List<? extends CommitIssue> items) throws Exception {
-		for(CommitIssue commitIssue : items) {
+		for(CommitIssue commitIssue : items) {	
 			if(commitIssue.getName() == null) {
 				commitIssueService.delete(commitIssue);
 			} else {

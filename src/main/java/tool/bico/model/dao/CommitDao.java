@@ -3,6 +3,7 @@ package tool.bico.model.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -47,5 +48,21 @@ public class CommitDao implements CommitDaoInterface {
 	public List<Commit> getProjectCommits(Project project) {
 		return em.createQuery("SELECT c from  Commit c WHERE c.project = :project_id")
 		.setParameter("project_id", project).getResultList();
+	}
+	
+	@Override
+	public void flush() {
+		em.flush();
+	}
+
+	@Override
+	public Commit getCommitByProjectAndRef(Project project, String ref) {
+		try {
+			return (Commit) em.createQuery("SELECT c FROM Commit c WHERE c.ref = :ref AND c.project = :project")
+					.setParameter("project", project)
+					.setParameter("ref", ref).getSingleResult();
+		} catch(NoResultException e) {
+			return null;
+		}
 	}
 }

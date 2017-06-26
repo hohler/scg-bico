@@ -25,7 +25,7 @@
 		<context:exclude-filter type="regex" expression="tool.bico.job.*" />  
 	</context:component-scan>
 
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${bico.db.driverClassName}" />
 		<property name="url" value="${bico.db.url}" />
 		<!-- <property name="driverClassName" value="org.hsqldb.jdbcDriver" /> -->
@@ -39,20 +39,25 @@
 			p:packagesToScan="tool.bico.model"
             p:dataSource-ref="dataSource"
 			>
+
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-				<property name="generateDdl" value="false" />
+				<property name="generateDdl" value="true" />
 				<property name="showSql" value="false" />
-				<property name="database" value="MYSQL" />
+				<property name="database" value="${bico.db.type}" />
 			</bean>
 		</property>
 		<property name="jpaProperties">
 	        <props>
 	            <prop key="hibernate.hbm2ddl.auto">update</prop>
 	            <!-- <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop> -->
-	            <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+	            <!-- <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop> -->
+	            <prop key="hibernate.dialect">${bico.db.hibernateDialect}</prop>
 	            <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
 	            <prop key="hibernate.jdbc.batch_size">25</prop>
+	            <prop key="hibernate.connection.CharSet">utf8mb4</prop>
+	            <prop key="hibernate.connection.characterEncoding">utf8</prop>
+	            <prop key="hibernate.connection.useUnicode">true</prop>
 	        </props>
 	    </property>
 	    <property name="dataSource" ref="dataSource" />
