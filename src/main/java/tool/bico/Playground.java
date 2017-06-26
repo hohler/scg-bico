@@ -28,7 +28,7 @@ public class Playground {
 		
 		String input5 = "Bug 123262 This is a bug \r\n hello Bug 4523423 or bug 00000";
 		
-		identifiers = issueParser.parseAll(input5);
+		identifiers = issueParser.parseAll(input5, 2);
 		System.out.println(identifiers);
 		
 		System.out.println(issueParser.parse(input5));
