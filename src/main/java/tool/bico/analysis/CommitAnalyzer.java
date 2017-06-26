@@ -54,10 +54,10 @@ public class CommitAnalyzer {
 		}		
 	}
 	
-	public void analyze() {		
+	public void analyze() {
 		for(CommitIssue i : toAnalyze) {
 			for(Commit c : i.getCommits()) {
-			//Commit c = i.getCommit();
+				//System.out.println(""+count+": "+c.getRef());
 				ResultsContainer rc = typeResults.get(i.getType());
 				
 				Set<CommitFile> files = c.getFiles();			

@@ -120,9 +120,11 @@ public class MetricController {
 		Project project = projectService.findById(id);
 		
 		String ref = singleMetricHolder.getRef();
+		
+		Commit refCommit = commitService.getCommitByProjectAndRef(project, ref);
 		// download
 		
-		if(ref == null || ref.length() < 10) {
+		if(ref == null || ref.length() < 10 || refCommit == null) {
 			redirect.addFlashAttribute("globalMessage", "Invalid commit ref!");
 			return new ModelAndView("redirect:/projects/{project.id}/metrics", "project.id", id);
 		}
@@ -138,8 +140,6 @@ public class MetricController {
 			if(singleMetricHolder.getExcludeBigCommits()) {
 				BigCommitAnalyzer.analyzeBigCommits(project, projectService, commitService);
 			}
-					
-			Commit refCommit = commitService.getCommitByProjectAndRef(project, ref);
 			
 			List<ChangeMetric> cm = getChangeMetrics(project, path, ref, singleMetricHolder.getTimeWindow(), singleMetricHolder.getExcludeBigCommits());
 			
@@ -158,7 +158,7 @@ public class MetricController {
 				e.printStackTrace();
 			}
 			
-			List<SzzMetric> szz = getSzzMetrics(project, path, ref, singleMetricHolder.getExcludeBigCommits());
+			//List<SzzMetric> szz = getSzzMetrics(project, path, ref, singleMetricHolder.getExcludeBigCommits());
 			
 			Commit c = new Commit();
 			c.setRef(ref);
@@ -166,7 +166,7 @@ public class MetricController {
 			c.setChangeMetrics(new HashSet<ChangeMetric>(cm));
 			c.setSourceMetrics(new HashSet<SourceMetric>(sm));
 			
-			//List<SzzMetric> szz = szzMetricService.getSzzMetricsByCommit(refCommit);
+			List<SzzMetric> szz = szzMetricService.getSzzMetricsByCommit(refCommit);
 			c.setSzzMetrics(new HashSet<SzzMetric>(szz));
 			
 			String fileName = project.getId()+"_"+project.getName()+"_"+ref+"_metrics.csv";
