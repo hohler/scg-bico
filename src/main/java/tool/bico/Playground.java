@@ -2,6 +2,7 @@ package tool.bico;
 
 import java.util.List;
 
+import tool.bico.analysis.CheckForSourceOrTestFile;
 import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
 import tool.bico.parser.IssueInfoHolder;
@@ -16,6 +17,15 @@ public class Playground {
 		//IssueStringParser issueParser = new IssueStringParser("(\\w+-\\d+)");
 		//IssueStringParser issueParser = new IssueStringParser("\\[?(\\w+-\\d+)\\]?");
 		//IssueStringParser issueParser = new IssueStringParser("\\(?#(\\d+)\\)?");
+		
+		System.out.println(CheckForSourceOrTestFile.check("src/test/java/org/apache/commons/lang3/concurrent/TimedSemaphoreTest.java")); // TRUE
+		System.out.println(CheckForSourceOrTestFile.check("src/test/org/apache/commons/lang/enums/Extended2Enum.java")); // TRUE
+		System.out.println(CheckForSourceOrTestFile.check("LANG_2_2_RC1/src/java/org/apache/commons/lang/IncompleteArgumentException.java")); // FALSE
+		System.out.println(CheckForSourceOrTestFile.check("src/main/java/org/apache/commons/lang3/text/translate/NumericEntityEscaper.java")); // FALSE
+
+		System.out.println(CheckForSourceOrTestFile.check("src/main/java/org/apache/commons/lang3/text/translate/TestForNumericEntityEscaping.java")); // FALSE
+		
+
 		IssueStringParser issueParser = new IssueStringParser("bug\\s(\\d+)");
 		List<String> identifiers;
 		String input = "Remove transport-netty3-client mention (#21628)\r\n\r\nNow netty3 is gone, this mention must also be removed. This solves #12345";

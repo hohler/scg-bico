@@ -13,6 +13,7 @@ import javax.persistence.Transient;
 
 import org.eclipse.jgit.diff.DiffEntry;
 
+import tool.bico.analysis.CheckForSourceOrTestFile;
 import tool.bico.model.CommitFile;
 
 @Entity
@@ -175,5 +176,13 @@ public class CommitFile {
 	public String toString() {
 		return String.format("CommitFile[id=%d, newPath='%s', additions='%d', deletions='%d', changes='%d']",
 				id, newPath, additions, deletions, getChanges());
+	}
+	
+	public boolean isSrc() {
+		return (newPath != null && !newPath.equals("/dev/null")) ? CheckForSourceOrTestFile.check(newPath) : CheckForSourceOrTestFile.check(oldPath);
+	}
+	
+	public boolean isTest() {
+		return !isSrc();
 	}
 }
