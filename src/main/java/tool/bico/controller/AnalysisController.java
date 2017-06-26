@@ -42,6 +42,7 @@ public class AnalysisController {
 		typeSet.add(CommitIssue.Type.IMPROVEMENT);
 		typeSet.add(CommitIssue.Type.REFACTOR);
 		typeSet.add(CommitIssue.Type.DOCUMENTATION);
+		typeSet.add(CommitIssue.Type.NA);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
