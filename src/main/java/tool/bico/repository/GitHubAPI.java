@@ -24,8 +24,8 @@ public class GitHubAPI {
 	private String owner;
 	private GitHubClient client;
 
-	private Map<String, CommitIssue.Type> types;
-	private Map<String, CommitIssue.Priority> priorities;
+	private Map<String, CommitIssue.Type> types = new HashMap<>();
+	private Map<String, CommitIssue.Priority> priorities = new HashMap<>();
 
 	public GitHubAPI(String gitHubUrl) {
 		client = new GitHubClient();
@@ -39,15 +39,13 @@ public class GitHubAPI {
 
 		try {
 			repository = service.getRepository(owner, name);
+			loadLabels();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		priorities = new HashMap<>();
-		types = new HashMap<>();
-		loadLabels();
 	}
 
-	private void loadLabels() {
+	public void loadLabels() {
 		LabelService service = new LabelService(client);
 		try {
 			List<Label> labels = service.getLabels(repository);

@@ -108,14 +108,21 @@ public class JobCreator {
 		
 		
 		CommitProcessor commitProcessor = new CommitProcessor(project.getType(), project.getIssueTrackerUrlPattern());
+		
+		CommitReader2 commitReader;
+		
 		if(project.getType() == Project.Type.GITHUB) {
 			GitHubAPI github = new GitHubAPI(project.getIssueTrackerUrlPattern());
 			commitProcessor.setGitHubApi(github);
+			
+			commitReader = new CommitReader2(project, github, entityManagerFactory);
+		} else {
+			commitReader = new CommitReader2(project, null, entityManagerFactory);
 		}
 		
 		Step step2 = stepBuilderFactory.get(jobName+"_getIssueInformationForEachCommit")
 				.<CommitIssue, CommitIssue> chunk(50)
-				.reader(new CommitReader2(project, entityManagerFactory))
+				.reader(commitReader)
 				.processor(commitProcessor)
 				.writer(new CommitWriter(commitIssueService))
 				.taskExecutor(issueTaskExecutor())
