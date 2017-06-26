@@ -219,14 +219,18 @@ Connect to the interface with [http://assigned-ip-address-of-eth1:8080/bico/](ht
 
 *root* : b1c0_2017
 
-mysql *root* : b1c0_2017
+postgresql *postgres* : b1c0_2017
 
 **Details**
 
 Restart services:
 
 `systemctl restart tomcat`
-`systemctl restart mysql`
+`systemctl restart postgres`
 `systemctl restart apache2`
 
-phpMyAdmin: [http://assigned-ip-address-of-eth1/phpMyAdmin](http://assigned-ip-address-of-eth1/phpMyAdmin)
+**Config**
+`src/main/resources/application.properties` must be adapted, if you want to setup the app by yourself.
+Add following line to that application.properties file: `batch.job.configuration.file.dir=/opt/tmp`
+
+phpPgAdmin: [http://assigned-ip-address-of-eth1/phpPgAdmin](http://assigned-ip-address-of-eth1/phpPgAdmin)
