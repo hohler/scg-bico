@@ -37,7 +37,7 @@ public class RepositoryProcessor implements ItemProcessor<Commit, Commit> {
 		}
 		
 		for(String i : identifiers) {
-			input.initIssue(i);
+			input.initIssue(i.toUpperCase());
 		}
 		
 		return input;
