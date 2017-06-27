@@ -52,6 +52,28 @@ public class AnalysisController {
 		CommitAnalyzer ca = new CommitAnalyzer(project, new HashSet<CommitIssue.Type>(typeSet));
 		ca.load();
 		ca.analyze();
+		
+		List<String> commitRefs = new ArrayList<>();
+		for(BigCommit b : project.getBigCommits()) {
+			commitRefs.add(b.getCommit().getRef());
+		}
+		
+		List<BigCommit> toAdd = new ArrayList<>();
+		
+		for(Entry<CommitIssue.Type, List<Commit>> e : ca.getPossibleBigCommits().entrySet()) {
+			for(Commit c : e.getValue()) {
+				if(!commitRefs.contains(c.getRef())) {
+					BigCommit b = new BigCommit();
+					b.setCommit(c);
+					b.setIssueType(e.getKey());
+					toAdd.add(b);
+				}
+			}
+		}
+		
+		project.addBigCommits(toAdd);
+		projectService.update(project);
+		
 		Map<CommitIssue.Type, ResultsContainer> results = ca.getTypeResults();
 
 		model.addAttribute("types", typeSet);
