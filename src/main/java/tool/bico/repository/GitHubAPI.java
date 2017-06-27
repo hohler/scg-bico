@@ -56,27 +56,24 @@ public class GitHubAPI {
 				SwitchSubstring.of(name)
 						// Priorities
 						.when("blocker").then(() -> priorities.put(name, CommitIssue.Priority.BLOCKER))
-						.when("breaking", "breaking-java", "pretty blooding important", "critical")
-						.then(() -> priorities.put(name, CommitIssue.Priority.CRITICAL)).when("major", "severity")
-						.then(() -> priorities.put(name, CommitIssue.Priority.MAJOR)).when("minor")
-						.then(() -> priorities.put(name, CommitIssue.Priority.MINOR)).when("trivial")
-						.then(() -> priorities.put(name, CommitIssue.Priority.TRIVIAL))
+						.when("breaking", "breaking-java", "pretty blooding important", "critical").then(() -> priorities.put(name, CommitIssue.Priority.CRITICAL))
+						.when("major", "severity").then(() -> priorities.put(name, CommitIssue.Priority.MAJOR))
+						.when("minor").then(() -> priorities.put(name, CommitIssue.Priority.MINOR))
+						.when("trivial").then(() -> priorities.put(name, CommitIssue.Priority.TRIVIAL))
 						// Types
-						.when("bug").then(() -> types.put(name, CommitIssue.Type.BUG)).when("deprecation")
-						.then(() -> types.put(name, CommitIssue.Type.DEPRECATION)).when("refactor", "change")
-						.then(() -> types.put(name, CommitIssue.Type.REFACTOR)).when("docs", "documentation", "doc")
-						.then(() -> types.put(name, CommitIssue.Type.DOCUMENTATION)).when("feature")
-						.then(() -> types.put(name, CommitIssue.Type.FEATURE))
-						.when("enhancement", "optimization", "improvement")
-						.then(() -> types.put(name, CommitIssue.Type.IMPROVEMENT)).when("test")
-						.then(() -> types.put(name, CommitIssue.Type.TEST)).when("access")
-						.then(() -> types.put(name, CommitIssue.Type.ACCESS)).when("dependency")
-						.then(() -> types.put(name, CommitIssue.Type.DEPENDENCY_UPGRADE)).when("request")
-						.then(() -> types.put(name, CommitIssue.Type.REQUEST)).when("subtask")
-						.then(() -> types.put(name, CommitIssue.Type.SUBTASK)).when("task")
-						.then(() -> types.put(name, CommitIssue.Type.TASK)).when("wish")
-						.then(() -> types.put(name, CommitIssue.Type.WISH));
-
+						.when("bug").then(() -> types.put(name, CommitIssue.Type.BUG))
+						.when("deprecation").then(() -> types.put(name, CommitIssue.Type.DEPRECATION))
+						.when("refactor", "change").then(() -> types.put(name, CommitIssue.Type.REFACTOR))
+						.when("docs", "documentation", "doc").then(() -> types.put(name, CommitIssue.Type.DOCUMENTATION))
+						.when("feature").then(() -> types.put(name, CommitIssue.Type.FEATURE))
+						.when("enhancement", "optimization", "improvement").then(() -> types.put(name, CommitIssue.Type.IMPROVEMENT))
+						.when("test").then(() -> types.put(name, CommitIssue.Type.TEST))
+						.when("access").then(() -> types.put(name, CommitIssue.Type.ACCESS))
+						.when("dependency").then(() -> types.put(name, CommitIssue.Type.DEPENDENCY_UPGRADE))
+						.when("request").then(() -> types.put(name, CommitIssue.Type.REQUEST))
+						.when("subtask").then(() -> types.put(name, CommitIssue.Type.SUBTASK))
+						.when("task").then(() -> types.put(name, CommitIssue.Type.TASK))
+						.when("wish").then(() -> types.put(name, CommitIssue.Type.WISH));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
