@@ -6,6 +6,11 @@
 - PostgreSQL
 - Java Version 1.8
 
+## We have a ready-to-use VM ##
+
+If you want to test the project without setting it up, just go to the latest section and download the VM.
+
+
 ## Setup ##
 
 You need a PostgreSQL and a Tomcat Server.
@@ -203,36 +208,27 @@ I recommend to just import the db_structure.sql and don't touch `generateDdl`.
 
 ## 9. Ready-to-use VirtualBox VM ##
 
-Download-Link: [download here](https://mega.nz/#!L4Zw0I4a!YrnienTRR-GSPXqGhWtnWOBd_MBGnHvoC1Sx-lBVoGE)
+Download-Link: [download here](https://mega.nz/#!e5hS3D5Z!l_ESF5f-NyA9aXFx_IW-n3gNNAIvzjaM6_m-Bg4eV5o)
 
 The VM does already contain the Apache Kafka repository ready-to-use analyzed for testing.
 
 Import the appliance with Oracle VM VirtualBox Manager [https://www.virtualbox.org/wiki/Downloads](https://www.virtualbox.org/wiki/Downloads)
 
-There are two network adapter. One is NAT (eth0) for internet access. The second is "Host-Only" (eth1) for accessing the tool. With a normal VirtualBox installation, the VM should automatically get a local IP.
-
-You can get the IP of eth1 with the command `ifconfig` while logged in on the VM.
-
-Connect to the interface with [http://assigned-ip-address-of-eth1:8080/bico/](http://assigned-ip-address-of-eth1:8080/bico/)
+Start the VM and double-click on "Start BiCo" on the desktop to open the web interface. Direct link is [http://localhost:8080/bico](http://localhost:8080/bico)
 
 **Accounts**
 
-*bico* : b1c0_2017 (use this account to connect via SSH)
+Ubuntu User Account *bico* : bico
 
-*root* : b1c0_2017
-
-postgresql *postgres* : b1c0_2017
+postgresql *postgres* : bico
 
 **Details**
 
-Restart services:
+Restart services if necessary:
 
 `systemctl restart tomcat`
 `systemctl restart postgres`
-`systemctl restart apache2`
 
-**Config**
-`src/main/resources/application.properties` must be adapted, if you want to setup the app by yourself.
-Add following line to that application.properties file: `batch.job.configuration.file.dir=/opt/tmp`
-
-phpPgAdmin: [http://assigned-ip-address-of-eth1/phpPgAdmin](http://assigned-ip-address-of-eth1/phpPgAdmin)
+**Information**
+We had to add following line to the config file to make it work. `src/main/resources/application.properties`:
+`batch.job.configuration.file.dir=/opt/tmp`
