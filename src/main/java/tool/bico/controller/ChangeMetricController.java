@@ -1,6 +1,9 @@
 package tool.bico.controller;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,6 +12,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,9 +31,11 @@ import tool.bico.job.JobCreator;
 import tool.bico.model.ChangeMetric;
 import tool.bico.model.Commit;
 import tool.bico.model.Project;
+import tool.bico.model.SourceMetric;
 import tool.bico.model.service.ChangeMetricService;
 import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
+import tool.bico.utils.CSVUtils;
 
 
 @Controller
@@ -149,6 +157,114 @@ public class ChangeMetricController {
 		model.addAttribute("newLineChar", "\n");
 		
 		return new ModelAndView("projects/metrics/changemetrics/file_view", model.asMap());
+	}
+	
+	@RequestMapping(value = "download", method = RequestMethod.GET)
+	public HttpEntity<byte[]> downloadAll(@PathVariable("id") Long id) throws IOException {
+
+		
+		Project project = projectService.findById(id);
+		//Set<Commit> commits = project.getCommits();
+		
+		List<ChangeMetric> changeMetrics = changeMetricService.getProjectChangeMetrics(project);
+		
+		return downloadChangeMetrics(project, changeMetrics, null);
+	}
+	
+	@RequestMapping(value = "{cid}/download", method = RequestMethod.GET)
+	public HttpEntity<byte[]> downloadSingle(@PathVariable("id") Long id, @PathVariable("cid") Long cid) throws IOException {
+
+		
+		Project project = projectService.findById(id);
+		//Set<Commit> commits = project.getCommits();
+		Commit commit = commitService.findById(cid);
+		
+		List<ChangeMetric> changeMetrics = changeMetricService.getChangeMetricsByCommit(commit);
+		
+		return downloadChangeMetrics(project, changeMetrics, commit.getRef());
+	}
+	
+	
+	private HttpEntity<byte[]> downloadChangeMetrics(Project project, List<ChangeMetric> changeMetrics, String ref) throws IOException {
+		String fileName = project.getId()+"_"+project.getName()+"_"+(ref != null ? ref : "")+"changemetrics.csv";
+		
+		StringWriter writer = new StringWriter();
+		CSVUtils csv = new CSVUtils(';');
+		
+		String[] csvHeader = {
+			"Commit",
+			"Date",
+			"File",
+			// ChangeMetrics
+			"Revisions",
+			"Refactorings",
+			"Bugfixes",
+			"Authors",
+			"LOC added",
+			"Max LOC added",
+			"Avg LOC added",
+			"LOC deleted",
+			"Max LOC deleted",
+			"Avg LOC deleted",
+			"Codechurn",
+			"Max Codechurn",
+			"Avg Codechurn",
+			"Max Changeset",
+			"Avg Changeset",
+			"Age",
+			"Weighted Age",
+		};
+		
+		
+		csv.writeLine(writer, Arrays.asList(csvHeader));
+			
+		changeMetrics.sort( (u1, u2) -> { 
+			int comp_c = u1.getCommit().getId().compareTo(u2.getCommit().getId());
+			
+			if(comp_c != 0) {
+				return comp_c;
+			} else {
+				return u1.getFile().compareTo(u2.getFile());
+			}
+		});
+		
+		for(ChangeMetric cm : changeMetrics) {
+			String[] in = {
+				cm.getCommit().getRef(),
+				cm.getCommit().getDate().toString(),
+				cm.getFile(),
+				// metrics
+				""+cm.getRevisions(),
+				""+cm.getRefactorings(),
+				""+cm.getBugfixes(),
+				""+cm.getAuthors(),
+				""+cm.getLocAdded(),
+				""+cm.getMaxLocAdded(),
+				""+cm.getAvgLocAdded(),
+				""+cm.getLocRemoved(),
+				""+cm.getMaxLocRemoved(),
+				""+cm.getAvgLocRemoved(),
+				""+cm.getCodeChurn(),
+				""+cm.getMaxCodeChurn(),
+				""+cm.getAvgCodeChurn(),
+				""+cm.getMaxChangeset(),
+				""+cm.getAvgChangeset(),
+				""+cm.getAge(),
+				""+cm.getWeightedAge(),
+			};
+			
+			csv.writeLine(writer,  Arrays.asList(in));
+		}
+		
+		byte[] documentBody = writer.toString().getBytes();
+		
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set(HttpHeaders.CONTENT_DISPOSITION,
+		              "attachment; filename=" + fileName.replace(" ", "_"));
+		header.setContentLength(documentBody.length);
+		
+		return new HttpEntity<byte[]>(documentBody, header);
 	}
 	
 }

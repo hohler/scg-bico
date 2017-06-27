@@ -89,6 +89,10 @@ $(document).ready(function() {
 				<th>Job to calculate change metrics</th>
 				<td><a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name} + '_changemetrics'}" target="_blank">Batch Job</a></td>
 			</tr>
+			<tr>
+				<th>Download all</th>
+				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/changemetrics/download'}">Download as CSV</a></td>
+			</tr>
 		</table>
 		
 		<h2>Change metrics commits (<span th:text="${cm.size()}"></span>)</h2>
