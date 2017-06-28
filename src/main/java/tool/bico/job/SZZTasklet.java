@@ -2,8 +2,10 @@ package tool.bico.job;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,6 +57,11 @@ public class SZZTasklet implements Tasklet {
 		
 		szzMetricService.removeAllByProject(project);
 		szzMetricService.flush();
+		
+		Map<String, Commit> commitRepo = new HashMap<>();
+		for(Commit c : project.getCommits()) {
+			commitRepo.put(c.getRef(), c);
+		}
 		
 		//ChangeMetrics cm = new ChangeMetrics(Paths.get(path));
 		SZZ szz = new SZZ(Paths.get(path));
@@ -109,7 +116,9 @@ public class SZZTasklet implements Tasklet {
         	contribution.incrementReadCount();
         	for(SZZCommit c : f.getCommits()) {
         		//System.out.println(c);
-        		Commit commit = commitService.getCommitByProjectAndRef(project, c.getHash());
+        		//Commit commit = commitService.getCommitByProjectAndRef(project, c.getHash());
+        		Commit commit = commitRepo.get(c.getHash());
+        		if(commit == null) continue;
         		SzzMetric sz = new SzzMetric();
         		sz.setFile(f.getFile());
         		sz.setBugs(c.getBugs());

@@ -292,6 +292,8 @@ public class MetricController {
 				SzzMetric szz = entry.getValue().szzMetric;
 				SourceMetric sm = entry.getValue().sourceMetric;
 				
+				if(cm == null || sm == null) continue;
+				
 				String file = entry.getKey();
 				
 				String[] in = {
