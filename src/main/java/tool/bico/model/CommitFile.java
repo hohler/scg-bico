@@ -28,12 +28,17 @@ public class CommitFile {
 	
 	private int deletions;
 	
+	@Deprecated
 	@Transient
 	private String fileName;
 	
 	private String oldPath;
 	
 	private String newPath;
+	
+	private String fileExtension;
+	
+	private boolean isTest;
 	
 	@Column(columnDefinition = "TEXT") // TEXT for PostgreSQL, MEDIUMTEXT for MySQL !
 	private String patch;
@@ -76,10 +81,12 @@ public class CommitFile {
 		this.deletions = deletions;
 	}
 
+	@Deprecated
 	public void setFilename(String filename) {
 		this.fileName = filename;
 	}
 	
+	@Deprecated
 	public String getFilename() {
 		return fileName;
 	}
@@ -184,5 +191,25 @@ public class CommitFile {
 	
 	public boolean isTest() {
 		return !isSrc();
+	}
+	
+	public void setFileExtension(String ext) {
+		this.fileExtension = ext;
+	}
+	
+	public String getFileExtension() {
+		return fileExtension;
+	}
+	
+	public void updateFileExtension() {
+		String[] ext;
+		if(newPath != null && !newPath.equals("/dev/null")) {
+			ext = newPath.split(".");
+		} else {
+			ext = oldPath.split(".");
+		}
+		setFileExtension(ext[ext.length-1]);
+		
+		isTest = !isSrc();
 	}
 }
