@@ -119,63 +119,74 @@ public class MetricController {
 		
 		Project project = projectService.findById(id);
 		
-		String ref = singleMetricHolder.getRef();
+		String allRefs = singleMetricHolder.getRef().replace(" ", "");
 		
-		Commit refCommit = commitService.getCommitByProjectAndRef(project, ref);
-		// download
+		String[] refs = allRefs.split(",");
 		
-		if(ref == null || ref.length() < 10 || refCommit == null) {
+		if(refs.length == 0) {
 			redirect.addFlashAttribute("globalMessage", "Invalid commit ref!");
 			return new ModelAndView("redirect:/projects/{project.id}/metrics", "project.id", id);
 		}
 		
-		GitRepository repo = new GitRepository(project, false);
-		String path = repo.getRepositoryPath();
-		if(path == null) {
-			System.err.println("Could not clone repository of project: "+project);
-			redirect.addFlashAttribute("globalMessage", "Failed to download metrics of " + ref);
-			return new ModelAndView("redirect:/projects/{project.id}/metrics", "project.id", id);
-		} else {
+		Set<Commit> commitList = new HashSet<>();
+		
+		for(String ref : refs) {
+		
+			Commit refCommit = commitService.getCommitByProjectAndRef(project, ref);
+			// download
 			
-			if(singleMetricHolder.getExcludeBigCommits()) {
-				BigCommitAnalyzer.analyzeBigCommits(project, projectService, commitService);
+			if(ref == null || ref.length() < 10 || refCommit == null) {
+				redirect.addFlashAttribute("globalMessage", "Invalid commit ref!");
+				return new ModelAndView("redirect:/projects/{project.id}/metrics", "project.id", id);
 			}
 			
-			List<ChangeMetric> cm = getChangeMetrics(project, path, ref, singleMetricHolder.getTimeWindow(), singleMetricHolder.getExcludeBigCommits());
-			
-			// wait between, so the repo can be reset
-			try {
-				Thread.sleep(1000 * 5);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			GitRepository repo = new GitRepository(project, false);
+			String path = repo.getRepositoryPath();
+			if(path == null) {
+				System.err.println("Could not clone repository of project: "+project);
+				redirect.addFlashAttribute("globalMessage", "Failed to download metrics of " + ref);
+				return new ModelAndView("redirect:/projects/{project.id}/metrics", "project.id", id);
+			} else {
+				
+				if(singleMetricHolder.getExcludeBigCommits()) {
+					BigCommitAnalyzer.analyzeBigCommits(project, projectService, commitService);
+				}
+				
+				List<ChangeMetric> cm = getChangeMetrics(project, path, ref, singleMetricHolder.getTimeWindow(), singleMetricHolder.getExcludeBigCommits());
+				
+				// wait between, so the repo can be reset
+				try {
+					Thread.sleep(1000 * 5);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				List<SourceMetric> sm = getSourceMetrics(project, path, ref);
+				
+				try {
+					Thread.sleep(1000 * 5);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				//List<SzzMetric> szz = getSzzMetrics(project, path, ref, singleMetricHolder.getExcludeBigCommits());
+				
+				Commit c = new Commit();
+				c.setRef(ref);
+				c.setTimestamp(refCommit.getTimestamp());
+				c.setChangeMetrics(new HashSet<ChangeMetric>(cm));
+				c.setSourceMetrics(new HashSet<SourceMetric>(sm));
+				
+				List<SzzMetric> szz = szzMetricService.getSzzMetricsByCommit(refCommit);
+				c.setSzzMetrics(new HashSet<SzzMetric>(szz));
+				
+				commitList.add(c);
 			}
-			
-			List<SourceMetric> sm = getSourceMetrics(project, path, ref);
-			
-			try {
-				Thread.sleep(1000 * 5);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			//List<SzzMetric> szz = getSzzMetrics(project, path, ref, singleMetricHolder.getExcludeBigCommits());
-			
-			Commit c = new Commit();
-			c.setRef(ref);
-			c.setTimestamp(refCommit.getTimestamp());
-			c.setChangeMetrics(new HashSet<ChangeMetric>(cm));
-			c.setSourceMetrics(new HashSet<SourceMetric>(sm));
-			
-			List<SzzMetric> szz = szzMetricService.getSzzMetricsByCommit(refCommit);
-			c.setSzzMetrics(new HashSet<SzzMetric>(szz));
-			
-			String fileName = project.getId()+"_"+project.getName()+"_"+ref+"_metrics.csv";
-			return downloadData(fileName, new HashSet<Commit>(Arrays.asList(c)));
+		
 		}
-		
-		
-		//redirect.addFlashAttribute("globalMessage", "Successfully downloaded metrics of commit " + ref);
-		//return new ModelAndView("redirect:/projects/{project.id}/metrics", "project.id", id);
+
+		String fileName = project.getId()+"_"+project.getName()+"_"+(refs.length > 1 ? "custom" : refs[0])+"_metrics.csv";
+		return downloadData(fileName, commitList);
 	}
 	
 	
@@ -291,6 +302,8 @@ public class MetricController {
 				ChangeMetric cm = entry.getValue().changeMetric;
 				SzzMetric szz = entry.getValue().szzMetric;
 				SourceMetric sm = entry.getValue().sourceMetric;
+				
+				if(cm == null || sm == null) continue;
 				
 				String file = entry.getKey();
 				

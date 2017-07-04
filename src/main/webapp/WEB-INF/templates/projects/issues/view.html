@@ -37,6 +37,14 @@
 				<td th:text="${issue.name}">name</td>
 			</tr>
 			<tr>
+				<th>Type</th>
+				<td th:text="${issue.type}">type</td>
+			</tr>
+			<tr>
+				<th>Priority</th>
+				<td th:text="${issue.priority}">priority</td>
+			</tr>
+			<tr>
 				<th>Link</th>
 				<td><a th:if="${issue.link}" th:href="${issue.link}" target="_blank" th:text="${issue.link}">link</a></td>
 			</tr>

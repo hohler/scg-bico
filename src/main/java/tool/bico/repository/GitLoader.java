@@ -1,7 +1,5 @@
 package tool.bico.repository;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

@@ -56,6 +56,10 @@
 				<th colspan="2">Message</th>
 			</tr>
 			<tr>
+				<th>Export</th>
+				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/metrics/changemetrics/' + ${commit.id} + '/download'}">Download as CSV</a></td>
+			</tr>
+			<tr>
 				<td colspan="2" th:utext="${#strings.replace(commit.message, newLineChar, '&lt;br /&gt;')}">message</td>
 			</tr>
 		</table>
