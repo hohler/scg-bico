@@ -74,7 +74,7 @@ public class GithubRepository implements IRepository {
 					file.setDeletions(f.getDeletions());
 					file.setFilename(f.getFilename());
 					file.setPatch(f.getPatch());
-					
+					file.updateFileExtension();
 					commit.addFile(file);
 				}
 			}
