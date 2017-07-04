@@ -244,6 +244,8 @@ CREATE TABLE commitfiles (
     deletions integer NOT NULL,
     newpath character varying(255),
     oldpath character varying(255),
+    istest boolean DEFAULT false NOT NULL,
+    fileextension character varying(255),
     patch text,
     commit_id bigint
 );

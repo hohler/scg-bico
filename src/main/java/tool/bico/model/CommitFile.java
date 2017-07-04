@@ -203,12 +203,18 @@ public class CommitFile {
 	
 	public void updateFileExtension() {
 		String[] ext;
+		String[] parts;
 		if(newPath != null && !newPath.equals("/dev/null")) {
-			ext = newPath.split(".");
+			parts = newPath.split("/");
+			if(parts.length == 0 || parts == null) parts = new String[]{newPath};
 		} else {
-			ext = oldPath.split(".");
+			parts = oldPath.split("/");
+			if(parts.length == 0 || parts == null) parts = new String[]{oldPath};
 		}
-		setFileExtension(ext[ext.length-1]);
+		if(parts.length > 0) {
+			ext = parts[parts.length-1].split("\\.");
+			setFileExtension(ext[ext.length-1]);
+		}
 		
 		isTest = !isSrc();
 	}

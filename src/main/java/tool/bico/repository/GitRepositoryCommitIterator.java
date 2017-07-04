@@ -93,6 +93,7 @@ public class GitRepositoryCommitIterator implements Iterator<Commit> {
 	            cf.setPatch(patch.replaceAll("\\x00",  ""));
 	            cf.setOldPath(entry.getOldPath());
 	            cf.setNewPath(entry.getNewPath());
+	            cf.updateFileExtension();
 	            cf.setAdditions(linesAdded);
 	            cf.setDeletions(linesDeleted);
 	            c.addFile(cf);

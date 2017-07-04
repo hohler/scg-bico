@@ -57,6 +57,14 @@
 				<td th:text="${commitFile.deletions}">deletions</td>
 			</tr>
 			<tr>
+				<th>File extension</th>
+				<td th:text="${commitFile.fileExtension}">fileExt</td>
+			</tr>
+			<tr>
+				<th>Is a test?</th>
+				<td th:text="${commitFile.isTest}">isTest</td>
+			</tr>
+			<tr>
 				<th>Parent commit</th>
 				<td><a href="projects" th:href="@{'/projects/' + ${commitFile.commit.project.id} + '/commits/' + ${commitFile.commit.id}}">parent commit</a></td>
 			</tr>

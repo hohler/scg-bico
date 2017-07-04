@@ -14,6 +14,14 @@ import tool.bico.repository.GitHubAPI;
 public class Playground {
 
 	public static void main(String[] args) {
+		
+		String f = "src/Store.java";
+		String[] parts = f.split("/");
+		String[] ext = null;
+		if(parts.length > 0) {
+			ext = parts[parts.length-1].split("\\.");
+		}
+		System.out.println(parts[parts.length-1]);
 		//IssueStringParser issueParser = new IssueStringParser("(\\w+-\\d+)");
 		//IssueStringParser issueParser = new IssueStringParser("\\[?(\\w+-\\d+)\\]?");
 		//IssueStringParser issueParser = new IssueStringParser("\\(?#(\\d+)\\)?");
