@@ -81,11 +81,14 @@ public class ChangeMetricsTasklet implements Tasklet {
 				commits.add(c.getRef());
 			}
 		}
-		
-		
-		if(commits.size() == 0) commits = null;
-		bugRepo.setBugCommits(commits);
-        cm.setBugRepository(bugRepo);
+        
+        if(commits.size() == 0) {
+			commits = null;
+			cm.setBugRepository(null);
+		} else {
+			bugRepo.setBugCommits(commits);
+	        cm.setBugRepository(bugRepo);
+		}
         
         if(project.getChangeMetricsExcludeBigCommits()) cm.excludeCommits( project.getBigCommits().stream().map(b -> b.getCommit().getRef()).collect(Collectors.toList()) );
 		

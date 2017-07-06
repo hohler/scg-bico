@@ -384,11 +384,14 @@ public class MetricController {
 				commits.add(c.getRef());
 			}
 		}
-		
-		if(commits.size() == 0) commits = null;
         
-		bugRepo.setBugCommits(commits);
-        szz.setBugRepository(bugRepo);
+        if(commits.size() == 0) {
+			commits = null;
+			szz.setBugRepository(null);
+		} else {
+			bugRepo.setBugCommits(commits);
+	        szz.setBugRepository(bugRepo);
+		}
         
         if(project.getSzzMetricsExcludeBigCommits()) szz.excludeCommits( project.getBigCommits().stream().map(b -> b.getCommit().getRef()).collect(Collectors.toList()) );
         
@@ -436,10 +439,14 @@ public class MetricController {
 				commits.add(c.getRef());
 			}
 		}
-		
-		if(commits.size() == 0) commits = null;
-		bugRepo.setBugCommits(commits);
-        cm.setBugRepository(bugRepo);
+        
+        if(commits.size() == 0) {
+			commits = null;
+			cm.setBugRepository(null);
+		} else {
+			bugRepo.setBugCommits(commits);
+	        cm.setBugRepository(bugRepo);
+		}
         
         // range to only 1 commit!
         cm.setRange(ref, ref);
