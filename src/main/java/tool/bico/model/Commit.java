@@ -183,7 +183,9 @@ public class Commit {
 	}
 
 	public String firstLineOfMessage() {
-		return message.split("\\r?\\n")[0];
+		String[] lines = message.split("\\r?\\n");
+		if(lines[0].length() == 0 && lines.length > 1) return lines[1];
+		else return lines[0];
 	}
 	
 	public int getChanges() {

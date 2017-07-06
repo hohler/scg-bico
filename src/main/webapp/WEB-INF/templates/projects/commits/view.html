@@ -69,7 +69,7 @@
 			</tr>
 			<tr>
 				<th>Parent commit</th>
-				<td><a href="projects" th:if="${commit.parentCommit}" th:href="@{'/projects/' + ${commit.project.id} + '/commits/' + ${commit.parentCommit.id}}" th:text="${commit.parentCommit.firstLineOfMessage()}">parent commit</a></td>
+				<td><a href="projects" th:if="${commit.parentCommit}" th:href="@{'/projects/' + ${commit.project.id} + '/commits/' + ${commit.parentCommit.id}}" th:text="${commit.parentCommit.id + ' ' + commit.parentCommit.firstLineOfMessage()}">parent commit</a></td>
 			</tr>
 			<tr>
 				<th colspan="2">Message</th>
