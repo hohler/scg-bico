@@ -92,17 +92,13 @@ public class SZZTasklet implements Tasklet {
 		}
 		
 		
-		if(commits.size() == 0) commits = null;
-        /*String[] commits = {
-	        "96a4c30f29e1e66f9a5351ec1130eda6789ea7c9",
-	        //"a6726ddd15cd048cec1765500675e2aa9a5432d2",
-	        "b2928f282707e5af03a91ff7cc237496223799ee",
-	        //"34e52bafc4c91abf45b75f8c688058e23f956740"
-        };*/
-        
-        //bugRepo.setBugCommits(new HashSet<String>(Arrays.asList(commits)));
-		bugRepo.setBugCommits(commits);
-        szz.setBugRepository(bugRepo);
+		if(commits.size() == 0) {
+			commits = null;
+			szz.setBugRepository(null);
+		} else {
+			bugRepo.setBugCommits(commits);
+	        szz.setBugRepository(bugRepo);
+		}
         
         if(project.getSzzMetricsExcludeBigCommits()) szz.excludeCommits( project.getBigCommits().stream().map(b -> b.getCommit().getRef()).collect(Collectors.toList()) );
         
