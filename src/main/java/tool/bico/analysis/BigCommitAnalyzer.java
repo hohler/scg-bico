@@ -28,7 +28,7 @@ public class BigCommitAnalyzer {
 		typeSet.add(CommitIssue.Type.REFACTOR);
 		typeSet.add(CommitIssue.Type.DOCUMENTATION);
 	
-		CommitAnalyzer ca = new CommitAnalyzer(project, new HashSet<CommitIssue.Type>(typeSet));
+		CommitAnalyzer ca = new CommitAnalyzer(project, commitService, new HashSet<CommitIssue.Type>(typeSet));
 		ca.setCommitService(commitService);
 		ca.load();
 		ca.analyze();

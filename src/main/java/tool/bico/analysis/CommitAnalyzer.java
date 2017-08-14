@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class CommitAnalyzer {
 	
-	@Autowired
+	//@Autowired
 	private CommitService commitService;
 
 	private Set<Commit> commits;
@@ -32,8 +32,9 @@ public class CommitAnalyzer {
 	 * @param project
 	 * @param typeSet types to analyze
 	 */
-	public CommitAnalyzer(Project project, Set<CommitIssue.Type> typeSet) {
+	public CommitAnalyzer(Project project, CommitService commitService, Set<CommitIssue.Type> typeSet) {
 		commits = project.getCommits();
+		this.commitService = commitService; 
 		this.typeSet = typeSet;
 		typeResults = new HashMap<>();
 		for(CommitIssue.Type type : typeSet) {
@@ -128,10 +129,13 @@ public class CommitAnalyzer {
 			
 			ResultsContainer r = e.getValue();
 			
-			int filesChangedThreshold = threshold.get("filesChangedThreshold");
-			int additionsThreshold = threshold.get("additionsThreshold");
+			if(r == null) continue;
 			
+			int filesChangedThreshold = threshold.get("filesChangedThreshold") == null ? 0 : threshold.get("filesChangedThreshold");
+			int additionsThreshold = threshold.get("additionsThreshold") == null ? 0 : threshold.get("additionsThreshold");
+
 			for(ResultsContainer.ResultHolder h : r.getResults()) {
+				if(h == null) continue;
 				if(h.getFilesChanged() > filesChangedThreshold || h.getAdditions() > additionsThreshold) {
 					Commit c = commitService.findById(h.getCommitId());
 					resultList.add(c);

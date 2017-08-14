@@ -49,7 +49,7 @@ public class AnalysisController {
 	public ModelAndView view(Model model, @PathVariable("pid") Long pid) {
 		Project project = projectService.findById(pid);
 		
-		CommitAnalyzer ca = new CommitAnalyzer(project, new HashSet<CommitIssue.Type>(typeSet));
+		CommitAnalyzer ca = new CommitAnalyzer(project, commitService, new HashSet<CommitIssue.Type>(typeSet));
 		ca.load();
 		ca.analyze();
 		
@@ -88,7 +88,7 @@ public class AnalysisController {
 		
 		Project project = projectService.findById(pid);
 		
-		CommitAnalyzer ca = new CommitAnalyzer(project, new HashSet<CommitIssue.Type>(typeSet));
+		CommitAnalyzer ca = new CommitAnalyzer(project, commitService, new HashSet<CommitIssue.Type>(typeSet));
 		ca.setCommitService(commitService);
 		ca.load();
 		ca.analyze();
