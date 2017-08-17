@@ -41,11 +41,13 @@ public class GitHubAPI {
 			repository = service.getRepository(owner, name);
 			loadLabels();
 		} catch (IOException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			System.out.println("GitHub Repository error: API limit reached");
 		}
 	}
 
 	public void loadLabels() {
+		if(repository == null) return;
 		LabelService service = new LabelService(client);
 		try {
 			List<Label> labels = service.getLabels(repository);
@@ -76,7 +78,8 @@ public class GitHubAPI {
 						.when("wish").then(() -> types.put(name, CommitIssue.Type.WISH));
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			System.err.println("GitHub Labels error: API limit reached");
 		}
 	}
 
@@ -90,8 +93,8 @@ public class GitHubAPI {
 				Issue issue = service.getIssue(repository, issueNumber);
 				return issue;
 			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("some sleep time");
+				//e.printStackTrace();
+				System.out.println("GitHub API error: some sleep time");
 				try {
 					Thread.sleep(120000);//wait for 2 minutes then try again
 				} catch (InterruptedException e1) {
