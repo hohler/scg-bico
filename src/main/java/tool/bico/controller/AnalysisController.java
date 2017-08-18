@@ -1,10 +1,12 @@
 package tool.bico.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,7 +21,10 @@ import tool.bico.analysis.ResultsContainer;
 import tool.bico.model.BigCommit;
 import tool.bico.model.Commit;
 import tool.bico.model.CommitIssue;
+import tool.bico.model.CommitIssueAnalysis;
 import tool.bico.model.Project;
+import tool.bico.model.service.BigCommitService;
+import tool.bico.model.service.CommitIssueAnalysisService;
 import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
 
@@ -32,6 +37,12 @@ public class AnalysisController {
 	
 	@Autowired
 	private CommitService commitService;
+	
+	@Autowired
+	private BigCommitService bigCommitService;
+	
+	@Autowired
+	private CommitIssueAnalysisService commitIssueAnalysisService;
 	
 	private List<CommitIssue.Type> typeSet = new ArrayList<>();
 	
@@ -49,7 +60,8 @@ public class AnalysisController {
 	public ModelAndView view(Model model, @PathVariable("pid") Long pid) {
 		Project project = projectService.findById(pid);
 		
-		CommitAnalyzer ca = new CommitAnalyzer(project, commitService, new HashSet<CommitIssue.Type>(typeSet));
+		
+		/*CommitAnalyzer ca = new CommitAnalyzer(project, commitService, new HashSet<CommitIssue.Type>(typeSet));
 		ca.load();
 		ca.analyze();
 		
@@ -72,10 +84,13 @@ public class AnalysisController {
 		}
 		
 		project.addBigCommits(toAdd);
-		projectService.update(project);
+		projectService.update(project);*/
 		
-		Map<CommitIssue.Type, ResultsContainer> results = ca.getTypeResults();
+		//Map<CommitIssue.Type, ResultsContainer> results = ca.getTypeResults();
 
+		List<CommitIssueAnalysis> cia = commitIssueAnalysisService.findAllByProject(project);
+		Map<CommitIssue.Type, CommitIssueAnalysis> results = cia.stream().collect(Collectors.toMap(c -> c.getType(), c->c));
+		
 		model.addAttribute("types", typeSet);
 		model.addAttribute("results", results);
 		model.addAttribute("project", project);
@@ -88,7 +103,7 @@ public class AnalysisController {
 		
 		Project project = projectService.findById(pid);
 		
-		CommitAnalyzer ca = new CommitAnalyzer(project, commitService, new HashSet<CommitIssue.Type>(typeSet));
+		/*CommitAnalyzer ca = new CommitAnalyzer(project, commitService, new HashSet<CommitIssue.Type>(typeSet));
 		ca.setCommitService(commitService);
 		ca.load();
 		ca.analyze();
@@ -112,11 +127,40 @@ public class AnalysisController {
 		}
 		
 		project.addBigCommits(toAdd);
-		projectService.update(project);
+		projectService.update(project);*/
 		
-		model.addAttribute("commits", ca.getPossibleBigCommits());
+		List<BigCommit> list = bigCommitService.getProjectBigCommits(project);
+		
+		Map<CommitIssue.Type, List<Commit>> bigCommits = new HashMap<>();
+		for(BigCommit b : list) {
+			if(b.getIssueType() == null) continue;
+			if(bigCommits.get(b.getIssueType()) == null) bigCommits.put(b.getIssueType(), new ArrayList<Commit>());
+			List<Commit> l = bigCommits.get(b.getIssueType());
+			l.add(b.getCommit());
+		}
+		
+		Map<CommitIssue.Type, Map<String, Integer>> thresholdContainer = new HashMap<>();
+		
+		List<CommitIssueAnalysis> cia = commitIssueAnalysisService.findAllByProject(project);
+		for(CommitIssueAnalysis c : cia) {
+
+			Map<String, Integer> thresholds = new HashMap<>();
+
+			thresholds.put("firstQuartileFilesChanged", c.getFirstQuartileFilesChanged());
+			thresholds.put("thirdQuartileFilesChanged", c.getThirdQuartileFilesChanged());
+			thresholds.put("filesChangedThreshold", c.getFilesChangedThreshold());
+			
+			thresholds.put("firstQuartileAdditions",  c.getFirstQuartileAdditions());
+			thresholds.put("thirdQuartileAdditions", c.getThirdQuartileAdditions());
+			thresholds.put("additionsThreshold", c.getAdditionsThreshold());
+			
+			thresholdContainer.put(c.getType(), thresholds);
+
+		}
+			
+		model.addAttribute("commits", bigCommits);
 		model.addAttribute("project", project);
-		model.addAttribute("thresholds", ca.getThresholds());
+		model.addAttribute("thresholds", thresholdContainer);
 		
 		return new ModelAndView("projects/analysis/bigcommit", model.asMap());
 	}

@@ -60,17 +60,20 @@ public class Project {
 	
 	protected Project() {
 		this.commits = new HashSet<Commit>();
+		this.bigCommits = new HashSet<BigCommit>();
 	}
 	
 	public Project(Type type) {
 		this.type = type;
 		this.commits = new HashSet<Commit>();
+		this.bigCommits = new HashSet<BigCommit>();
 	}
 	
 	public Project(String name, Type type) {
 		this.name = name;
 		this.type = type;
 		this.commits = new HashSet<Commit>();
+		this.bigCommits = new HashSet<BigCommit>();
 	}
 	
 	
@@ -232,5 +235,12 @@ public class Project {
 
 	public void setSzzMetricsExcludeBigCommits(boolean szzMetricsExcludeBigCommits) {
 		this.szzMetricsExcludeBigCommits = szzMetricsExcludeBigCommits;
+	}
+	
+	public void removeAllBigCommits() {
+		for(BigCommit b : bigCommits) {
+			b.setProject(null);
+		}
+		bigCommits.clear();
 	}
 }

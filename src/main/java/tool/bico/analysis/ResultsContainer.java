@@ -83,6 +83,18 @@ public class ResultsContainer {
 		return data[index];
 	}
 	
+	public int getFilesChangedThreshold() {
+		int thirdQuartileFilesChanged = this.getThirdQuartileFilesChanged();
+		int firstQuartileFilesChanged = this.getFirstQuartileFilesChanged();
+		return thirdQuartileFilesChanged + (3*(thirdQuartileFilesChanged - firstQuartileFilesChanged));
+	}
+	
+	public int getAdditionsThreshold() {
+		int thirdQuartileAdditions = this.getThirdQuartileAdditions();
+		int firstQuartileAdditions = this.getFirstQuartileAdditions();
+		return thirdQuartileAdditions + (3*(thirdQuartileAdditions - firstQuartileAdditions));
+	}
+	
 	public int getMedianAdditionsInFiles() {
 		int[] result = new int[0];
 		for(ResultHolder r : results) {

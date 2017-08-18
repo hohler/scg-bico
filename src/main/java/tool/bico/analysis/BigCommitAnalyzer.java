@@ -14,6 +14,7 @@ import tool.bico.model.Project;
 import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
 
+@Deprecated
 public class BigCommitAnalyzer {
 
 	

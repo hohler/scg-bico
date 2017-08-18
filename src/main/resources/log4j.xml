@@ -37,6 +37,11 @@
         <appender-ref ref="main"/>
     </category>
     
+    <category name="ch.unibe.scg.metrics.szz">
+        <priority value="DEBUG"/>
+        <appender-ref ref="main"/>
+    </category>
+    
     <category name="com.github.mauricioaniche.ck">
         <priority value="WARN"/>
         <appender-ref ref="main"/>

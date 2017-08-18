@@ -179,6 +179,7 @@
 			</tr>
 		</table>
 		
+		<div th:if="${results.size() > 0}">
 		<h2>Issue types</h2>
 		
 		<div>
@@ -194,67 +195,67 @@
 	 
 		<div class="tab-content">
 		<div class="tab-pane" th:each="type : ${results}" th:id="${type.key}">
-			<h3><span th:text="${type.key}"></span> (<span th:text="${type.value.getResultsSize()}">x</span> results)</h3>
-			<div th:if="${type.value.getResultsSize() > 0}">
+			<h3><span th:text="${type.key}"></span> (<span th:text="${type.value.getNumberOfResults()}">x</span> results)</h3>
+			<div th:if="${type.value.getNumberOfResults() > 0}">
 			<table class="table table-bordered table-striped table-condensed" dt:table="true">
 			<tr>
 				<th style="width:30%;">Number of issues</th>
-				<td th:text="${type.value.getResultsSize()}">results</td>
+				<td th:text="${type.value.getNumberOfResults()}">results</td>
 				
 				<th>Highest additions per commit</th>
-				<td th:text="${type.value.getHighestAdditionsPerCommit()}">num</td>
+				<td th:text="${type.value.getMaxAdditionsPerCommit()}">num</td>
 			</tr>
 			<tr>
 			
 				<th style="width:30%;">Median files changed (commits)</th>
-				<td th:text="${type.value.getMedianFilesChanged()}">num</td>
+				<td th:text="${type.value.getMedianFilesChangedPerCommit()}">num</td>
 				
 				<th>Lowest additions per commit</th>
-				<td th:text="${type.value.getLowestAdditionsPerCommit()}">num</td>				
+				<td th:text="${type.value.getMinAdditionsPerCommit()}">num</td>				
 			</tr>
 			<tr>
 			
 				<th>Median additions (commits)</th>
-				<td th:text="${type.value.getMedianAdditions()}">num</td>
+				<td th:text="${type.value.getMedianAdditionsPerCommit()}">num</td>
 
 				<th>Highest deletions per commit</th>
-				<td th:text="${type.value.getHighestDeletionsPerCommit()}">num</td>
+				<td th:text="${type.value.getMaxDeletionsPerCommit()}">num</td>
 			</tr>
 			<tr>
 			
 				<th>Median deletions (commits)</th>
-				<td th:text="${type.value.getMedianDeletions()}">num</td>
+				<td th:text="${type.value.getMedianDeletionsPerCommit()}">num</td>
 
 				<th>Lowest deletions per commit</th>
-				<td th:text="${type.value.getLowestDeletionsPerCommit()}">num</td>
+				<td th:text="${type.value.getMinDeletionsPerCommit()}">num</td>
 			</tr>
 			<tr>
 				<th>Median additions (files)</th>
-				<td th:text="${type.value.getMedianAdditionsInFiles()}">num</td>
+				<td th:text="${type.value.getMedianAdditionsPerFile()}">num</td>
 				
 				<th>Highest additions per file</th>
-				<td th:text="${type.value.getHighestAdditionsPerFile()}">num</td>
+				<td th:text="${type.value.getMaxAdditionsPerFile()}">num</td>
 			</tr>
 			<tr>
 				<th>Median deletions (files)</th>
-				<td th:text="${type.value.getMedianDeletionsInFiles()}">num</td>
+				<td th:text="${type.value.getMedianDeletionsPerFile()}">num</td>
 				
 				<th>Lowest additions per file</th>
-				<td th:text="${type.value.getLowestAdditionsPerFile()}">num</td>
+				<td th:text="${type.value.getMinAdditionsPerFile()}">num</td>
 			</tr>
 			<tr>
 				<th>Highest Number of files changed per commit</th>
-				<td th:text="${type.value.getHighestFilesChanged()}">num</td>
+				<td th:text="${type.value.getMaxFilesChangedPerCommit()}">num</td>
 				
 				<th>Highest deletions per file</th>
-				<td th:text="${type.value.getHighestDeletionsPerFile()}">num</td>
+				<td th:text="${type.value.getMaxDeletionsPerFile()}">num</td>
 			</tr>
 			<tr>
 				<th>Lowest Number of files changed per commit</th>
-				<td th:text="${type.value.getLowestFilesChanged()}">num</td>
+				<td th:text="${type.value.getMinFilesChangedPerCommit()}">num</td>
 
 				<th>Lowest deletions per file</th>
-				<td th:text="${type.value.getLowestDeletionsPerFile()}">num</td>
+				<td th:text="${type.value.getMinDeletionsPerFile()}">num</td>
 			</tr>
 			</table>
 			
@@ -322,7 +323,7 @@
 				createHistogram(data, "#svg2_" + category, buckets, x_ticks, "Files changed per commit", "Files changed");
 			</script>
 			</div>
-			<div class="alert alert-info" role="alert" th:unless="${type.value.getResultsSize() > 0}">No data available</div>
+			<div class="alert alert-info" role="alert" th:unless="${type.value.getNumberOfResults() > 0}">No data available</div>
 		</div>
 		</div>
 		</div>
@@ -332,6 +333,10 @@
 				$('#analysisTabs a:first').tab('show');
 			});
 		</script>
+		
+		</div>
+		
+		<div class="alert alert-info" th:if="${results.size() == 0}">The Analysis is not done yet!</div>
 		
 		<div class="pull-left">
 			<!-- <a href="form.html" class="btn btn-primary"

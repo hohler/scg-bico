@@ -1,6 +1,5 @@
 package tool.bico.model;
 
-import java.io.File;
 import java.util.Calendar;
 
 import javax.persistence.Entity;

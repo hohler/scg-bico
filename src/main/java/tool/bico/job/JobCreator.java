@@ -19,7 +19,9 @@ import org.springframework.core.task.TaskExecutor;
 import tool.bico.model.Commit;
 import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
+import tool.bico.model.service.BigCommitService;
 import tool.bico.model.service.ChangeMetricService;
+import tool.bico.model.service.CommitIssueAnalysisService;
 import tool.bico.model.service.CommitIssueService;
 import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
@@ -60,6 +62,12 @@ public class JobCreator {
 	
 	@Autowired
 	private SourceMetricService sourceMetricService;
+	
+	@Autowired
+	private CommitIssueAnalysisService commitIssueAnalysisService;
+	
+	@Autowired
+	private BigCommitService bigCommitService;
 	
 	@Autowired
 	private EntityManagerFactory entityManagerFactory;
@@ -109,29 +117,34 @@ public class JobCreator {
 		
 		CommitProcessor commitProcessor = new CommitProcessor(project.getType(), project.getIssueTrackerUrlPattern());
 		
-		CommitReader2 commitReader;
+		CommitReader2 commitReader2;
 		
 		if(project.getType() == Project.Type.GITHUB) {
 			GitHubAPI github = new GitHubAPI(project.getIssueTrackerUrlPattern());
 			commitProcessor.setGitHubApi(github);
 			
-			commitReader = new CommitReader2(project, github, entityManagerFactory);
+			commitReader2 = new CommitReader2(project, github, entityManagerFactory);
 		} else {
-			commitReader = new CommitReader2(project, null, entityManagerFactory);
+			commitReader2 = new CommitReader2(project, null, entityManagerFactory);
 		}
 		
 		Step step2 = stepBuilderFactory.get(jobName+"_getIssueInformationForEachCommit")
 				.<CommitIssue, CommitIssue> chunk(50)
-				.reader(commitReader)
+				.reader(commitReader2)
 				.processor(commitProcessor)
 				.writer(new CommitWriter(commitIssueService))
 				.taskExecutor(issueTaskExecutor())
+				.build();
+		
+		Step step3 = stepBuilderFactory.get(jobName+"_analysis")
+				.tasklet(new AnalysisTasklet(project, projectService, commitService, bigCommitService, commitIssueAnalysisService))
 				.build();
 		
 		Job builder = jobBuilderFactory.get(jobName)
 				.incrementer(new RunIdIncrementer())
 				.start(step)
 				.next(step2)
+				.next(step3)
 				.build();
 		
 		
