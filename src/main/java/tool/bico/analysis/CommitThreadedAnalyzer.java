@@ -20,7 +20,7 @@ import java.util.concurrent.FutureTask;
 
 public class CommitThreadedAnalyzer {
 	
-	private static final int NUMBER_OF_THREADS = 20;
+	private static final int NUMBER_OF_THREADS = 25;
 
 	//@Autowired
 	private CommitService commitService;
@@ -196,15 +196,12 @@ public class CommitThreadedAnalyzer {
 
 		@Override
 		public List<Result> call() throws Exception {
-			
-			System.out.println("processing: "+commits);
 
 			List<Result> results = new ArrayList<>();
 			
 			for(Commit c : commits) {
 				for(CommitIssue i : c.getCommitIssues()) {
 					if(!typeSet.contains(i.getType())) continue;
-					//System.out.println(""+count+": "+c.getRef());
 					ResultsContainer rc = typeResults.get(i.getType());
 					
 					Set<CommitFile> files = c.getFiles();			
