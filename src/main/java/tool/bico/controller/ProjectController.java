@@ -3,12 +3,8 @@ package tool.bico.controller;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -27,13 +23,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import tool.bico.controller.MetricController.MetricHolder;
 import tool.bico.job.JobCreator;
-import tool.bico.model.Project;
-import tool.bico.model.SourceMetric;
-import tool.bico.model.SzzMetric;
-import tool.bico.model.ChangeMetric;
 import tool.bico.model.Commit;
+import tool.bico.model.Project;
 import tool.bico.model.service.ProjectService;
 import tool.bico.utils.CSVUtils;
 

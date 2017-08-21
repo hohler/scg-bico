@@ -50,13 +50,19 @@ public class BigCommitDao implements BigCommitDaoInterface {
 				.setParameter("project", project).getResultList();
 	}
 
-	@Override
+	/*@Override
 	public void removeAllByProject(Project project) {
 		List<BigCommit> list = getProjectBigCommits(project);
 		
 		for(BigCommit b : list) {
 			em.remove(b);
 		}
+	}*/
+	
+	@Override
+	public void removeAllByProject(Project project) {
+		em.createQuery("DELETE from BigCommit b WHERE b.project = :project")
+		.setParameter("project", project);
 	}
 
 	@Override

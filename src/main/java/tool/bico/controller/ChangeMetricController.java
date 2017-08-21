@@ -25,13 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import tool.bico.analysis.BigCommitAnalyzer;
 import tool.bico.controller.form.ChangeMetricFormData;
 import tool.bico.job.JobCreator;
 import tool.bico.model.ChangeMetric;
 import tool.bico.model.Commit;
 import tool.bico.model.Project;
-import tool.bico.model.SourceMetric;
 import tool.bico.model.service.ChangeMetricService;
 import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
@@ -114,10 +112,6 @@ public class ChangeMetricController {
 		project.setChangeMetricTimeWindow(cmf.getTimeWindow());
 		project.setChangeMetricEveryCommits(cmf.getEveryCommits());
 		project.setChangeMetricsExcludeBigCommits(cmf.getExcludeBigCommits());
-		
-		if(cmf.getExcludeBigCommits()) {
-			BigCommitAnalyzer.analyzeBigCommits(project, projectService, commitService);
-		}
 		
 		this.projectService.update(project);
 		

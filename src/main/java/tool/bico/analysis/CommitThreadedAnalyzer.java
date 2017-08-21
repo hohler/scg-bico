@@ -12,9 +12,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
-public class CommitAnalyzer {
+public class CommitThreadedAnalyzer {
 	
+	private static final int NUMBER_OF_THREADS = 20;
+
 	//@Autowired
 	private CommitService commitService;
 
@@ -22,15 +29,16 @@ public class CommitAnalyzer {
 	
 	private Set<CommitIssue.Type> typeSet;
 	
-	private Set<CommitIssue> toAnalyze;
+	private Set<Commit> commitsToAnalyze;
 	
 	private Map<CommitIssue.Type, ResultsContainer> typeResults;
+	
 	/**
 	 * 
 	 * @param project
 	 * @param typeSet types to analyze
 	 */
-	public CommitAnalyzer(Project project, CommitService commitService, Set<CommitIssue.Type> typeSet) {
+	public CommitThreadedAnalyzer(Project project, CommitService commitService, Set<CommitIssue.Type> typeSet) {
 		commits = project.getCommits();
 		this.commitService = commitService; 
 		this.typeSet = typeSet;
@@ -38,40 +46,67 @@ public class CommitAnalyzer {
 		for(CommitIssue.Type type : typeSet) {
 			typeResults.put(type, new ResultsContainer(type));
 		}
+		
 	}
 	
 	
 	public void load() {
-		toAnalyze = new HashSet<>();
-		
+		commitsToAnalyze = new HashSet<>();
 		for(Commit c : commits) {
 			for(CommitIssue i : c.getCommitIssues()) {
 				if(typeSet.contains(i.getType())) {
-					toAnalyze.add(i);
+					commitsToAnalyze.add(c);
 				}
 			}
 		}		
 	}
 	
-	public void analyze() {
-		for(CommitIssue i : toAnalyze) {
-			for(Commit c : i.getCommits()) {
-				//System.out.println(""+count+": "+c.getRef());
-				ResultsContainer rc = typeResults.get(i.getType());
-				
-				Set<CommitFile> files = c.getFiles();			
-				Set<ResultsContainer.FileHolder> fileList = new HashSet<>();
-				for(CommitFile f : files) {
-					if(f.isSrc()) {
-						fileList.add(rc.new FileHolder(f.getChangeType(), f.getAdditions(), f.getDeletions()));
-					}
+	public void analyzeThreaded() {
+		ExecutorService exec = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+		List<FutureTask<List<Result>>> taskList = new ArrayList<FutureTask<List<Result>>>();
+		
+		List<Commit> list = new ArrayList<>(commitsToAnalyze);
+		
+		int numberOfItems = list.size();
+		
+		int minItemsPerThread = numberOfItems / NUMBER_OF_THREADS;
+	    int maxItemsPerThread = minItemsPerThread + 1;
+	    int threadsWithMaxItems = numberOfItems - NUMBER_OF_THREADS * minItemsPerThread;
+	    
+	    
+	    int start = 0;
+	    
+	    for (int i = 0; i < NUMBER_OF_THREADS; i++) {
+	        int itemsCount = (i < threadsWithMaxItems ? maxItemsPerThread : minItemsPerThread);
+	        int end = start + itemsCount;
+	        
+	        FutureTask<List<Result>> futureTask = new FutureTask<List<Result>>(new CallableAnalyzer(list.subList(start, end), typeSet));
+			taskList.add(futureTask);
+			exec.execute(futureTask);
+			
+	        start = end;
+	    }
+		
+		// Wait until all results are available and combine them at the same time
+        for (FutureTask<List<Result>> futureTask : taskList) {
+        	try {
+				List<Result> results = futureTask.get();
+				for(Result r : results) {
+					
+					ResultsContainer rc = typeResults.get(r.commitIssueType);
+					if(rc != null) rc.addResult(r.id, r.files, r.additions, r.deletions, r.fileList);
 				}
-				
-				rc.addResult(new Long(c.getId()), c.getFiles().size(), c.getAdditions(), c.getDeletions(), fileList);
+			} catch (InterruptedException e) {
+				//e.printStackTrace();
+			} catch (ExecutionException e) {
+				//e.printStackTrace();
 			}
 		}
+        
+        // Shutdown the ExecutorService 
+        exec.shutdown();
 	}
-	
+
 	public Map<CommitIssue.Type, ResultsContainer> getTypeResults() {
 		return typeResults;
 	}
@@ -146,5 +181,63 @@ public class CommitAnalyzer {
 	
 	public void setCommitService(CommitService commitService) {
 		this.commitService = commitService;
+	}
+	
+	private class CallableAnalyzer implements Callable<List<Result>> {
+
+		private List<Commit> commits;
+		private Set<CommitIssue.Type> typeSet;
+		
+		public CallableAnalyzer(List<Commit> commits, Set<CommitIssue.Type> typeSet) {
+			this.commits = commits;
+			this.typeSet = typeSet;
+		}
+
+
+		@Override
+		public List<Result> call() throws Exception {
+			
+			System.out.println("processing: "+commits);
+
+			List<Result> results = new ArrayList<>();
+			
+			for(Commit c : commits) {
+				for(CommitIssue i : c.getCommitIssues()) {
+					if(!typeSet.contains(i.getType())) continue;
+					//System.out.println(""+count+": "+c.getRef());
+					ResultsContainer rc = typeResults.get(i.getType());
+					
+					Set<CommitFile> files = c.getFiles();			
+					Set<ResultsContainer.FileHolder> fileList = new HashSet<>();
+					for(CommitFile f : files) {
+						if(f.isSrc()) {
+							fileList.add(rc.new FileHolder(f.getChangeType(), f.getAdditions(), f.getDeletions()));
+						}
+					}
+					
+					Result r = new Result();
+					r.id = new Long(c.getId());
+					r.files = c.getFiles().size();
+					r.additions = c.getAdditions();
+					r.deletions = c.getDeletions();
+					r.fileList = fileList;
+					r.commitIssueType = i.getType();
+					
+					results.add(r);
+				}
+			}
+			
+			return results;
+		}
+
+	}
+	
+	private class Result {
+		private Long id;
+		int files;
+		int additions;
+		int deletions;
+		Set<ResultsContainer.FileHolder> fileList;
+		CommitIssue.Type commitIssueType;
 	}
 }

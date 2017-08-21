@@ -137,7 +137,7 @@ public class JobCreator {
 				.build();
 		
 		Step step3 = stepBuilderFactory.get(jobName+"_analysis")
-				.tasklet(new AnalysisTasklet(project, projectService, commitService, bigCommitService, commitIssueAnalysisService))
+				.tasklet(new AnalysisTasklet(project, commitService, bigCommitService, commitIssueAnalysisService))
 				.build();
 		
 		Job builder = jobBuilderFactory.get(jobName)

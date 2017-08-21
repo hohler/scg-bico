@@ -48,7 +48,6 @@ import ch.unibe.scg.metrics.szz.domain.SZZBugRepository;
 import ch.unibe.scg.metrics.szz.domain.SZZCommit;
 import ch.unibe.scg.metrics.szz.domain.SZZFile;
 import ch.unibe.scg.metrics.szz.domain.SZZRepository;
-import tool.bico.analysis.BigCommitAnalyzer;
 import tool.bico.analysis.CommitAnalyzer;
 import tool.bico.controller.form.ChangeMetricFormData;
 import tool.bico.controller.form.SingleMetricFormData;
@@ -147,10 +146,6 @@ public class MetricController {
 				redirect.addFlashAttribute("globalMessage", "Failed to download metrics of " + ref);
 				return new ModelAndView("redirect:/projects/{project.id}/metrics", "project.id", id);
 			} else {
-				
-				if(singleMetricHolder.getExcludeBigCommits()) {
-					BigCommitAnalyzer.analyzeBigCommits(project, projectService, commitService);
-				}
 				
 				List<ChangeMetric> cm = getChangeMetrics(project, path, ref, singleMetricHolder.getTimeWindow(), singleMetricHolder.getExcludeBigCommits());
 				

@@ -11,7 +11,7 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 
-import tool.bico.analysis.CommitAnalyzer;
+import tool.bico.analysis.CommitThreadedAnalyzer;
 import tool.bico.analysis.ResultsContainer;
 import tool.bico.model.BigCommit;
 import tool.bico.model.Commit;
@@ -22,23 +22,20 @@ import tool.bico.model.Project;
 import tool.bico.model.service.BigCommitService;
 import tool.bico.model.service.CommitIssueAnalysisService;
 import tool.bico.model.service.CommitService;
-import tool.bico.model.service.ProjectService;
 
 public class AnalysisTasklet implements Tasklet {
 	
 	private CommitIssueAnalysisService ciaService;
 	private CommitService commitService;
-	private ProjectService projectService;
 	private BigCommitService bigCommitService;
 	private Project project;
 	
 	private List<CommitIssue.Type> typeSet = new ArrayList<>();
 	
-	public AnalysisTasklet(Project project, ProjectService projectService, CommitService commitService, BigCommitService bigCommitService, CommitIssueAnalysisService ciaService) {
+	public AnalysisTasklet(Project project, CommitService commitService, BigCommitService bigCommitService, CommitIssueAnalysisService ciaService) {
 		this.project = project;
 		this.commitService = commitService;
 		this.ciaService = ciaService;
-		this.projectService = projectService;
 		this.bigCommitService = bigCommitService;
 		
 		// init type set to analyze
@@ -60,9 +57,9 @@ public class AnalysisTasklet implements Tasklet {
 		
 		ciaService.removeAllByProject(project);
 		
-		CommitAnalyzer ca = new CommitAnalyzer(project, commitService, new HashSet<CommitIssue.Type>(typeSet));
+		CommitThreadedAnalyzer ca = new CommitThreadedAnalyzer(project, commitService, new HashSet<CommitIssue.Type>(typeSet));
 		ca.load();
-		ca.analyze();
+		ca.analyzeThreaded();
 		
 		
 		Map<CommitIssue.Type, ResultsContainer> results = ca.getTypeResults();

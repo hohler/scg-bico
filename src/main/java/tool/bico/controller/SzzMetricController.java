@@ -19,12 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import tool.bico.analysis.BigCommitAnalyzer;
 import tool.bico.controller.form.SzzMetricFormData;
 import tool.bico.job.JobCreator;
 import tool.bico.model.Project;
 import tool.bico.model.SzzMetric;
-import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
 import tool.bico.model.service.SzzMetricService;
 
@@ -38,9 +36,6 @@ public class SzzMetricController {
 	
 	@Autowired
 	private ProjectService projectService;
-	
-	@Autowired
-	private CommitService commitService;
 	
 	@Autowired
 	@Lazy
@@ -95,10 +90,6 @@ public class SzzMetricController {
 		Project project = projectService.findById(id);
 		
 		project.setSzzMetricsExcludeBigCommits(smf.getExcludeBigCommits());
-		
-		if(smf.getExcludeBigCommits()) {
-			BigCommitAnalyzer.analyzeBigCommits(project, projectService, commitService);
-		}
 		
 		this.projectService.update(project);
 		

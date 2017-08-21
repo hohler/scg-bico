@@ -2,10 +2,8 @@ package tool.bico.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import tool.bico.analysis.CommitAnalyzer;
-import tool.bico.analysis.ResultsContainer;
 import tool.bico.model.BigCommit;
 import tool.bico.model.Commit;
 import tool.bico.model.CommitIssue;
@@ -25,7 +21,6 @@ import tool.bico.model.CommitIssueAnalysis;
 import tool.bico.model.Project;
 import tool.bico.model.service.BigCommitService;
 import tool.bico.model.service.CommitIssueAnalysisService;
-import tool.bico.model.service.CommitService;
 import tool.bico.model.service.ProjectService;
 
 @Controller
@@ -34,9 +29,6 @@ public class AnalysisController {
 	
 	@Autowired
 	private ProjectService projectService;
-	
-	@Autowired
-	private CommitService commitService;
 	
 	@Autowired
 	private BigCommitService bigCommitService;
@@ -59,34 +51,6 @@ public class AnalysisController {
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView view(Model model, @PathVariable("pid") Long pid) {
 		Project project = projectService.findById(pid);
-		
-		
-		/*CommitAnalyzer ca = new CommitAnalyzer(project, commitService, new HashSet<CommitIssue.Type>(typeSet));
-		ca.load();
-		ca.analyze();
-		
-		List<String> commitRefs = new ArrayList<>();
-		for(BigCommit b : project.getBigCommits()) {
-			commitRefs.add(b.getCommit().getRef());
-		}
-		
-		List<BigCommit> toAdd = new ArrayList<>();
-		
-		for(Entry<CommitIssue.Type, List<Commit>> e : ca.getPossibleBigCommits().entrySet()) {
-			for(Commit c : e.getValue()) {
-				if(!commitRefs.contains(c.getRef())) {
-					BigCommit b = new BigCommit();
-					b.setCommit(c);
-					b.setIssueType(e.getKey());
-					toAdd.add(b);
-				}
-			}
-		}
-		
-		project.addBigCommits(toAdd);
-		projectService.update(project);*/
-		
-		//Map<CommitIssue.Type, ResultsContainer> results = ca.getTypeResults();
 
 		List<CommitIssueAnalysis> cia = commitIssueAnalysisService.findAllByProject(project);
 		Map<CommitIssue.Type, CommitIssueAnalysis> results = cia.stream().collect(Collectors.toMap(c -> c.getType(), c->c));
@@ -102,32 +66,6 @@ public class AnalysisController {
 	public ModelAndView bigCommits(Model model, @PathVariable("pid") Long pid) {
 		
 		Project project = projectService.findById(pid);
-		
-		/*CommitAnalyzer ca = new CommitAnalyzer(project, commitService, new HashSet<CommitIssue.Type>(typeSet));
-		ca.setCommitService(commitService);
-		ca.load();
-		ca.analyze();
-		
-		List<String> commitRefs = new ArrayList<>();
-		for(BigCommit b : project.getBigCommits()) {
-			commitRefs.add(b.getCommit().getRef());
-		}
-		
-		List<BigCommit> toAdd = new ArrayList<>();
-		
-		for(Entry<CommitIssue.Type, List<Commit>> e : ca.getPossibleBigCommits().entrySet()) {
-			for(Commit c : e.getValue()) {
-				if(!commitRefs.contains(c.getRef())) {
-					BigCommit b = new BigCommit();
-					b.setCommit(c);
-					b.setIssueType(e.getKey());
-					toAdd.add(b);
-				}
-			}
-		}
-		
-		project.addBigCommits(toAdd);
-		projectService.update(project);*/
 		
 		List<BigCommit> list = bigCommitService.getProjectBigCommits(project);
 		
