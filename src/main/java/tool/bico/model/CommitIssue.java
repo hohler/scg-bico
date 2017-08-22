@@ -59,6 +59,7 @@ public class CommitIssue {
 		SUBTASK,
 		DEPRECATION,
 		REFACTOR,
+		MERGE,
 		NA;
 		
 		private String formatName() {

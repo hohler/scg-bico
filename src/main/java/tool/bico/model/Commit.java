@@ -79,6 +79,9 @@ public class Commit {
 	@OrderBy("id")
 	private Set<SourceMetric> sourceMetrics;
 	
+	// commit category found by commit message heuristics
+	private CommitIssue.Type commitMessageBasedType;
+	
 	public Commit() {
 		files = new HashSet<CommitFile>();
 		commitIssues = new HashSet<CommitIssue>();
@@ -240,5 +243,13 @@ public class Commit {
 
 	public void setSourceMetrics(Set<SourceMetric> sourceMetrics) {
 		this.sourceMetrics = sourceMetrics;
+	}
+
+	public CommitIssue.Type getCommitMessageType() {
+		return commitMessageBasedType;
+	}
+
+	public void setCommitMessageType(CommitIssue.Type commitMessageType) {
+		this.commitMessageBasedType = commitMessageType;
 	}
 }
