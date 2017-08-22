@@ -106,6 +106,11 @@ public class CommitIssue {
 	
 	private boolean processed = false;
 	
+	@Column(nullable = true)
+	private Type typeByClassifier;
+	
+	private int classifierScore = 0;
+	
 	public CommitIssue() {
 		this.commits = new HashSet<Commit>();
 	}
@@ -219,5 +224,21 @@ public class CommitIssue {
 	    	if(this.name.equals(that.name)) return true;
 	    }
 	    return false;
+	}
+
+	public Type getTypeByClassifier() {
+		return typeByClassifier;
+	}
+
+	public void setTypeByClassifier(Type typeByClassifier) {
+		this.typeByClassifier = typeByClassifier;
+	}
+
+	public int getClassifierScore() {
+		return classifierScore;
+	}
+
+	public void setClassifierScore(int classifierScore) {
+		this.classifierScore = classifierScore;
 	}
 }

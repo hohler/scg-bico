@@ -7,6 +7,10 @@ import tool.bico.model.Project;
 import tool.bico.parser.IssueInfoHolder;
 import tool.bico.parser.WebIssueTrackerParser;
 import tool.bico.repository.GitHubAPI;
+import ch.unibe.scg.curtys.classifier.Classifier;
+import ch.unibe.scg.curtys.classifier.MulticlassClassifier;
+import ch.unibe.scg.curtys.classifier.Prediction;
+import ch.unibe.scg.curtys.vectorization.issue.Issue;
 
 public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> {
 	
@@ -46,6 +50,15 @@ public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> 
 				input.setLink(result.getLink());
 				input.setDescription(result.getDescription());
 				input.setProcessed(true);
+				
+				// classifier
+				Issue cIssue = new Issue();
+				// TODO cIssue 
+				Classifier classifier = new MulticlassClassifier();
+				Prediction prediction = classifier.query(cIssue);
+				String type = prediction.getBestClassLabel();
+				// check what type
+				// input.setClassifierType(type);
 			} else {
 				input.setName(null);
 			}
