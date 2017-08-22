@@ -9,8 +9,8 @@ import org.springframework.batch.item.ItemReader;
 import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
 import tool.bico.model.service.CommitIssueService;
+import tool.bico.repository.GitHubAPI;
 
-@Deprecated
 public class CommitReader implements ItemReader<CommitIssue> {
 
 	private List<CommitIssue> commitIssues;
@@ -19,10 +19,12 @@ public class CommitReader implements ItemReader<CommitIssue> {
 	private CommitIssueService commitIssueService;
 	private int inits = 0;
 
-	public CommitReader(Project project, CommitIssueService commitIssueService) {
+	public CommitReader(Project project, CommitIssueService commitIssueService, GitHubAPI githubApi) {
 		this.project = project;
 		this.commitIssueService = commitIssueService;
-		inits++;
+		if(githubApi != null) githubApi.loadLabels();
+		//init();
+		//inits++;
 	}
 
 	private synchronized void init() {
@@ -35,9 +37,10 @@ public class CommitReader implements ItemReader<CommitIssue> {
 
 	@Override
 	public synchronized CommitIssue read() {
-		if (commitIssues == null && inits == 0)
+		if (commitIssues == null && inits == 0) {
+			inits++;
 			init();
-		else if(commitIssues == null && inits != 0) {
+		} else if(commitIssues == null && inits != 0) {
 			System.err.println("YOU SHOULD NOT HAVE DONE THIS!");
 			return null;
 		}

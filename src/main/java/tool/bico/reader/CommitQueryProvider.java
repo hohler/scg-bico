@@ -12,11 +12,10 @@ public class CommitQueryProvider implements JpaQueryProvider {
 	public CommitQueryProvider(Project project) {
 		this.project = project;
 	}
-	
 
 	@Override
 	public javax.persistence.Query createQuery() {
-		return entityManager.createQuery("SELECT DISTINCT c from CommitIssue c LEFT JOIN c.commits i WHERE i.project = :project")
+		return entityManager.createQuery("SELECT c from CommitIssue c LEFT JOIN c.commits i WHERE i.project = :project AND c.processed = false")
 				.setParameter("project", this.project);
 	}
 

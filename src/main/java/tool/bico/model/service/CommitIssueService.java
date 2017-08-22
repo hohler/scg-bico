@@ -76,4 +76,9 @@ public class CommitIssueService {
 	public List<CommitIssue> findAllByProjectAndType(Project project, CommitIssue.Type type) {
 		return commitIssueDao.findAllByProjectAndType(project, type);
 	}
+	
+	@Transactional
+	public void flush() {
+		commitIssueDao.flush();
+	}
 }

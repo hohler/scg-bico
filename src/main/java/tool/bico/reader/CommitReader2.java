@@ -19,6 +19,6 @@ public class CommitReader2 extends JpaPagingItemReader<CommitIssue> {
 		h.setEntityManager(entityManagerFactory.createEntityManager());
 		this.setQueryProvider(h);
 		this.setSaveState(false);
+		//this.setPageSize(10);
 	}
-	
 }

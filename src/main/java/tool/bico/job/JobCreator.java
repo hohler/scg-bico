@@ -29,6 +29,7 @@ import tool.bico.model.service.SourceMetricService;
 import tool.bico.model.service.SzzMetricService;
 import tool.bico.processor.CommitProcessor;
 import tool.bico.processor.RepositoryProcessor;
+import tool.bico.reader.CommitReader;
 import tool.bico.reader.CommitReader2;
 import tool.bico.reader.RepositoryReader;
 import tool.bico.repository.GitHubAPI;
@@ -119,18 +120,22 @@ public class JobCreator {
 		
 		CommitReader2 commitReader2;
 		
+		CommitReader commitReader;
+		
 		if(project.getType() == Project.Type.GITHUB) {
 			GitHubAPI github = new GitHubAPI(project.getIssueTrackerUrlPattern());
 			commitProcessor.setGitHubApi(github);
 			
 			commitReader2 = new CommitReader2(project, github, entityManagerFactory);
+			commitReader = new CommitReader(project, commitIssueService, github);
 		} else {
 			commitReader2 = new CommitReader2(project, null, entityManagerFactory);
+			commitReader = new CommitReader(project, commitIssueService, null);
 		}
 		
 		Step step2 = stepBuilderFactory.get(jobName+"_getIssueInformationForEachCommit")
 				.<CommitIssue, CommitIssue> chunk(50)
-				.reader(commitReader2)
+				.reader(commitReader)
 				.processor(commitProcessor)
 				.writer(new CommitWriter(commitIssueService))
 				.taskExecutor(issueTaskExecutor())

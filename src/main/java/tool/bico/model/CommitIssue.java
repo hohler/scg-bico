@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ForeignKey;
@@ -95,8 +96,10 @@ public class CommitIssue {
 	
 	private Priority priority = Priority.NA;
 	
-	@Column(nullable = true)
 	private String name = "";
+	
+	@Transient
+	private String privateName = "";
 	
 	@Column(nullable = true)
 	private String link = "";
@@ -107,7 +110,7 @@ public class CommitIssue {
 	private boolean processed = false;
 	
 	@Column(nullable = true)
-	private Type typeByClassifier;
+	private String typeByClassifier;
 	
 	private int classifierScore = 0;
 	
@@ -137,8 +140,10 @@ public class CommitIssue {
 		return name;
 	}
 
+	@Column(name="name", nullable = true)
 	public void setName(String name) {
 		this.name = name;
+		if(name != null) this.privateName = name;
 	}
 
 	public Type getType() {
@@ -213,6 +218,11 @@ public class CommitIssue {
 	public void setProcessed(boolean processed) {
 		this.processed = processed;
 	}
+	
+	@Override
+	public int hashCode() {
+		return getPrivateName().hashCode()+getType().hashCode()+getPriority().hashCode()+getDescription().hashCode();
+	}
 
 	@Override
 	public boolean equals(Object other) {
@@ -220,17 +230,17 @@ public class CommitIssue {
 	    if (other == this) return true;
 	    if (!(other instanceof CommitIssue)) return false;
 	    CommitIssue that = (CommitIssue) other;
-	    if(this.name != null && this.name.length() > 0 && that.name != null && that.name.length() > 0) {
-	    	if(this.name.equals(that.name)) return true;
+	    if(getPrivateName() != null && getPrivateName().length() > 0 && that.getPrivateName() != null && that.getPrivateName().length() > 0) {
+	    	if(getPrivateName().equals(that.getPrivateName()) && hashCode() == that.hashCode()) return true;
 	    }
 	    return false;
 	}
 
-	public Type getTypeByClassifier() {
+	public String getTypeByClassifier() {
 		return typeByClassifier;
 	}
 
-	public void setTypeByClassifier(Type typeByClassifier) {
+	public void setTypeByClassifier(String typeByClassifier) {
 		this.typeByClassifier = typeByClassifier;
 	}
 
@@ -240,5 +250,13 @@ public class CommitIssue {
 
 	public void setClassifierScore(int classifierScore) {
 		this.classifierScore = classifierScore;
+	}
+
+	public String getPrivateName() {
+		return privateName;
+	}
+
+	public void setPrivateName(String privateName) {
+		this.privateName = privateName;
 	}
 }
