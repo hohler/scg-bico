@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import tool.bico.model.CommitIssue;
+import tool.bico.utils.SwitchSubstring;
 
 public class JiraParser implements Parser {
 

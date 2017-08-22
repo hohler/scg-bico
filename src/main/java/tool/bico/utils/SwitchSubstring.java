@@ -1,4 +1,4 @@
-package tool.bico.parser;
+package tool.bico.utils;
 
 public class SwitchSubstring {
     private static final SwitchSubstring DONE = new SwitchSubstring(null) {

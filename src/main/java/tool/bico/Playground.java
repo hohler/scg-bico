@@ -7,9 +7,9 @@ import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
 import tool.bico.parser.IssueInfoHolder;
 import tool.bico.parser.IssueStringParser;
-import tool.bico.parser.SwitchSubstring;
 import tool.bico.parser.WebIssueTrackerParser;
 import tool.bico.repository.GitHubAPI;
+import tool.bico.utils.SwitchSubstring;
 
 public class Playground {
 

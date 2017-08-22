@@ -15,7 +15,7 @@ import org.eclipse.egit.github.core.service.RepositoryService;
 
 import tool.bico.model.CommitIssue;
 import tool.bico.parser.IssueInfoHolder;
-import tool.bico.parser.SwitchSubstring;
+import tool.bico.utils.SwitchSubstring;
 
 public class GitHubAPI {
 
