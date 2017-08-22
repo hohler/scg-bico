@@ -96,10 +96,8 @@ public class CommitIssue {
 	
 	private Priority priority = Priority.NA;
 	
+	@Column(nullable = true)
 	private String name = "";
-	
-	@Transient
-	private String privateName = "";
 	
 	@Column(nullable = true)
 	private String link = "";
@@ -140,10 +138,8 @@ public class CommitIssue {
 		return name;
 	}
 
-	@Column(name="name", nullable = true)
 	public void setName(String name) {
 		this.name = name;
-		if(name != null) this.privateName = name;
 	}
 
 	public Type getType() {
@@ -221,7 +217,7 @@ public class CommitIssue {
 	
 	@Override
 	public int hashCode() {
-		return getPrivateName().hashCode()+getType().hashCode()+getPriority().hashCode()+getDescription().hashCode();
+		return getName().hashCode()+getType().hashCode()+getPriority().hashCode()+getDescription().hashCode();
 	}
 
 	@Override
@@ -230,8 +226,8 @@ public class CommitIssue {
 	    if (other == this) return true;
 	    if (!(other instanceof CommitIssue)) return false;
 	    CommitIssue that = (CommitIssue) other;
-	    if(getPrivateName() != null && getPrivateName().length() > 0 && that.getPrivateName() != null && that.getPrivateName().length() > 0) {
-	    	if(getPrivateName().equals(that.getPrivateName()) && hashCode() == that.hashCode()) return true;
+	    if(getName() != null && getName().length() > 0 && that.getName() != null && that.getName().length() > 0) {
+	    	if(getName().equals(that.getName()) && hashCode() == that.hashCode()) return true;
 	    }
 	    return false;
 	}
@@ -250,13 +246,5 @@ public class CommitIssue {
 
 	public void setClassifierScore(int classifierScore) {
 		this.classifierScore = classifierScore;
-	}
-
-	public String getPrivateName() {
-		return privateName;
-	}
-
-	public void setPrivateName(String privateName) {
-		this.privateName = privateName;
 	}
 }
