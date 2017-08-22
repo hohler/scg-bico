@@ -2,6 +2,8 @@ package tool.bico.parser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.xml.parsers.*;
 
@@ -32,7 +34,7 @@ public class JiraParser implements Parser {
 
 	@Override
 	public String formatUrl(String url, String issue) {
-		return String.format(url+"?field=type&field=priority&field=title&field=link&field=description",  issue, issue);
+		return String.format(url/*+"?field=type&field=priority&field=title&field=link&field=description"*/,  issue, issue);
 	}
 
 	@Override
@@ -66,9 +68,52 @@ public class JiraParser implements Parser {
 			
 			String title = element.getElementsByTagName("title").item(0).getTextContent();
 			
+			// for classifier of simon
+			String summary = element.getElementsByTagName("summary").item(0) != null ? element.getElementsByTagName("summary").item(0).getTextContent() : "";
+			String component = element.getElementsByTagName("component").item(0) != null ? element.getElementsByTagName("component").item(0).getTextContent() : "";
+			String project = element.getElementsByTagName("project").item(0) != null ? element.getElementsByTagName("project").item(0).getTextContent() : "";
+			String version = element.getElementsByTagName("version").item(0) != null ? element.getElementsByTagName("version").item(0).getTextContent() : "";
+			List<IssueComment> comments = new ArrayList<>();
+			
+			NodeList commentsList = element.getElementsByTagName("comments");
+			for(int i = 0; i<commentsList.getLength(); i++) {
+				Element e = (Element) commentsList.item(i);
+				if(e == null) continue;
+				IssueComment ic = new IssueComment();
+				ic.setId(e.getAttribute("id"));
+				ic.setAuthor(e.getAttribute("author"));
+				ic.setDate(e.getAttribute("created"));
+				ic.setBody(e.getTextContent());
+				comments.add(ic);
+			}
+			
+			boolean patch = false;
+			boolean screenshot = false;
+			
+			NodeList attachmentsList = element.getElementsByTagName("attachments");
+			for(int i = 0; i<attachmentsList.getLength(); i++) {
+				Element e = (Element) attachmentsList.item(i);
+				if(e == null) continue;	
+				if(e.getAttribute("name").contains("patch") || e.getAttribute("name").contains("diff")) {
+					patch = true;
+				}
+				if(e.getAttribute("name").contains("screenshot")) { // todo right word?
+					screenshot = true;
+				}
+			}
+			
+			
 			result.setName(key);
 			result.setLink(link);
 			result.setDescription(description);
+			
+			result.setSummary(summary);
+			result.setComponent(component);
+			result.setProject(project);
+			result.setVersion(version);
+			result.setComments(comments);
+			result.setHasPatch(patch);
+			result.setHasScreenshot(screenshot);
 
 			System.out.println("["+key+"] type: "+type + " priority: " + priority);
 			
@@ -108,5 +153,36 @@ public class JiraParser implements Parser {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public class IssueComment {
+		private String body;
+		private String date;
+		private String author;
+		private String id;
+		public String getBody() {
+			return body;
+		}
+		public void setBody(String body) {
+			this.body = body;
+		}
+		public String getDate() {
+			return date;
+		}
+		public void setDate(String date) {
+			this.date = date;
+		}
+		public String getAuthor() {
+			return author;
+		}
+		public void setAuthor(String author) {
+			this.author = author;
+		}
+		public String getId() {
+			return id;
+		}
+		public void setId(String id) {
+			this.id = id;
+		}
 	}
 }
