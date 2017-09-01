@@ -72,6 +72,10 @@
 				<td><a href="projects" th:if="${commit.parentCommit}" th:href="@{'/projects/' + ${commit.project.id} + '/commits/' + ${commit.parentCommit.id}}" th:text="${commit.parentCommit.id + ': ' + commit.parentCommit.firstLineOfMessage()}">parent commit</a></td>
 			</tr>
 			<tr>
+				<th>Commit category based on commit message</th>
+				<td th:text="${commit.commitMessageType}">commitMessageType</td>
+			</tr>
+			<tr>
 				<th colspan="2">Message</th>
 			</tr>
 			<tr>
@@ -85,12 +89,14 @@
 				<th>ID</th>
 				<th>Name</th>
 				<th>Type</th>
+				<th>Classifier Type</th>
 				<th>Priority</th>
 			</tr>
 			<tr th:each="issue : ${commit.commitIssues}">
 				<td><a th:href="@{'/projects/' + ${commit.project.id} + '/issues/' + ${issue.id}}" th:text="${issue.id}">id</a></td>
 				<td th:text="${issue.name}">name</td>
 				<td th:text="${issue.type}">type</td>
+				<td th:text="${issue.typeByClassifier}">classifierType</td>
 				<td th:text="${issue.priority}">priority</td>
 			</tr>
 			</table>

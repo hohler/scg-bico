@@ -5,11 +5,10 @@ import java.util.List;
 
 import org.springframework.batch.item.ItemProcessor;
 
-import tool.bico.analysis.CommitMessageClassifier;
 import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
+import tool.bico.parser.IssueComment;
 import tool.bico.parser.IssueInfoHolder;
-import tool.bico.parser.JiraParser;
 import tool.bico.parser.WebIssueTrackerParser;
 import tool.bico.repository.GitHubAPI;
 import ch.unibe.scg.curtys.classifier.Classifier;
@@ -59,42 +58,40 @@ public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> 
 				input.setDescription(result.getDescription());
 				input.setProcessed(true);
 				
-				// commitmessage based classifier
-				CommitIssue.Type commitMessageType = CommitMessageClassifier.classify(result.getDescription());
-				input.setTypeByMessage(commitMessageType);
-				
-				// simons classifier
-				Issue cIssue = new Issue();
-				List<Comment> comments = new ArrayList<>();
-				for(JiraParser.IssueComment ic : result.getComments()) {
-					Comment c = new Comment();
-					c.setAuthor(ic.getAuthor());
-					c.setDate(ic.getDate());
-					c.setBody(ic.getBody());
-					c.setId(ic.getId());
-					comments.add(c);
+				if(issueTrackerType == Project.Type.JIRA) { // TODO implement GitHub
+					// simons classifier
+					Issue cIssue = new Issue();
+					List<Comment> comments = new ArrayList<>();
+					for(IssueComment ic : result.getComments()) {
+						Comment c = new Comment();
+						c.setAuthor(ic.getAuthor());
+						c.setDate(ic.getDate());
+						c.setBody(ic.getBody());
+						c.setId(ic.getId());
+						comments.add(c);
+					}
+					cIssue.setComments(comments);
+					cIssue.setComponent(result.getComponent());
+					cIssue.setDescription(result.getDescription());
+					cIssue.setId(result.getName());
+					cIssue.setProduct(result.getProject());
+					cIssue.setSummary(result.getSummary());
+					cIssue.setIssuetypeTracker("Jira");
+					cIssue.setVersion(result.getVersion());
+					cIssue.setHasPatch(result.hasPatch());
+					cIssue.setHasScreenshot(result.hasScreenshot());
+					
+					// TODO cIssue 
+					Classifier classifier = new MulticlassClassifier();
+					Prediction prediction = classifier.query(cIssue);
+					String type = prediction.getBestClassLabel();
+					ScoreEstimator estimator = new QualityEstimator();
+					int score = estimator.score(cIssue);
+					// TODO check what type
+					
+					input.setTypeByClassifier(type);
+					input.setClassifierScore(score);
 				}
-				cIssue.setComments(comments);
-				cIssue.setComponent(result.getComponent());
-				cIssue.setDescription(result.getDescription());
-				cIssue.setId(result.getName());
-				cIssue.setProduct(result.getProject());
-				cIssue.setSummary(result.getSummary());
-				cIssue.setIssuetypeTracker("Jira");
-				cIssue.setVersion(result.getVersion());
-				cIssue.setHasPatch(result.hasPatch());
-				cIssue.setHasScreenshot(result.hasScreenshot());
-				
-				// TODO cIssue 
-				Classifier classifier = new MulticlassClassifier();
-				Prediction prediction = classifier.query(cIssue);
-				String type = prediction.getBestClassLabel();
-				ScoreEstimator estimator = new QualityEstimator();
-				int score = estimator.score(cIssue);
-				// TODO check what type
-				
-				input.setTypeByClassifier(type);
-				input.setClassifierScore(score);
 			} else {
 				input.setProcessed(true);
 				input.setName(null);

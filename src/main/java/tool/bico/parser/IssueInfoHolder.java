@@ -12,7 +12,7 @@ public class IssueInfoHolder {
 	String description;
 	String project;
 	String summary;
-	List<JiraParser.IssueComment> comments;
+	List<IssueComment> comments;
 	String version;
 	String component;
 	boolean hasPatch;
@@ -75,11 +75,11 @@ public class IssueInfoHolder {
 		this.summary = summary;
 	}
 
-	public List<JiraParser.IssueComment> getComments() {
+	public List<IssueComment> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<JiraParser.IssueComment> comments) {
+	public void setComments(List<IssueComment> comments) {
 		this.comments = comments;
 	}
 

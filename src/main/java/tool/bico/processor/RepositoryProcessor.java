@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.springframework.batch.item.ItemProcessor;
 
+import tool.bico.analysis.CommitMessageClassifier;
 import tool.bico.model.Commit;
+import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
 import tool.bico.parser.IssueStringParser;
 
@@ -35,6 +37,10 @@ public class RepositoryProcessor implements ItemProcessor<Commit, Commit> {
 			IssueStringParser issueParser = new IssueStringParser("bug\\s(\\d+)");
 			identifiers = issueParser.parseAll(input.getMessage(), 1);
 		}
+		
+		// commitmessage based classifier
+		CommitIssue.Type commitMessageType = CommitMessageClassifier.classify(input.getMessage());
+		input.setCommitMessageType(commitMessageType);
 		
 		for(String i : identifiers) {
 			if(i != null && !i.isEmpty()) input.initIssue(i.toUpperCase());
