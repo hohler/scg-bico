@@ -113,6 +113,8 @@ public class CommitIssue {
 	
 	private int classifierScore = 0;
 	
+	private Type typeByMessage = Type.NA;
+	
 	public CommitIssue() {
 		this.commits = new HashSet<Commit>();
 	}
@@ -248,4 +250,13 @@ public class CommitIssue {
 	public void setClassifierScore(int classifierScore) {
 		this.classifierScore = classifierScore;
 	}
+
+	public Type getTypeByMessage() {
+		return typeByMessage;
+	}
+
+	public void setTypeByMessage(Type typeByMessage) {
+		this.typeByMessage = typeByMessage;
+	}
+	
 }

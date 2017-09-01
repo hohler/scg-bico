@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.batch.item.ItemProcessor;
 
+import tool.bico.analysis.CommitMessageClassifier;
 import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
 import tool.bico.parser.IssueInfoHolder;
@@ -58,7 +59,11 @@ public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> 
 				input.setDescription(result.getDescription());
 				input.setProcessed(true);
 				
-				// classifier
+				// commitmessage based classifier
+				CommitIssue.Type commitMessageType = CommitMessageClassifier.classify(result.getDescription());
+				input.setTypeByMessage(commitMessageType);
+				
+				// simons classifier
 				Issue cIssue = new Issue();
 				List<Comment> comments = new ArrayList<>();
 				for(JiraParser.IssueComment ic : result.getComments()) {

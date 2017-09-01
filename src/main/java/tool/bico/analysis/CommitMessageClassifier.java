@@ -11,13 +11,14 @@ import tool.bico.model.CommitIssue.Type;
 import tool.bico.utils.SwitchSubstring;
 
 public class CommitMessageClassifier {
-
-	public CommitMessageClassifier() {}
 	
-	public Type classify(String commitMessage) {
+	public static Type classify(String commitMessage) {
 		List<Type> types = new ArrayList<>();
 		
 		types = detectTypes(commitMessage);
+		if(types.size() == 0) {
+			return Type.NA;
+		}
 		
 		Map<Type, Integer> occurences = new HashMap<>();
 		
@@ -44,7 +45,7 @@ public class CommitMessageClassifier {
 		return highest;
 	}
 	
-	private List<Type> detectTypes(String commitMessage) {
+	private static List<Type> detectTypes(String commitMessage) {
 		
 		List<Type> types = new ArrayList<>();
 		
@@ -55,7 +56,7 @@ public class CommitMessageClassifier {
 		.when("deprecation", "deprecated").then(() -> types.add(CommitIssue.Type.DEPRECATION));
 		
 		SwitchSubstring.of(commitMessage.toLowerCase())
-		.when("new", "add", "requirement", "initial", "create", "feature").then(() -> types.add(CommitIssue.Type.FEATURE));
+		.when("new", "add", "requirement", "initial", "create", "feature", "implementation").then(() -> types.add(CommitIssue.Type.FEATURE));
 		
 		SwitchSubstring.of(commitMessage.toLowerCase())
 		.when("refactor", "refactoring").then(() -> types.add(CommitIssue.Type.REFACTOR));

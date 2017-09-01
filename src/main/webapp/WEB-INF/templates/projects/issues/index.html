@@ -35,6 +35,7 @@
 							<th>Name</th>
 							<th>Type</th>
 							<th>Classifier Type</th>
+							<th>Message Type</th>
 							<th>Priority</th>
 							<th>Commits</th>
 						</tr>
@@ -45,6 +46,7 @@
 							<td th:text="${issue.name}">name</td>
 							<td th:text="${issue.type}">Type</td>
 							<td th:text="${issue.typeByClassifier}">classifierType</td>
+							<td th:text="${issue.typeByMessage}">messageType</td>
 							<td th:text="${issue.priority}">Type</td>
 							<td>
 								<a th:each="commit, iterStat : ${issue.getCommits()}" th:href="@{'/projects/' + ${project.id} + '/commits/' + ${commit.id}}" th:text="!${iterStat.last} ? ${commit.id} + ', ' : ${commit.id}">commit</a>

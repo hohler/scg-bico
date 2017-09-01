@@ -27,6 +27,8 @@ public class Playground2 {
 		
 		String input5 = "Bug 123262 This is a bug \r\n hello Bug 4523423 or bug 00000";
 		
+		String input6 = "FLUME-572: Allow using a file to only include certain tests in a build\n\nFrom: Jonathan Hsieh\n\ngit-svn-id: https://svn.apache.org/repos/asf/incubator/flume/trunk@1155891 13f79535-47bb-0310-9956-ffa450edef68";
+		
 		CommitMessageClassifier c = new CommitMessageClassifier();
 		//System.out.println(c.classify(input));
 		
@@ -36,7 +38,7 @@ public class Playground2 {
 		
 		//System.out.println(c.classify(input4));
 		
-		System.out.println(c.classify(input5));
+		System.out.println(c.classify(input6));
 		
 	}
 	
