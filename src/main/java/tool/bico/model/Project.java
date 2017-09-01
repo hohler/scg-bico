@@ -45,6 +45,9 @@ public class Project {
 	@OrderBy("id")
 	private Set<BigCommit> bigCommits;
 	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="project", orphanRemoval = true)
+	private Set<CommitIssueAnalysis> commitIssueAnalysis;
+	
 	public enum Type {
 		GITHUB("GitHub"), GIT("Git"), JIRA("Jira"), BUGZILLA("Bugzilla");
 		

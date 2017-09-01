@@ -25,5 +25,7 @@ public interface CommitIssueDaoInterface {
 	CommitIssue findByProjectAndIssueName(Project project, String name);
 
 	List<CommitIssue> findAllByProjectAndType(Project project, Type type);
+	
+	void flush();
 
 }

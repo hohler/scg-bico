@@ -24,5 +24,6 @@ public class CommitWriter implements ItemWriter<CommitIssue> {
 				commitIssueService.update(commitIssue);
 			}
 		}
+		commitIssueService.flush();
 	}
 }

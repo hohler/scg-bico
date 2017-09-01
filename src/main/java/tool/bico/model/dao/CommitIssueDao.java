@@ -81,4 +81,9 @@ public class CommitIssueDao implements CommitIssueDaoInterface {
 				.setParameter("project", project)
 				.setParameter("type",  type).getResultList();
 	}
+	
+	@Override
+	public void flush() {
+		em.flush();
+	}
 }

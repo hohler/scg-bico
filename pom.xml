@@ -297,6 +297,18 @@
 		  <artifactId>diffparser</artifactId>
 		  <version>1.1</version>
 		</dependency>
+		
+		<dependency>
+	       <groupId>ch.unibe.scg.curtys</groupId>
+			<artifactId>issue-vectorization</artifactId>
+			<version>1.0-SNAPSHOT</version>
+	    </dependency>
+	    
+		<dependency>
+	       <groupId>ch.unibe.scg.curtys</groupId>
+	       <artifactId>issue-analysis</artifactId>
+	       <version>1.0-SNAPSHOT</version>
+	    </dependency>
 	
 	</dependencies>
 	<build>
@@ -356,6 +368,24 @@
 	    <name>data</name>
 	    <url>file://${basedir}/local_maven_repository</url>
 	  </repository>
+	  
+	  <repository>
+        <id>issue-analysis-mvn-repo</id>
+        <url>https://raw.github.com/curtys/issue-analysis/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+      </repository>
+      
+      <repository>
+        <id>issue-vectorization-mvn-repo</id>
+        <url>https://raw.github.com/curtys/issue-vectorization/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+      </repository>
 
 	</repositories>
 	<packaging>war</packaging>

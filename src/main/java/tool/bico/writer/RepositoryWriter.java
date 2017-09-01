@@ -48,6 +48,7 @@ public class RepositoryWriter implements ItemWriter<Commit> {
 			}
 			
 			commitService.flush();
+			commitIssueService.flush();
 			for(CommitIssue t : tempNewCommitIssues) {
 				commit.addCommitIssueSilently(t);
 			}
@@ -63,6 +64,7 @@ public class RepositoryWriter implements ItemWriter<Commit> {
 				
 			}
 			commitService.add(commit);
+			commitIssueService.flush();
 		}
 	}
 }

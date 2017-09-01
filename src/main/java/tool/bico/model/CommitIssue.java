@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ForeignKey;
@@ -106,6 +107,11 @@ public class CommitIssue {
 	private String description = "";
 	
 	private boolean processed = false;
+	
+	@Column(nullable = true)
+	private String typeByClassifier;
+	
+	private int classifierScore = 0;
 	
 	public CommitIssue() {
 		this.commits = new HashSet<Commit>();
@@ -209,6 +215,11 @@ public class CommitIssue {
 	public void setProcessed(boolean processed) {
 		this.processed = processed;
 	}
+	
+	@Override
+	public int hashCode() {
+		return getName().hashCode()+getType().hashCode()+getPriority().hashCode()+getDescription().hashCode();
+	}
 
 	@Override
 	public boolean equals(Object other) {
@@ -216,9 +227,25 @@ public class CommitIssue {
 	    if (other == this) return true;
 	    if (!(other instanceof CommitIssue)) return false;
 	    CommitIssue that = (CommitIssue) other;
-	    if(this.name != null && this.name.length() > 0 && that.name != null && that.name.length() > 0) {
-	    	if(this.name.equals(that.name)) return true;
+	    if(getName() != null && getName().length() > 0 && that.getName() != null && that.getName().length() > 0) {
+	    	if(getName().equals(that.getName()) && hashCode() == that.hashCode()) return true;
 	    }
 	    return false;
+	}
+
+	public String getTypeByClassifier() {
+		return typeByClassifier;
+	}
+
+	public void setTypeByClassifier(String typeByClassifier) {
+		this.typeByClassifier = typeByClassifier;
+	}
+
+	public int getClassifierScore() {
+		return classifierScore;
+	}
+
+	public void setClassifierScore(int classifierScore) {
+		this.classifierScore = classifierScore;
 	}
 }
