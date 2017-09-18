@@ -62,7 +62,7 @@ public class BigCommitDao implements BigCommitDaoInterface {
 	@Override
 	public void removeAllByProject(Project project) {
 		em.createQuery("DELETE from BigCommit b WHERE b.project = :project")
-		.setParameter("project", project);
+		.setParameter("project", project).executeUpdate();
 	}
 
 	@Override

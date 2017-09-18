@@ -73,7 +73,7 @@ public class CommitIssueAnalysisDao implements CommitIssueAnalysisDaoInterface {
 	@Override
 	public void removeAllByProject(Project project) {
 		em.createQuery("DELETE from CommitIssueAnalysis c WHERE c.project = :project")
-		.setParameter("project", project);
+		.setParameter("project", project).executeUpdate();
 		
 	}
 }
