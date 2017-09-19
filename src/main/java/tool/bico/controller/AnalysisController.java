@@ -55,6 +55,11 @@ public class AnalysisController {
 		List<CommitIssueAnalysis> cia = commitIssueAnalysisService.findAllByProject(project);
 		Map<CommitIssue.Type, CommitIssueAnalysis> results = cia.stream().collect(Collectors.toMap(c -> c.getType(), c->c));
 		
+		/*Map<CommitIssue.Type, CommitIssueAnalysis> results = new HashMap<>();
+		for(CommitIssueAnalysis c : cia) {
+			results.put(c.getType(), c);
+		}*/
+		
 		model.addAttribute("types", typeSet);
 		model.addAttribute("results", results);
 		model.addAttribute("project", project);

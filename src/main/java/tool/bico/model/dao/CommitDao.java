@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import tool.bico.model.Commit;
+import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
 
 @Repository
@@ -64,5 +65,12 @@ public class CommitDao implements CommitDaoInterface {
 		} catch(NoResultException e) {
 			return null;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CommitIssue> getCommitIssuesByCommit(Commit c) {
+		return em.createQuery("SELECT c from CommitIssue c LEFT JOIN c.commits i WHERE i = :commit")
+				.setParameter("commit", c).getResultList();
 	}
 }

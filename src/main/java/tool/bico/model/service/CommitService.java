@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import tool.bico.model.Commit;
+import tool.bico.model.CommitIssue;
 import tool.bico.model.Project;
 import tool.bico.model.dao.CommitDaoInterface;
 
@@ -70,5 +71,10 @@ public class CommitService {
 	@Transactional
 	public Commit getCommitByProjectAndRef(Project project, String ref) {
 		return commitDao.getCommitByProjectAndRef(project, ref);
+	}
+
+	@Transactional
+	public List<CommitIssue> getCommitIssuesByCommit(Commit c) {
+		return commitDao.getCommitIssuesByCommit(c);
 	}
 }

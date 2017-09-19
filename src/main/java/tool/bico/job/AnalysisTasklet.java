@@ -52,7 +52,7 @@ public class AnalysisTasklet implements Tasklet {
 		
 		// delete all big commits
 		// delete all analysis
-		this.bigCommitService.removeAllByProject(project);
+		bigCommitService.removeAllByProject(project);
 		project.removeAllBigCommits();
 		
 		ciaService.removeAllByProject(project);

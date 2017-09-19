@@ -244,7 +244,7 @@ public class ResultsContainer {
 	}
 	
 	
-	public class ResultHolder {
+	public static class ResultHolder {
 		private Long commitId;
 		private int filesChanged;
 		private int additions;
@@ -280,7 +280,7 @@ public class ResultsContainer {
 		}
 	}
 	
-	public class FileHolder {
+	public static class FileHolder {
 		private CommitFile.ChangeType changeType;
 		private int additions;
 		private int deletions;

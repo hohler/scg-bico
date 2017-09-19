@@ -40,7 +40,7 @@ public class RepositoryProcessor implements ItemProcessor<Commit, Commit> {
 		
 		// commitmessage based classifier
 		CommitIssue.Type commitMessageType = CommitMessageClassifier.classify(input.getMessage());
-		input.setCommitMessageType(commitMessageType);
+		input.setCommitMessageBasedType(commitMessageType);
 		
 		for(String i : identifiers) {
 			if(i != null && !i.isEmpty()) input.initIssue(i.toUpperCase());

@@ -53,7 +53,15 @@ public class CommitThreadedAnalyzer {
 	public void load() {
 		commitsToAnalyze = new HashSet<>();
 		for(Commit c : commits) {
-			for(CommitIssue i : c.getCommitIssues()) {
+			/*for(CommitIssue i : c.getCommitIssues()) {
+				if(typeSet.contains(i.getType())) {
+					commitsToAnalyze.add(c);
+				}
+			}*/
+			// this is a workaround
+			for(CommitIssue i : commitService.getCommitIssuesByCommit(c)) {
+				c.getCommitIssues().clear();
+				c.addCommitIssue(i);
 				if(typeSet.contains(i.getType())) {
 					commitsToAnalyze.add(c);
 				}
@@ -202,13 +210,12 @@ public class CommitThreadedAnalyzer {
 			for(Commit c : commits) {
 				for(CommitIssue i : c.getCommitIssues()) {
 					if(!typeSet.contains(i.getType())) continue;
-					ResultsContainer rc = typeResults.get(i.getType());
 					
 					Set<CommitFile> files = c.getFiles();			
 					Set<ResultsContainer.FileHolder> fileList = new HashSet<>();
 					for(CommitFile f : files) {
 						if(f.isSrc()) {
-							fileList.add(rc.new FileHolder(f.getChangeType(), f.getAdditions(), f.getDeletions()));
+							fileList.add(new ResultsContainer.FileHolder(f.getChangeType(), f.getAdditions(), f.getDeletions()));
 						}
 					}
 					

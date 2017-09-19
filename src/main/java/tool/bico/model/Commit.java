@@ -245,11 +245,11 @@ public class Commit {
 		this.sourceMetrics = sourceMetrics;
 	}
 
-	public CommitIssue.Type getCommitMessageType() {
+	public CommitIssue.Type getCommitMessageBasedType() {
 		return commitMessageBasedType;
 	}
 
-	public void setCommitMessageType(CommitIssue.Type commitMessageType) {
+	public void setCommitMessageBasedType(CommitIssue.Type commitMessageType) {
 		this.commitMessageBasedType = commitMessageType;
 	}
 }
