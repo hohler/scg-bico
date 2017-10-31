@@ -194,5 +194,22 @@ public class ProjectController {
 		
 		return new HttpEntity<byte[]>(documentBody, header);	
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "{id}/issue_categorization")
+	public ModelAndView modifyForm(Model model, @PathVariable("id") Long id, RedirectAttributes redirect) {
+		Project project = projectService.findById(id);
+		
+		if(project == null) {
+			redirect.addFlashAttribute("globalErrorMessage", "Project does not exist");
+			return new ModelAndView("redirect:/projects");
+		}
+		
+		Set<Commit> commits = project.getCommits();
+		
+		model.addAttribute("project", project);
+		model.addAttribute("commits", commits);
+		
+		return new ModelAndView("projects/issue_categorization", model.asMap());
+	}
 
 }

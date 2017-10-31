@@ -83,7 +83,8 @@ $(document).ready(function() {
 				<td><a href="projects" th:href="@{'/projects/' + ${project.id} + '/analyze'}">Analyze</a> |&nbsp;
 					<a href="view.html" th:href="@{'/batch/jobs/' + ${project.id} + '_' + ${project.name}}" target="_blank">Batch Job</a> |&nbsp;
 					<a href="projects" th:href="@{'/projects/' + ${project.id} + '/issues'}">Issues</a> |&nbsp;
-					<a href="projects" th:href="@{'/projects/' + ${project.id} + '/analyze/bigcommits'}">Possible Big Commits</a>
+					<a href="projects" th:href="@{'/projects/' + ${project.id} + '/analyze/bigcommits'}">Possible Big Commits</a> |&nbsp;
+					<a href="projects" th:href="@{'/projects/' + ${project.id} + '/issue_categorization'}">Issue categorization</a>
 					</td>
 			</tr>
 			<tr>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<title>Project : Issue categorization</title>
+</head>
+<body>
+	<h1 layout:fragment="header"><span th:text="${project.name}">project</span> : Issue categorization</h1>
+	<div layout:fragment="content" class="container">
+	<div class="alert alert-success" th:if="${globalMessage}"
+			th:text="${globalMessage}">Some Success message</div>
+	<div class="pull-right" style="margin-bottom:10px;">
+		<a href="form.html" class="btn btn-default" th:href="@{'/projects/' + ${project.id}}">back</a>
+	</div>
+	  	
+	<table class="table table-bordered table-striped" th:unless="${commits.isEmpty()}">
+		<thead>
+			<tr>
+				<th>Commit</th>
+				<th>Commit Categorization</th>
+				<th>Issues</th>
+				<th>Issue Type</th>
+				<th>Classifier Type</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="commit : ${commits}">
+				<td><a th:href="@{'/projects/' + ${project.id} + '/commits/' + ${commit.id}}" th:text="${commit.id}">id</a></td>
+				<td th:text="${commit.commitMessageBasedType}">commit_categorization</td>
+				<td>
+					<span th:each="issue,index : ${commit.commitIssues}">
+						<a th:href="@{'/projects/' + ${project.id} + '/issues/' + ${issue.id}}" th:text="${issue.name}">name</a>
+						<br th:if="commit.commitIssues.size < index" />
+					</span>
+				</td>
+				<td>
+					<span th:each="issue,index : ${commit.commitIssues}">
+						<span th:text="${issue.type}">name</span>
+						<br th:if="commit.commitIssues.size < index" />
+					</span>
+				</td>
+				<td>
+					<span th:each="issue,index : ${commit.commitIssues}">
+						<span th:text="${issue.typeByClassifier}">name</span>
+						<br th:if="commit.commitIssues.size < index" />
+					</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<div class="alert alert-info" role="alert" th:if="${commits.isEmpty()}">No commits available</div>
+</body>
+</html>
