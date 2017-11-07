@@ -196,7 +196,7 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "{id}/issue_categorization")
-	public ModelAndView modifyForm(Model model, @PathVariable("id") Long id, RedirectAttributes redirect) {
+	public ModelAndView issueCategorization(Model model, @PathVariable("id") Long id, RedirectAttributes redirect) {
 		Project project = projectService.findById(id);
 		
 		if(project == null) {
