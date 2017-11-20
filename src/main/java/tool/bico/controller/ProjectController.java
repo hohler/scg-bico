@@ -195,8 +195,8 @@ public class ProjectController {
 		return new HttpEntity<byte[]>(documentBody, header);	
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "{id}/issue_categorization")
-	public ModelAndView issueCategorization(Model model, @PathVariable("id") Long id, RedirectAttributes redirect) {
+	@RequestMapping(method = RequestMethod.GET, value = "{id}/commit_categorization")
+	public ModelAndView commitCategorization(Model model, @PathVariable("id") Long id, RedirectAttributes redirect) {
 		Project project = projectService.findById(id);
 		
 		if(project == null) {
@@ -209,7 +209,7 @@ public class ProjectController {
 		model.addAttribute("project", project);
 		model.addAttribute("commits", commits);
 		
-		return new ModelAndView("projects/issue_categorization", model.asMap());
+		return new ModelAndView("projects/commit_categorization", model.asMap());
 	}
 
 }
