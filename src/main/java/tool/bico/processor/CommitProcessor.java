@@ -62,13 +62,15 @@ public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> 
 					// simons classifier
 					Issue cIssue = new Issue();
 					List<Comment> comments = new ArrayList<>();
-					for(IssueComment ic : result.getComments()) {
-						Comment c = new Comment();
-						c.setAuthor(ic.getAuthor());
-						c.setDate(ic.getDate());
-						c.setBody(ic.getBody());
-						c.setId(ic.getId());
-						comments.add(c);
+					if(result.getComments() != null) {
+						for(IssueComment ic : result.getComments()) {
+							Comment c = new Comment();
+							c.setAuthor(ic.getAuthor());
+							c.setDate(ic.getDate());
+							c.setBody(ic.getBody());
+							c.setId(ic.getId());
+							comments.add(c);
+						}
 					}
 					cIssue.setComments(comments);
 					cIssue.setComponent(result.getComponent());
@@ -76,7 +78,9 @@ public class CommitProcessor implements ItemProcessor<CommitIssue, CommitIssue> 
 					cIssue.setId(result.getName());
 					cIssue.setProduct(result.getProject());
 					cIssue.setSummary(result.getSummary());
-					cIssue.setIssuetypeTracker("Jira");
+					if(issueTrackerType == Project.Type.JIRA) cIssue.setIssuetypeTracker("Jira");
+					else if(issueTrackerType == Project.Type.GITHUB) cIssue.setIssuetypeTracker("Github");
+					else cIssue.setIssuetypeTracker("na");
 					cIssue.setVersion(result.getVersion());
 					cIssue.setHasPatch(result.hasPatch());
 					cIssue.setHasScreenshot(result.hasScreenshot());

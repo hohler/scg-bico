@@ -215,10 +215,13 @@ public class CommitIssue {
 		this.processed = processed;
 	}
 	
-	@Override
+	
+	
+	/*@Override
 	public int hashCode() {
 		return getName().hashCode()+getType().hashCode()+getPriority().hashCode()+getDescription().hashCode();
-	}
+	}*/
+	
 
 	@Override
 	public boolean equals(Object other) {
@@ -230,6 +233,17 @@ public class CommitIssue {
 	    	if(getName().equals(that.getName()) && hashCode() == that.hashCode()) return true;
 	    }
 	    return false;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((priority == null) ? 0 : priority.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
 	}
 
 	public String getTypeByClassifier() {
